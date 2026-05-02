@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Block app routes (private user data)
+Disallow: /app/
+Disallow: /api/
+
+# Allow search engines to find sitemap
+Sitemap: https://orbit.jobs/sitemap.xml
