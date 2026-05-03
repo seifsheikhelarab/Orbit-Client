@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5726",
+        target: "https://orbit-applications.vercel.app",
         changeOrigin: true
       }
     }

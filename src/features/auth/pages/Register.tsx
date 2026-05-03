@@ -27,7 +27,6 @@ export function Register() {
   const handleGoogle = async () => {
     await signIn.social({
       provider: 'google',
-      callbackURL: 'http://localhost:5174/app/dashboard',
     });
   };
 
