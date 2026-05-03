@@ -1,7 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-    baseURL: "https://orbit-applications.vercel.app"
+    baseURL: "https://orbit-server-gamma.vercel.app"
 });
 
 export const { signIn, signUp, signOut, useSession } = authClient;
