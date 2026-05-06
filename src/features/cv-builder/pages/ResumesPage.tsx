@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PageContainer, PageHeader } from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import { useResumes, useDeleteResume, useCreateResume, type Resume } from "../api/useResumes";
 import { defaultResumeData, defaultCoverLetterContent, type ResumeType } from "../types";
 
@@ -90,8 +91,15 @@ export function ResumesPage() {
 
     const items = response?.data || [];
 
-    const renderCard = (item: Resume) => (
-        <div key={item.id} className="group flex flex-col bg-surface rounded-xl border border-outline shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+    const renderCard = (item: Resume, index: number) => (
+        <div 
+            key={item.id} 
+            className={cn(
+                "group flex flex-col bg-surface rounded-xl border border-outline shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden",
+                "animate-in fade-in slide-in-from-bottom-4 fill-mode-both"
+            )}
+            style={{ animationDelay: `${index * 50}ms` }}
+        >
             <Link to={`/app/resumes/${item.id}`} className="flex flex-col h-full">
                 <div className="relative aspect-[3/4] bg-surface-container-low overflow-hidden">
                     {/* Editorial Resume Preview */}
@@ -179,7 +187,7 @@ export function ResumesPage() {
             </Tabs>
 
             {items.length === 0 ? (
-                <div className="text-center py-24 border-2 border-dashed border-outline rounded-xl bg-surface-container-low">
+                <div className="text-center py-24 border-2 border-dashed border-outline rounded-xl bg-surface-container-low animate-in fade-in zoom-in-95 duration-500">
                     {activeTab === "RESUME" ? (
                         <FileText className="w-16 h-16 mx-auto mb-4 text-outline" />
                     ) : (
@@ -195,11 +203,15 @@ export function ResumesPage() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {items.map(renderCard)}
+                    {items.map((item, index) => renderCard(item, index))}
                     <button 
                         onClick={() => handleCreate(activeTab)}
                         disabled={isCreating}
-                        className="group flex flex-col items-center justify-center gap-4 bg-surface-container-low rounded-xl border-2 border-dashed border-outline hover:border-primary hover:bg-surface-container transition-all aspect-3/4"
+                        className={cn(
+                            "group flex flex-col items-center justify-center gap-4 bg-surface-container-low rounded-xl border-2 border-dashed border-outline hover:border-primary hover:bg-surface-container transition-all aspect-3/4",
+                            "animate-in fade-in slide-in-from-bottom-4 fill-mode-both"
+                        )}
+                        style={{ animationDelay: `${items.length * 50}ms` }}
                     >
                         <div className="size-16 rounded-full bg-surface-container flex items-center justify-center text-muted-foreground transition-all group-hover:scale-110 group-hover:bg-accent-fixed-dim group-hover:text-accent">
                             <Plus className="w-8 h-8" />

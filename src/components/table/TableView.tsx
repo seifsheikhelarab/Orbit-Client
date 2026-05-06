@@ -271,15 +271,17 @@ export const TableView = memo(function TableView({
                         </tr>
                     </thead>
                     <tbody>
-                        {applications.map((app) => (
+                        {applications.map((app, index) => (
                             <tr
                                  key={app.id}
                                  className={cn(
-                                     "transition-all duration-150",
+                                     "transition-all duration-300 ease-out-quart",
+                                     "animate-in fade-in slide-in-from-left-4 fill-mode-both",
                                      selectedIds.has(app.id) 
                                          ? "bg-primary-fixed-dim/30" 
-                                         : "hover:bg-surface-container"
+                                         : "hover:bg-surface-container hover:shadow-sm"
                                  )}
+                                 style={{ animationDelay: `${index * 30}ms` }}
                                  role="row"
                              >
                                  <td className="px-5 py-4 w-12" onClick={(e) => e.stopPropagation()}>
@@ -295,7 +297,7 @@ export const TableView = memo(function TableView({
                                      </button>
                                  </td>
                                  <td 
-                                     className="px-5 py-4 cursor-pointer" 
+                                     className="px-5 py-4 cursor-pointer group/cell" 
                                      onClick={() => navigate(`/app/applications/${app.id}`)}
                                      role="button"
                                      tabIndex={0}
@@ -306,7 +308,7 @@ export const TableView = memo(function TableView({
                                          }
                                      }}
                                  >
-                                     <span className="font-headline font-semibold text-on-surface text-body-md">{app.company}</span>
+                                     <span className="font-headline font-semibold text-on-surface text-body-md group-hover/cell:text-primary transition-colors duration-200">{app.company}</span>
                                  </td>
                                 {visibleColumns.jobTitle && (
                                      <td 

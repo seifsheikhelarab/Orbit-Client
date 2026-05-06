@@ -10,6 +10,7 @@ import {
 } from '../api/useAnalytics';
 import { SankeyChart } from '../components/SankeyChart';
 import { PipelineFunnelChart } from '../components/PipelineFunnelChart';
+import { useAnimatedCounter, formatCounter } from '@/hooks/useAnimatedCounter';
 
 const DATE_RANGES = [
   { label: '7 days', value: '7d' },
@@ -100,7 +101,7 @@ export function DashboardOverview() {
                     to="/app/applications/new"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm hover:bg-primary-hover transition-all shadow-sm"
                   >
-                    Add Your First Application
+                    Add a new Application
                     <ArrowRight className="size-4" />
                   </Link>
                   <Link
@@ -212,16 +213,25 @@ const StatCard = memo(function StatCard({
   index?: number,
 }) {
   const direction = trendDir || 'neutral';
+  
+  // Extract numeric value for animation
+  const numericValue = parseFloat(value.replace(/[^0-9.]/g, '')) || 0;
+  const isPercentage = value.includes('%');
+  
+  const animatedValue = useAnimatedCounter(numericValue, {
+    delay: (index || 0) * 100 + 400,
+    duration: 1500
+  });
 
   return (
     <div
-      className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-30 transition-all hover:bg-surface-container animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
+      className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-30 transition-all hover:bg-surface-container hover:shadow-xl hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
       style={{ animationDelay: `${index ? index * 100 : 0}ms` }}
     >
       <div className="flex justify-between items-start">
         <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/60">{title}</span>
         {direction !== 'neutral' && (
-          <div className={`flex items-center gap-1 ${direction === 'up' ? 'text-success' : 'text-error'}`}>
+          <div className={`flex items-center gap-1 ${direction === 'up' ? 'text-success' : 'text-error'} animate-in fade-in zoom-in duration-500`} style={{ animationDelay: `${(index || 0) * 100 + 1000}ms` }}>
             {direction === 'up' ? (
               <TrendingUp className="w-3 h-3" />
             ) : (
@@ -232,7 +242,7 @@ const StatCard = memo(function StatCard({
         )}
       </div>
       <p className="text-3xl font-black text-on-surface font-headline tracking-tight leading-none">
-        {value}
+        {formatCounter(animatedValue, { suffix: isPercentage ? '%' : '' })}
       </p>
     </div>
   );
@@ -281,7 +291,7 @@ const ApplicationsOverTime = memo(function ApplicationsOverTime({ dateRange }: {
   return (
     <div
       onClick={() => navigate('/app/applications')}
-      className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 cursor-pointer hover:bg-surface-container transition-all group"
+      className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 cursor-pointer hover:bg-surface-container transition-all group animate-in fade-in slide-in-from-left-4 duration-1000 fill-mode-both"
     >
       <div className="flex items-center gap-2 mb-6">
         <h3 className="text-label-sm font-bold text-on-surface uppercase tracking-wider">Activity</h3>
@@ -291,9 +301,10 @@ const ApplicationsOverTime = memo(function ApplicationsOverTime({ dateRange }: {
         {overTime?.map((bar: any, i: number) => (
           <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-2 group/bar">
             <div
-              className="w-full max-w-6 bg-primary/20 rounded-t-md transition-all duration-300 group-hover/bar:bg-primary/40"
+              className="w-full max-w-6 bg-primary/20 rounded-t-md transition-all duration-700 group-hover/bar:bg-primary/40 animate-in fade-in slide-in-from-bottom-full fill-mode-both"
               style={{
                 height: `${(bar.count / maxCount) * 100}%`,
+                animationDelay: `${i * 30 + 800}ms`
               }}
             />
             <span className="text-[8px] font-bold text-on-surface-variant/40 uppercase tracking-tight whitespace-nowrap overflow-hidden text-ellipsis w-full text-center min-h-3">
@@ -312,7 +323,7 @@ const RecentActivity = memo(function RecentActivity() {
   if (isLoading) return <Skeleton className="h-60 rounded-2xl bg-surface-container-low" />;
 
   return (
-    <div className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10">
+    <div className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 animate-in fade-in slide-in-from-right-4 duration-1000 fill-mode-both">
       <div className="flex items-center gap-2 mb-6">
         <h3 className="text-label-sm font-bold text-on-surface uppercase tracking-wider">Activity</h3>
       </div>
@@ -321,7 +332,8 @@ const RecentActivity = memo(function RecentActivity() {
         {recent?.slice(0, 5).map((item: any, i: number) => (
           <div
             key={i}
-            className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-surface-container transition-colors group"
+            className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-surface-container transition-colors group animate-in fade-in slide-in-from-right-2 duration-500 fill-mode-both"
+            style={{ animationDelay: `${i * 100 + 1000}ms` }}
           >
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold text-on-surface truncate group-hover:text-primary transition-colors">{item.company}</p>

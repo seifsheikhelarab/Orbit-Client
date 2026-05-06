@@ -144,7 +144,7 @@ export function PreviewBuffer({
                 </div>
             )}
             
-            <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
+            <Worker workerUrl={`https://unpkg.com/pdfjs-dist@5.7.284/build/pdf.worker.min.mjs`}>
                 <div className="relative w-full h-full">
                     {urls.map((url, index) => (
                         url && (

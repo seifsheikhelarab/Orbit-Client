@@ -85,11 +85,11 @@ export function SankeyChart() {
   if (isLoading) return <Skeleton className="h-[450px] rounded-2xl bg-surface-container-low" />;
 
   return (
-    <div className="p-8 rounded-2xl bg-surface-container-low border border-outline-variant/10 group min-h-[450px]">
+    <div className="p-8 rounded-2xl bg-surface-container-low border border-outline-variant/10 group min-h-[450px] animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 fill-mode-both hover:shadow-2xl transition-all">
       <div className="flex items-center justify-between mb-8">
         <h3 className="text-label-sm font-bold text-on-surface uppercase tracking-wider">Conversion Pipeline</h3>
         <div className="flex items-center gap-2">
-          <span className="size-1.5 rounded-full bg-success/60" />
+          <span className="size-1.5 rounded-full bg-success/60 animate-pulse" />
           <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/40">Real-time</span>
         </div>
       </div>
@@ -111,10 +111,12 @@ export function SankeyChart() {
               </linearGradient>
             </defs>
             <Tooltip 
+              animationDuration={500}
+              animationEasing="ease-out"
               contentStyle={{
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(8px)',
-                border: '1px solid #e5e7eb',
+                border: '1px solid #dcbed1',
                 borderRadius: '12px',
                 fontSize: '10px',
                 fontWeight: '700',

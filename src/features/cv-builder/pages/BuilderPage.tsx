@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, ArrowLeft, Save, Download, Eye, Edit2, User, Briefcase, GraduationCap, Lightbulb, Mail, ChevronDown, Plus, Trash2, Settings2 } from "lucide-react";
+import { Loader2, ArrowLeft, Save, Download, Eye, Edit2, User, Briefcase, GraduationCap, Lightbulb, Mail, ChevronDown, Plus, Trash2, Settings2, Award, Heart, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { pdf } from "@react-pdf/renderer";
 import { PreviewBuffer } from "../components/PreviewBuffer";
@@ -304,6 +304,75 @@ export function BuilderPage() {
                     <div className="flex gap-2">
                         <Field label="Add skill" help="Press Enter after each skill. Keep them specific to the role."><Input placeholder="React, API design, stakeholder management..." onKeyDown={(e) => { if (e.key === "Enter") { const s = e.currentTarget.value.trim(); if (s) setResumeData({ ...resumeData, skills: [...resumeData.skills, { name: s, level: "", keywords: "" }] }); e.currentTarget.value = ""; } }} /></Field>
                     </div>
+                </div>
+            </CollapsibleSection>
+
+            <CollapsibleSection title="Projects" icon={<Briefcase className="w-4 h-4" />} defaultOpen={false}>
+                <div className="space-y-4">
+                    {resumeData.projects.map((proj, i) => (
+                        <EntryPanel key={i} title={proj.name || "Untitled project"} meta={proj.url || "Add URL"} defaultOpen={i === resumeData.projects.length - 1}>
+                            <Field label="Project Name"><Input placeholder="Orbit App" value={proj.name} onChange={(e) => { const p = [...resumeData.projects]; p[i] = { ...p[i], name: e.target.value }; setResumeData({ ...resumeData, projects: p }); }} /></Field>
+                            <Field label="URL"><Input placeholder="https://..." value={proj.url} onChange={(e) => { const p = [...resumeData.projects]; p[i] = { ...p[i], url: e.target.value }; setResumeData({ ...resumeData, projects: p }); }} /></Field>
+                            <div className="grid grid-cols-2 gap-3">
+                                <Field label="Start date"><Input placeholder="Jan 2023" value={proj.startDate} onChange={(e) => { const p = [...resumeData.projects]; p[i] = { ...p[i], startDate: e.target.value }; setResumeData({ ...resumeData, projects: p }); }} /></Field>
+                                <Field label="End date"><Input placeholder="Present" value={proj.endDate} onChange={(e) => { const p = [...resumeData.projects]; p[i] = { ...p[i], endDate: e.target.value }; setResumeData({ ...resumeData, projects: p }); }} /></Field>
+                            </div>
+                            <Field label="Highlights"><Textarea placeholder="Built with React and Node.js..." value={proj.highlights} onChange={(e) => { const p = [...resumeData.projects]; p[i] = { ...p[i], highlights: e.target.value }; setResumeData({ ...resumeData, projects: p }); }} rows={3} /></Field>
+                            <Button variant="ghost" size="sm" className="text-error hover:text-error hover:bg-error/10 w-full" onClick={() => { const p = resumeData.projects.filter((_, idx) => idx !== i); setResumeData({ ...resumeData, projects: p }); }}><Trash2 className="w-4 h-4 mr-2" />Remove project</Button>
+                        </EntryPanel>
+                    ))}
+                    <Button variant="outline" className="w-full border-dashed" onClick={() => setResumeData({ ...resumeData, projects: [...resumeData.projects, { name: "", description: "", highlights: "", url: "", startDate: "", endDate: "" }] })}><Plus className="w-4 h-4 mr-2" />Add Project</Button>
+                </div>
+            </CollapsibleSection>
+
+            <CollapsibleSection title="Certifications" icon={<Award className="w-4 h-4" />} defaultOpen={false}>
+                <div className="space-y-4">
+                    {resumeData.certifications.map((cert, i) => (
+                        <EntryPanel key={i} title={cert.name || "Untitled certification"} meta={cert.issuer || "Add issuer"} defaultOpen={i === resumeData.certifications.length - 1}>
+                            <Field label="Certificate Name"><Input placeholder="AWS Solutions Architect" value={cert.name} onChange={(e) => { const c = [...resumeData.certifications]; c[i] = { ...c[i], name: e.target.value }; setResumeData({ ...resumeData, certifications: c }); }} /></Field>
+                            <Field label="Issuer"><Input placeholder="Amazon Web Services" value={cert.issuer} onChange={(e) => { const c = [...resumeData.certifications]; c[i] = { ...c[i], issuer: e.target.value }; setResumeData({ ...resumeData, certifications: c }); }} /></Field>
+                            <div className="grid grid-cols-2 gap-3">
+                                <Field label="Date"><Input placeholder="Jan 2023" value={cert.startDate} onChange={(e) => { const c = [...resumeData.certifications]; c[i] = { ...c[i], startDate: e.target.value }; setResumeData({ ...resumeData, certifications: c }); }} /></Field>
+                                <Field label="URL"><Input placeholder="https://..." value={cert.url} onChange={(e) => { const c = [...resumeData.certifications]; c[i] = { ...c[i], url: e.target.value }; setResumeData({ ...resumeData, certifications: c }); }} /></Field>
+                            </div>
+                            <Button variant="ghost" size="sm" className="text-error hover:text-error hover:bg-error/10 w-full" onClick={() => { const c = resumeData.certifications.filter((_, idx) => idx !== i); setResumeData({ ...resumeData, certifications: c }); }}><Trash2 className="w-4 h-4 mr-2" />Remove certification</Button>
+                        </EntryPanel>
+                    ))}
+                    <Button variant="outline" className="w-full border-dashed" onClick={() => setResumeData({ ...resumeData, certifications: [...resumeData.certifications, { name: "", issuer: "", startDate: "", endDate: "", url: "", highlights: "" }] })}><Plus className="w-4 h-4 mr-2" />Add Certification</Button>
+                </div>
+            </CollapsibleSection>
+
+            <CollapsibleSection title="Volunteer" icon={<Heart className="w-4 h-4" />} defaultOpen={false}>
+                <div className="space-y-4">
+                    {resumeData.volunteer.map((vol, i) => (
+                        <EntryPanel key={i} title={vol.position || "New volunteer role"} meta={vol.organization || "Organization name"} defaultOpen={i === resumeData.volunteer.length - 1}>
+                            <Field label="Organization"><Input placeholder="Red Cross" value={vol.organization} onChange={(e) => { const v = [...resumeData.volunteer]; v[i] = { ...v[i], organization: e.target.value }; setResumeData({ ...resumeData, volunteer: v }); }} /></Field>
+                            <Field label="Role"><Input placeholder="Volunteer" value={vol.position} onChange={(e) => { const v = [...resumeData.volunteer]; v[i] = { ...v[i], position: e.target.value }; setResumeData({ ...resumeData, volunteer: v }); }} /></Field>
+                            <div className="grid grid-cols-2 gap-3">
+                                <Field label="Start date"><Input placeholder="Jan 2023" value={vol.startDate} onChange={(e) => { const v = [...resumeData.volunteer]; v[i] = { ...v[i], startDate: e.target.value }; setResumeData({ ...resumeData, volunteer: v }); }} /></Field>
+                                <Field label="End date"><Input placeholder="Present" value={vol.endDate} onChange={(e) => { const v = [...resumeData.volunteer]; v[i] = { ...v[i], endDate: e.target.value }; setResumeData({ ...resumeData, volunteer: v }); }} /></Field>
+                            </div>
+                            <Field label="Impact bullets" help="One result per line. Describe your contributions and outcomes."><Textarea placeholder="Organized community food drive serving 200+ families" value={vol.highlights} onChange={(e) => { const v = [...resumeData.volunteer]; v[i] = { ...v[i], highlights: e.target.value }; setResumeData({ ...resumeData, volunteer: v }); }} rows={3} /></Field>
+                            <Button variant="ghost" size="sm" className="text-error hover:text-error hover:bg-error/10 w-full" onClick={() => { const v = resumeData.volunteer.filter((_, idx) => idx !== i); setResumeData({ ...resumeData, volunteer: v }); }}><Trash2 className="w-4 h-4 mr-2" />Remove volunteer</Button>
+                        </EntryPanel>
+                    ))}
+                    <Button variant="outline" className="w-full border-dashed" onClick={() => setResumeData({ ...resumeData, volunteer: [...resumeData.volunteer, { organization: "", position: "", startDate: "", endDate: "", highlights: "" }] })}><Plus className="w-4 h-4 mr-2" />Add Volunteer</Button>
+                </div>
+            </CollapsibleSection>
+
+            <CollapsibleSection title="Languages" icon={<Globe className="w-4 h-4" />} defaultOpen={false}>
+                <div className="space-y-4">
+                    {resumeData.languages.map((lang, i) => (
+                        <EntryPanel key={i} title={lang.name || "New language"} meta={lang.fluency || "Proficiency level"} defaultOpen={i === resumeData.languages.length - 1}>
+                            <div className="grid grid-cols-2 gap-3">
+                                <Field label="Language"><Input placeholder="English" value={lang.name} onChange={(e) => { const l = [...resumeData.languages]; l[i] = { ...l[i], name: e.target.value }; setResumeData({ ...resumeData, languages: l }); }} /></Field>
+                                <Field label="Fluency"><Input placeholder="Native" value={lang.fluency} onChange={(e) => { const l = [...resumeData.languages]; l[i] = { ...l[i], fluency: e.target.value }; setResumeData({ ...resumeData, languages: l }); }} /></Field>
+                            </div>
+                            <Field label="Proficiency details" help="Optional. Add certifications, test scores, or contextual details."><Textarea placeholder="IELTS 8.0, 10 years professional use" value={lang.highlights} onChange={(e) => { const l = [...resumeData.languages]; l[i] = { ...l[i], highlights: e.target.value }; setResumeData({ ...resumeData, languages: l }); }} rows={2} /></Field>
+                            <Button variant="ghost" size="sm" className="text-error hover:text-error hover:bg-error/10 w-full" onClick={() => { const l = resumeData.languages.filter((_, idx) => idx !== i); setResumeData({ ...resumeData, languages: l }); }}><Trash2 className="w-4 h-4 mr-2" />Remove language</Button>
+                        </EntryPanel>
+                    ))}
+                    <Button variant="outline" className="w-full border-dashed" onClick={() => setResumeData({ ...resumeData, languages: [...resumeData.languages, { name: "", fluency: "", highlights: "", startDate: "" }] })}><Plus className="w-4 h-4 mr-2" />Add Language</Button>
                 </div>
             </CollapsibleSection>
         </main>

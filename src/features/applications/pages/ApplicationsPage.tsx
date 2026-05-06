@@ -354,28 +354,32 @@ return (
                             href: "/",
                         }}
                     />
-                ) : viewMode === "kanban" ? (
-                    <div className="animate-in fade-in zoom-in-95 duration-700 delay-300 fill-mode-both">
-                        <KanbanBoard
-                            applications={applications as Application[]}
-                            documentCounts={documentCounts || {}}
-                            onStatusChange={handleStatusChange}
-                        />
-                    </div>
                 ) : (
-                    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 fill-mode-both">
-                        <TableView
-                            applications={applications as Application[]}
-                            pagination={pagination}
-                            sortField={sort}
-                            sortOrder={order as "asc" | "desc"}
-                            onSort={handleSort}
-                            onPageChange={setPage}
-                            selectedIds={selectedIds}
-                            onToggleSelect={handleToggleSelect}
-                            onSelectAll={handleSelectAll}
-                            totalFiltered={totalFiltered}
-                        />
+                    <div className="relative min-h-[400px]">
+                        {viewMode === "kanban" ? (
+                            <div key="kanban" className="animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 fill-mode-both">
+                                <KanbanBoard
+                                    applications={applications as Application[]}
+                                    documentCounts={documentCounts || {}}
+                                    onStatusChange={handleStatusChange}
+                                />
+                            </div>
+                        ) : (
+                            <div key="table" className="animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
+                                <TableView
+                                    applications={applications as Application[]}
+                                    pagination={pagination}
+                                    sortField={sort}
+                                    sortOrder={order as "asc" | "desc"}
+                                    onSort={handleSort}
+                                    onPageChange={setPage}
+                                    selectedIds={selectedIds}
+                                    onToggleSelect={handleToggleSelect}
+                                    onSelectAll={handleSelectAll}
+                                    totalFiltered={totalFiltered}
+                                />
+                            </div>
+                        )}
                     </div>
                 )}
 

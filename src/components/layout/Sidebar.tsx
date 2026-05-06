@@ -1,4 +1,4 @@
-import { LayoutDashboard, Briefcase, Calendar, FileText, Settings } from 'lucide-react';
+import { LayoutDashboard, Briefcase, Calendar, FileText, Settings, UserCircle, Sparkles } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/hooks/useUIStore';
@@ -8,6 +8,8 @@ const NAV_ITEMS = [
   { name: 'Applications', icon: Briefcase, path: '/app/applications' },
   { name: 'Resumes', icon: FileText, path: '/app/resumes' },
   { name: 'Interviews', icon: Calendar, path: '/app/interviews' },
+  { name: 'AutoCV', icon: Sparkles, path: '/app/autocv' },
+  { name: 'Profile', icon: UserCircle, path: '/app/profile' },
 ];
 
 const SECONDARY_NAV_ITEMS = [

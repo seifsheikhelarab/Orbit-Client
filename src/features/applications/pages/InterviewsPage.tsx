@@ -6,6 +6,7 @@ import { PageContainer, PageHeader } from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface InterviewRound {
     id: string;
@@ -48,15 +49,21 @@ export function InterviewsPage() {
     }
 
     return (
-        <PageContainer maxWidth="xl">
-            <PageHeader
-                icon={Calendar}
-                title="Interviews"
-                description="Track and prepare for your upcoming interview rounds."
-            />
+        <PageContainer maxWidth="xl" className="relative overflow-hidden">
+            {/* Background Telemetry Decor */}
+            <div className="absolute top-0 right-0 w-1/3 h-full opacity-[0.02] pointer-events-none select-none">
+                <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle, var(--color-primary) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+            </div>
+
+            <div className="relative z-10">
+                <PageHeader
+                    icon={Calendar}
+                    title="Interviews"
+                    description="Track and prepare for your upcoming interview rounds."
+                />
 
             {sortedInterviews.length === 0 ? (
-                <div className="text-center py-24 border-2 border-dashed border-outline rounded-xl bg-surface-container-low">
+                <div className="text-center py-24 border-2 border-dashed border-outline rounded-xl bg-surface-container-low animate-in fade-in zoom-in-95 duration-500">
                     <Calendar className="w-16 h-16 mx-auto mb-4 text-on-surface-variant" />
                     <h3 className="text-xl font-semibold mb-2 text-on-surface">No upcoming interviews</h3>
                     <p className="text-on-surface-variant mb-8 max-w-md mx-auto">
@@ -71,10 +78,14 @@ export function InterviewsPage() {
                 </div>
             ) : (
                 <div className="space-y-4">
-                    {sortedInterviews.map((interview: InterviewRound) => (
+                    {sortedInterviews.map((interview: InterviewRound, index: number) => (
                         <div 
                             key={interview.id}
-                            className="group flex flex-col md:flex-row bg-surface rounded-xl border border-outline shadow-sm hover:shadow-md transition-all overflow-hidden"
+                            className={cn(
+                                "group flex flex-col md:flex-row bg-surface rounded-xl border border-outline shadow-sm hover:shadow-md transition-all overflow-hidden",
+                                "animate-in fade-in slide-in-from-right-4 fill-mode-both"
+                            )}
+                            style={{ animationDelay: `${index * 100}ms` }}
                         >
                             <div className="md:w-48 bg-surface-container-low p-6 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-outline-variant group-hover:bg-accent-container/30 transition-colors">
                                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-1">
@@ -131,6 +142,7 @@ export function InterviewsPage() {
                     ))}
                 </div>
             )}
+            </div>
         </PageContainer>
     );
 }

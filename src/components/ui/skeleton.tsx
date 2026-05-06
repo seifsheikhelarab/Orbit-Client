@@ -1,13 +1,13 @@
 import SkeletonBase from "react-loading-skeleton";
 import { cn } from "@/lib/utils";
 
-function Skeleton({ className, shimmer, ...props }: React.ComponentProps<typeof SkeletonBase> & { shimmer?: boolean }) {
+function Skeleton({ className, shimmer = true, ...props }: React.ComponentProps<typeof SkeletonBase> & { shimmer?: boolean }) {
   return (
     <SkeletonBase
       className={cn(
         "rounded-xl",
         shimmer 
-          ? "animate-shimmer bg-gradient-to-r from-surface-container-high via-surface-container to-surface-container-high bg-[length:200%_100%]"
+          ? "bg-surface-container relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent"
           : "bg-surface-container-high animate-pulse",
         className
       )}
