@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -13,8 +13,8 @@ import { QuickStatusSelect } from "@/components/shared/QuickStatusSelect"
 import type { Application } from "@/components/kanban/KanbanBoard"
 
 const applicationSchema = z.object({
-    company: z.string().min(1, "Company name is required").max(200),
-    jobTitle: z.string().min(1, "Job title is required").max(200),
+    company: z.string().trim().min(1, "Company name is required").max(200),
+    jobTitle: z.string().trim().min(1, "Job title is required").max(200),
     applicationStatus: z.enum(["SAVED", "APPLIED", "PHONE_SCREEN", "INTERVIEW", "OFFER", "CLOSED"]),
     jobURL: z.string().optional(),
     location: z.string().optional(),
@@ -50,6 +50,7 @@ export function ApplicationForm({
 
     const form = useForm<ApplicationFormValues>({
         resolver: zodResolver(applicationSchema),
+        mode: "onChange",
         defaultValues: {
             company: initialData?.company || "",
             jobTitle: initialData?.jobTitle || "",
@@ -120,20 +121,32 @@ export function ApplicationForm({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <Label htmlFor="company" required>Company</Label>
-                            <Input
-                                id="company"
-                                placeholder="Acme Corp"
-                                error={form.formState.errors.company?.message}
-                                {...form.register("company")}
+                            <Controller
+                                name="company"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Input
+                                        {...field}
+                                        id="company"
+                                        placeholder="Acme Corp"
+                                        error={fieldState.error?.message}
+                                    />
+                                )}
                             />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="jobTitle" required>Job Title</Label>
-                            <Input
-                                id="jobTitle"
-                                placeholder="Backend Engineer"
-                                error={form.formState.errors.jobTitle?.message}
-                                {...form.register("jobTitle")}
+                            <Controller
+                                name="jobTitle"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Input
+                                        {...field}
+                                        id="jobTitle"
+                                        placeholder="Backend Engineer"
+                                        error={fieldState.error?.message}
+                                    />
+                                )}
                             />
                         </div>
                     </div>
@@ -142,54 +155,96 @@ export function ApplicationForm({
                         <Label htmlFor="applicationStatus" required>Status</Label>
                         <QuickStatusSelect
                             value={form.watch("applicationStatus")}
-                            onChange={(status) => form.setValue("applicationStatus", status)}
+                            onChange={(status) => form.setValue("applicationStatus", status, { shouldDirty: true, shouldValidate: true })}
                         />
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="jobURL">Job URL</Label>
-                        <Input
-                            id="jobURL"
-                            type="url"
-                            placeholder="https://..."
-                            {...form.register("jobURL")}
+                        <Controller
+                            name="jobURL"
+                            control={form.control}
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    id="jobURL"
+                                    type="url"
+                                    placeholder="https://..."
+                                />
+                            )}
                         />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <Label htmlFor="location">Location</Label>
-                            <Input id="location" placeholder="Remote, New York, etc." {...form.register("location")} />
+                            <Controller
+                                name="location"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <Input {...field} id="location" placeholder="Remote, New York, etc." />
+                                )}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="appliedDate">Applied Date</Label>
-                            <Input id="appliedDate" type="date" {...form.register("appliedDate")} />
+                            <Controller
+                                name="appliedDate"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <Input {...field} id="appliedDate" type="date" />
+                                )}
+                            />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <Label htmlFor="salaryMin">Min Salary</Label>
-                            <Input id="salaryMin" type="number" placeholder="80000" {...form.register("salaryMin")} />
+                            <Controller
+                                name="salaryMin"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <Input {...field} id="salaryMin" type="number" placeholder="80000" />
+                                )}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="salaryMax">Max Salary</Label>
-                            <Input id="salaryMax" type="number" placeholder="120000" {...form.register("salaryMax")} />
+                            <Controller
+                                name="salaryMax"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <Input {...field} id="salaryMax" type="number" placeholder="120000" />
+                                )}
+                            />
                         </div>
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="source">Source</Label>
-                        <Input id="source" placeholder="LinkedIn, Indeed, Referral..." {...form.register("source")} />
+                        <Controller
+                            name="source"
+                            control={form.control}
+                            render={({ field }) => (
+                                <Input {...field} id="source" placeholder="LinkedIn, Indeed, Referral..." />
+                            )}
+                        />
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="notes">Notes</Label>
-                        <Textarea
-                            id="notes"
-                            rows={4}
-                            placeholder="Any context, referrals, or interview details..."
-                            {...form.register("notes")}
+                        <Controller
+                            name="notes"
+                            control={form.control}
+                            render={({ field }) => (
+                                <Textarea
+                                    {...field}
+                                    id="notes"
+                                    rows={4}
+                                    placeholder="Any context, referrals, or interview details..."
+                                />
+                            )}
                         />
                     </div>
 
@@ -203,11 +258,17 @@ export function ApplicationForm({
                             <div className="space-y-2">
                                 <Label htmlFor="followUpDate">Follow-up Date</Label>
                                 <div className="relative">
-                                    <Input id="followUpDate" type="date" {...form.register("followUpDate")} />
+                                    <Controller
+                                        name="followUpDate"
+                                        control={form.control}
+                                        render={({ field }) => (
+                                            <Input {...field} id="followUpDate" type="date" />
+                                        )}
+                                    />
                                     {form.watch("followUpDate") && (
                                         <button
                                             type="button"
-                                            onClick={() => form.setValue("followUpDate", "")}
+                                            onClick={() => form.setValue("followUpDate", "", { shouldDirty: true, shouldValidate: true })}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface"
                                         >
                                             <X className="w-4 h-4" />
@@ -217,7 +278,13 @@ export function ApplicationForm({
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="followUpNote">Note</Label>
-                                <Input id="followUpNote" placeholder="Ask about timeline..." {...form.register("followUpNote")} />
+                                <Controller
+                                    name="followUpNote"
+                                    control={form.control}
+                                    render={({ field }) => (
+                                        <Input {...field} id="followUpNote" placeholder="Ask about timeline..." />
+                                    )}
+                                />
                             </div>
                         </div>
 

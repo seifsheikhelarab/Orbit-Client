@@ -19,7 +19,6 @@ export const useUnreadCount = () => {
       const { data } = await api.get('/notifications/unread-count');
       return data.data;
     },
-    refetchInterval: 30000,
   });
 };
 

@@ -61,7 +61,7 @@ export default function ApplicationDetailPage() {
             <PageContainer maxWidth="xl">
                 <div className="flex flex-col items-center justify-center py-16">
                     <h2 className="text-xl text-error mb-4">Application not found</h2>
-                    <Button variant="ghost" onClick={() => navigate("/applications")}>
+                    <Button variant="ghost" onClick={() => navigate("/app/applications")}>
                         Return to applications
                     </Button>
                 </div>
@@ -75,27 +75,25 @@ export default function ApplicationDetailPage() {
         const payload: Record<string, unknown> = {
             company: data.company,
             jobTitle: data.jobTitle,
-            applicationStatus: data.applicationStatus
+            applicationStatus: data.applicationStatus,
+            jobURL: data.jobURL || "",
+            location: data.location || "",
+            salaryMin: data.salaryMin ? Number(data.salaryMin) : null,
+            salaryMax: data.salaryMax ? Number(data.salaryMax) : null,
+            appliedDate: data.appliedDate ? new Date(data.appliedDate).toISOString() : null,
+            notes: data.notes || "",
+            followUpDate: data.followUpDate ? new Date(data.followUpDate).toISOString() : null,
+            followUpNote: data.followUpNote || "",
+            source: data.source || ""
         };
 
-        if (data.jobURL) payload.jobURL = data.jobURL;
-        if (data.location) payload.location = data.location;
-        if (data.salaryMin) payload.salaryMin = Number(data.salaryMin);
-        if (data.salaryMax) payload.salaryMax = Number(data.salaryMax);
-        if (data.appliedDate)
-            payload.appliedDate = new Date(data.appliedDate).toISOString();
-        if (data.notes) payload.notes = data.notes;
-        if (data.followUpDate)
-            payload.followUpDate = new Date(data.followUpDate).toISOString();
-        if (data.followUpNote) payload.followUpNote = data.followUpNote;
-
         await updateApplication({ id: id!, data: payload });
-        navigate("/applications");
+        navigate("/app/applications");
     };
 
     const handleDelete = async () => {
         await deleteApplication(id!);
-        navigate("/applications");
+        navigate("/app/applications");
     };
 
     const handleDetachResume = async (attachmentId: string) => {

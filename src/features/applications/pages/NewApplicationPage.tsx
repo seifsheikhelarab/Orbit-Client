@@ -19,16 +19,17 @@ export default function NewApplicationPage() {
         const payload: Record<string, unknown> = {
             company: data.company,
             jobTitle: data.jobTitle,
-            applicationStatus: data.applicationStatus
+            applicationStatus: data.applicationStatus,
+            jobURL: data.jobURL || "",
+            location: data.location || "",
+            salaryMin: data.salaryMin ? Number(data.salaryMin) : null,
+            salaryMax: data.salaryMax ? Number(data.salaryMax) : null,
+            appliedDate: data.appliedDate ? new Date(data.appliedDate).toISOString() : null,
+            notes: data.notes || "",
+            followUpDate: data.followUpDate ? new Date(data.followUpDate).toISOString() : null,
+            followUpNote: data.followUpNote || "",
+            source: data.source || ""
         };
-
-        if (data.jobURL) payload.jobURL = data.jobURL;
-        if (data.location) payload.location = data.location;
-        if (data.salaryMin) payload.salaryMin = Number(data.salaryMin);
-        if (data.salaryMax) payload.salaryMax = Number(data.salaryMax);
-        if (data.appliedDate)
-            payload.appliedDate = new Date(data.appliedDate).toISOString();
-        if (data.notes) payload.notes = data.notes;
 
         await createApplication(payload);
         navigate("/app/applications");
