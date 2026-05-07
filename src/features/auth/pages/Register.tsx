@@ -1,5 +1,5 @@
-import { Eye, EyeOff, XCircle, AlertTriangle, ShieldCheck, Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Eye, EyeOff, XCircle, AlertTriangle, ShieldCheck, Loader2, Mail } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useMemo, useEffect } from 'react';
 import { signUp, signIn } from '@/lib/auth-client';
 import { Input } from '@/components/ui/input';
@@ -28,12 +28,14 @@ const t = (delay: string) => ({
 const tVisible = { opacity: 1, transform: 'translateY(0)' };
 
 export function Register() {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -47,7 +49,8 @@ export function Register() {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
-    const { error } = await signUp.email({
+    setSuccessMsg('');
+    const { error, data } = await signUp.email({
       email,
       password,
       name,
@@ -56,6 +59,10 @@ export function Register() {
     if (error) {
       setErrorMsg(error.message || 'Registration failed');
       setLoading(false);
+    } else if (data?.user) {
+      setLoading(false);
+      setSuccessMsg('Account created! Redirecting to dashboard...');
+      setTimeout(() => navigate('/app/dashboard'), 1500);
     }
   };
 
@@ -113,6 +120,14 @@ export function Register() {
             {errorMsg && (
               <div className="bg-error/10 text-error px-4 py-3 rounded-lg text-sm font-medium animate-slide-in-left">
                 {errorMsg}
+              </div>
+            )}
+
+            {/* Success Message */}
+            {successMsg && (
+              <div className="bg-accent/10 text-accent px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2 animate-slide-in-left">
+                <Mail className="w-4 h-4" />
+                {successMsg}
               </div>
             )}
 
@@ -186,7 +201,7 @@ export function Register() {
                       </div>
                     ))}
                   </div>
-                  <p className={`text-[11px] font-medium flex items-center gap-1 transition-colors duration-200 ${strength.color}`}>
+                  <p className={`text-label-sm font-medium flex items-center gap-1 transition-colors duration-200 ${strength.color}`}>
                     {strength.level <= 1 && <XCircle className="w-3 h-3" />}
                     {strength.level === 2 && <AlertTriangle className="w-3 h-3" />}
                     {strength.level >= 3 && <ShieldCheck className="w-3 h-3" />}

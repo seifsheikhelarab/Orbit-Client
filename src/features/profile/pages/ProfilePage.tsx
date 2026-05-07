@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { 
     Loader2, Save, User, Briefcase, GraduationCap, 
     Lightbulb, Plus, Trash2, Heart, Globe, Award, Sparkles,
-    ChevronRight, Layers
+    ChevronRight, ChevronDown, ChevronUp, Layers
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageContainer, PageHeader } from "@/components/ui";
@@ -19,6 +19,7 @@ export default function ProfilePage() {
     const updateProfile = useUpdateProfile();
     const [formData, setFormData] = useState<ResumeData>(defaultResumeData);
     const navigate = useNavigate();
+    const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
     useEffect(() => {
         if (profile?.content) {
@@ -35,9 +36,20 @@ export default function ProfilePage() {
         }
     };
 
+    const toggleCollapse = (key: string) => {
+        setCollapsed(prev => ({ ...prev, [key]: !prev[key] }));
+    };
+
+    const moveItem = (array: any[], from: number, to: number) => {
+        const result = [...array];
+        const [item] = result.splice(from, 1);
+        result.splice(to, 0, item);
+        return result;
+    };
+
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[400px] w-full animate-in fade-in duration-500">
+            <div className="flex flex-col items-center justify-center min-h-100 w-full animate-in fade-in duration-500">
                 <Loader2 className="size-10 animate-spin text-primary/20" />
             </div>
         );
@@ -71,7 +83,7 @@ export default function ProfilePage() {
                 <div className="lg:col-span-8 space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     {/* Basics Section */}
                     <Section title="Identity & Summary" icon={<User className="w-5 h-5" />} index={0}>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-surface-container-low/30 p-8 rounded-[32px] border border-outline-variant/10">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-surface-container-low/30 p-8 rounded-4xl border border-outline-variant/10">
                             <Field label="Full Name">
                                 <Input 
                                     value={formData.basics.name} 
@@ -126,14 +138,50 @@ export default function ProfilePage() {
                     {/* Experience Section */}
                     <Section title="Professional Trajectory" icon={<Briefcase className="w-5 h-5" />} index={1}>
                         <div className="space-y-6">
-                            {formData.work.map((exp, i) => (
-                                <div key={i} className="p-8 rounded-[32px] bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all hover:bg-surface-container-low/40 animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${i * 100}ms` }}>
-                                    <button 
-                                        onClick={() => setFormData({...formData, work: formData.work.filter((_, idx) => idx !== i)})}
-                                        className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
+                            {formData.work.map((exp, i) => {
+                                const isCollapsed = collapsed[`work-${i}`];
+                                return (
+                                <div key={i} className={`rounded-4xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all animate-in fade-in slide-in-from-left-4 duration-500 ${isCollapsed ? 'p-4' : 'p-8'}`} style={{ animationDelay: `${i * 100}ms` }}>
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <button 
+                                            onClick={() => toggleCollapse(`work-${i}`)}
+                                            className="p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant/40 hover:text-primary"
+                                            title={isCollapsed ? "Expand" : "Minimize"}
+                                        >
+                                            {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+                                        </button>
+                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button 
+                                                disabled={i === 0}
+                                                onClick={() => setFormData({...formData, work: moveItem(formData.work, i, i - 1)})}
+                                                className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                            >
+                                                <ChevronUp className="w-3.5 h-3.5" />
+                                            </button>
+                                            <button 
+                                                disabled={i === formData.work.length - 1}
+                                                onClick={() => setFormData({...formData, work: moveItem(formData.work, i, i + 1)})}
+                                                className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                            >
+                                                <ChevronDown className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            {isCollapsed ? (
+                                                <button onClick={() => toggleCollapse(`work-${i}`)} className="text-left w-full">
+                                                    <p className="text-sm font-bold text-on-surface truncate">{exp.position || "Add role"}</p>
+                                                    <p className="text-xs text-on-surface-variant truncate">{exp.company || "Add organization"}</p>
+                                                </button>
+                                            ) : null}
+                                        </div>
+                                        <button 
+                                            onClick={() => setFormData({...formData, work: formData.work.filter((_, idx) => idx !== i)})}
+                                            className="ml-auto opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    {!isCollapsed && (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                         <Field label="Organization"><Input value={exp.company} onChange={e => { const w = [...formData.work]; w[i] = {...w[i], company: e.target.value}; setFormData({...formData, work: w}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
                                         <Field label="Role Title"><Input value={exp.position} onChange={e => { const w = [...formData.work]; w[i] = {...w[i], position: e.target.value}; setFormData({...formData, work: w}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
@@ -143,11 +191,12 @@ export default function ProfilePage() {
                                             <Field label="Impact & Key Results" help="List your primary achievements. AI will use these to match job requirements."><Textarea rows={4} value={exp.highlights} onChange={e => { const w = [...formData.work]; w[i] = {...w[i], highlights: e.target.value}; setFormData({...formData, work: w}) }} className="bg-surface border-outline-variant/30 rounded-2xl resize-none" /></Field>
                                         </div>
                                     </div>
+                                    )}
                                 </div>
-                            ))}
+                            )})}
                             <Button 
                                 variant="outline" 
-                                className="w-full border-dashed border-outline-variant/40 py-10 rounded-[32px] text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
+                                className="w-full border-dashed border-outline-variant/40 py-10 rounded-4xl text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
                                 onClick={() => setFormData({...formData, work: [...formData.work, {company: "", position: "", startDate: "", endDate: "", highlights: ""}]})}
                             >
                                 <Plus className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" /> 
@@ -159,25 +208,46 @@ export default function ProfilePage() {
                     {/* Education Section */}
                     <Section title="Academic Foundation" icon={<GraduationCap className="w-5 h-5" />} index={2}>
                         <div className="space-y-6">
-                            {formData.education.map((edu, i) => (
-                                <div key={i} className="p-8 rounded-[32px] bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all hover:bg-surface-container-low/40 animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${i * 100}ms` }}>
-                                    <button 
-                                        onClick={() => setFormData({...formData, education: formData.education.filter((_, idx) => idx !== i)})}
-                                        className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
+                            {formData.education.map((edu, i) => {
+                                const isCollapsed = collapsed[`education-${i}`];
+                                return (
+                                <div key={i} className={`rounded-4xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all animate-in fade-in slide-in-from-left-4 duration-500 ${isCollapsed ? 'p-4' : 'p-8'}`} style={{ animationDelay: `${i * 100}ms` }}>
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <button 
+                                            onClick={() => toggleCollapse(`education-${i}`)}
+                                            className="p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant/40 hover:text-primary"
+                                        >
+                                            {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+                                        </button>
+                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button disabled={i === 0} onClick={() => setFormData({...formData, education: moveItem(formData.education, i, i - 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
+                                            <button disabled={i === formData.education.length - 1} onClick={() => setFormData({...formData, education: moveItem(formData.education, i, i + 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            {isCollapsed ? (
+                                                <button onClick={() => toggleCollapse(`education-${i}`)} className="text-left w-full">
+                                                    <p className="text-sm font-bold text-on-surface truncate">{edu.area || "Add field of study"}</p>
+                                                    <p className="text-xs text-on-surface-variant truncate">{edu.institution || "Add institution"}</p>
+                                                </button>
+                                            ) : null}
+                                        </div>
+                                        <button onClick={() => setFormData({...formData, education: formData.education.filter((_, idx) => idx !== i)})} className="ml-auto opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5">
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    {!isCollapsed && (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                         <Field label="Institution"><Input value={edu.institution} onChange={e => { const ed = [...formData.education]; ed[i] = {...ed[i], institution: e.target.value}; setFormData({...formData, education: ed}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
                                         <Field label="Study Type"><Input value={edu.studyType} placeholder="e.g. Bachelor's" onChange={e => { const ed = [...formData.education]; ed[i] = {...ed[i], studyType: e.target.value}; setFormData({...formData, education: ed}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
                                         <Field label="Area of Study"><Input value={edu.area} onChange={e => { const ed = [...formData.education]; ed[i] = {...ed[i], area: e.target.value}; setFormData({...formData, education: ed}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
                                         <Field label="Completion Date"><Input value={edu.endDate} onChange={e => { const ed = [...formData.education]; ed[i] = {...ed[i], endDate: e.target.value}; setFormData({...formData, education: ed}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
                                     </div>
+                                    )}
                                 </div>
-                            ))}
+                            )})}
                             <Button 
                                 variant="outline" 
-                                className="w-full border-dashed border-outline-variant/40 py-10 rounded-[32px] text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
+                                className="w-full border-dashed border-outline-variant/40 py-10 rounded-4xl text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
                                 onClick={() => setFormData({...formData, education: [...formData.education, {institution: "", studyType: "", area: "", startDate: "", endDate: "", score: ""}]})}
                             >
                                 <Plus className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" /> 
@@ -189,14 +259,33 @@ export default function ProfilePage() {
                     {/* Projects Section */}
                     <Section title="Key Initiatives & Projects" icon={<Layers className="w-5 h-5" />} index={3}>
                         <div className="space-y-6">
-                            {formData.projects.map((proj, i) => (
-                                <div key={i} className="p-8 rounded-[32px] bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all hover:bg-surface-container-low/40 animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${i * 100}ms` }}>
-                                    <button 
-                                        onClick={() => setFormData({...formData, projects: formData.projects.filter((_, idx) => idx !== i)})}
-                                        className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
+                            {formData.projects.map((proj, i) => {
+                                const isCollapsed = collapsed[`projects-${i}`];
+                                return (
+                                <div key={i} className={`rounded-4xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all animate-in fade-in slide-in-from-left-4 duration-500 ${isCollapsed ? 'p-4' : 'p-8'}`} style={{ animationDelay: `${i * 100}ms` }}>
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <button 
+                                            onClick={() => toggleCollapse(`projects-${i}`)}
+                                            className="p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant/40 hover:text-primary"
+                                        >
+                                            {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+                                        </button>
+                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button disabled={i === 0} onClick={() => setFormData({...formData, projects: moveItem(formData.projects, i, i - 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
+                                            <button disabled={i === formData.projects.length - 1} onClick={() => setFormData({...formData, projects: moveItem(formData.projects, i, i + 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            {isCollapsed ? (
+                                                <button onClick={() => toggleCollapse(`projects-${i}`)} className="text-left w-full">
+                                                    <p className="text-sm font-bold text-on-surface truncate">{proj.name || "Add project title"}</p>
+                                                </button>
+                                            ) : null}
+                                        </div>
+                                        <button onClick={() => setFormData({...formData, projects: formData.projects.filter((_, idx) => idx !== i)})} className="ml-auto opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5">
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    {!isCollapsed && (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                         <Field label="Project Title"><Input value={proj.name} onChange={e => { const p = [...formData.projects]; p[i] = {...p[i], name: e.target.value}; setFormData({...formData, projects: p}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
                                         <Field label="Source/Live URL"><Input value={proj.url} onChange={e => { const p = [...formData.projects]; p[i] = {...p[i], url: e.target.value}; setFormData({...formData, projects: p}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
@@ -204,11 +293,12 @@ export default function ProfilePage() {
                                             <Field label="Narrative Description" help="Explain the problem solved and your technical contribution."><Textarea rows={4} value={proj.highlights} onChange={e => { const p = [...formData.projects]; p[i] = {...p[i], highlights: e.target.value}; setFormData({...formData, projects: p}) }} className="bg-surface border-outline-variant/30 rounded-2xl resize-none" /></Field>
                                         </div>
                                     </div>
+                                    )}
                                 </div>
-                            ))}
+                            )})}
                             <Button 
                                 variant="outline" 
-                                className="w-full border-dashed border-outline-variant/40 py-10 rounded-[32px] text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
+                                className="w-full border-dashed border-outline-variant/40 py-10 rounded-4xl text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
                                 onClick={() => setFormData({...formData, projects: [...formData.projects, {name: "", description: "", highlights: "", url: "", startDate: "", endDate: ""}]})}
                             >
                                 <Plus className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" /> 
@@ -219,7 +309,7 @@ export default function ProfilePage() {
 
                     {/* Skills Section */}
                     <Section title="Expertise & Skills" icon={<Lightbulb className="w-5 h-5" />} index={4}>
-                        <div className="p-8 rounded-[32px] bg-surface-container-low/30 border border-outline-variant/10 space-y-8 relative overflow-hidden">
+                        <div className="p-8 rounded-4xl bg-surface-container-low/30 border border-outline-variant/10 space-y-8 relative overflow-hidden">
                              <div className="absolute top-0 right-0 p-8 opacity-[0.03] rotate-12">
                                 <Award className="size-32" />
                             </div>
@@ -391,7 +481,7 @@ export default function ProfilePage() {
                         </div>
                         
                         {/* Navigation Shortcut */}
-                        <div className="p-8 rounded-[32px] bg-surface-container-low border border-outline-variant/10 group cursor-pointer hover:border-primary/20 transition-all" onClick={() => navigate("/app/autocv")}>
+                        <div className="p-8 rounded-4xl bg-surface-container-low border border-outline-variant/10 group cursor-pointer hover:border-primary/20 transition-all" onClick={() => navigate("/app/autocv")}>
                             <div className="flex items-center justify-between mb-2">
                                 <div className="size-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
                                     <Sparkles className="size-5" />
