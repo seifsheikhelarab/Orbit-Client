@@ -24,9 +24,8 @@ export function BuilderPage() {
     const [coverLetterData, setCoverLetterData] = useState<CoverLetterContent>(defaultCoverLetterContent);
     const [settings, setSettings] = useState<ResumeSettings>(defaultResumeData.settings);
     
-    // Track the last saved state to avoid infinite loops and unnecessary saves
+    // Track the last saved state to avoid unnecessary saves
     const lastSavedRef = useRef<string>("");
-    const saveTimeoutRef = useRef<any>(null);
 
     const updateResume = useUpdateResume();
     const [isDownloading, setIsDownloading] = useState(false);
@@ -90,26 +89,6 @@ export function BuilderPage() {
             if (!skipToast) toast.error("Failed to save");
         }
     };
-
-    // Auto-save logic with debounce
-    useEffect(() => {
-        if (!document) return;
-        
-        const content = docType === "RESUME" ? { ...resumeData, settings } : coverLetterData;
-        const currentSettings = docType === "RESUME" ? settings : {};
-        const currentState = JSON.stringify({ name: newName, content, settings: currentSettings });
-        
-        if (currentState !== lastSavedRef.current) {
-            if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-            saveTimeoutRef.current = setTimeout(() => {
-                handleSave(true);
-            }, 1000); // 1 second debounce
-        }
-
-        return () => {
-            if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-        };
-    }, [resumeData, coverLetterData, settings, newName]);
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
@@ -469,19 +448,6 @@ export function BuilderPage() {
                                 Last updated: {new Date(document.updatedAt || Date.now()).toLocaleDateString()}
                             </span>
                             
-                            {/* Auto-save telemetry indicator */}
-                            {updateResume.isPending && (
-                                <div className="flex items-center gap-2 ml-2 animate-in fade-in duration-300">
-                                    <div className="size-1.5 rounded-full bg-accent animate-pulse" />
-                                    <span className="text-[10px] font-bold uppercase tracking-tighter text-accent">Syncing...</span>
-                                </div>
-                            )}
-                            {lastSavedRef.current && !updateResume.isPending && (
-                                <div className="flex items-center gap-2 ml-2 animate-in fade-in duration-500">
-                                    <div className="size-1.5 rounded-full bg-success/40" />
-                                    <span className="text-[10px] font-bold uppercase tracking-tighter text-success/40">Synced</span>
-                                </div>
-                            )}
                         </div>
                     </div>
                 </div>
