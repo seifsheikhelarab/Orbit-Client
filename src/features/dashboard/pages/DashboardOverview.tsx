@@ -86,7 +86,7 @@ export function DashboardOverview() {
       {isEmpty && (
         <div className="space-y-8 animate-in fade-in duration-500">
           {/* Welcome Card */}
-          <div className="p-8 rounded-3xl bg-linear-to-br from-primary/5 via-surface-container-low to-accent/5 border border-primary/10">
+          <div className="p-8 rounded-3xl bg-surface-container-low border border-outline-variant/10">
             <div className="flex items-start gap-5 max-w-2xl">
               <div className="size-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
                 <Sparkles className="size-7 text-primary" />
@@ -124,10 +124,10 @@ export function DashboardOverview() {
               { title: "Offer Rate", desc: "Percentage of offers" }
             ].map((stat, i) => (
               <div key={i} className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-30">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/40">{stat.title}</span>
+                <span className="text-label-sm font-bold text-on-surface-variant/60">{stat.title}</span>
                 <div>
                   <p className="text-3xl font-black text-on-surface/20 font-headline tracking-tight leading-none mb-1">--</p>
-                  <p className="text-[10px] text-on-surface-variant/30">{stat.desc}</p>
+                  <p className="text-label-sm text-on-surface-variant/40">{stat.desc}</p>
                 </div>
               </div>
             ))}
@@ -140,14 +140,14 @@ export function DashboardOverview() {
                 <TrendingUp className="size-8 text-primary/30" />
               </div>
               <p className="text-label-sm font-bold text-on-surface-variant/40 mb-1">Pipeline Funnel</p>
-              <p className="text-[10px] text-on-surface-variant/30">Charts will appear when you add applications</p>
+              <p className="text-label-sm text-on-surface-variant/40">Charts will appear when you add applications</p>
             </div>
             <div className="xl:col-span-2 p-8 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col items-center justify-center min-h-60">
               <div className="size-16 rounded-2xl bg-accent/5 flex items-center justify-center mb-4">
                 <Sparkles className="size-8 text-accent/30" />
               </div>
               <p className="text-label-sm font-bold text-on-surface-variant/40 mb-1">Application Flow</p>
-              <p className="text-[10px] text-on-surface-variant/30">Visualization will appear when you add applications</p>
+              <p className="text-label-sm text-on-surface-variant/40">Visualization will appear when you add applications</p>
             </div>
           </div>
         </div>
@@ -177,7 +177,7 @@ export function DashboardOverview() {
           </div>
 
           {/* Pipeline Visualization */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 fill-mode-both">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-500 delay-150 fill-mode-both">
             <PipelineFunnelChart dateRange={dateRange} />
             <div className="xl:col-span-2">
               <SankeyChart />
@@ -185,7 +185,7 @@ export function DashboardOverview() {
           </div>
 
           {/* Secondary Insights */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-700 fill-mode-both">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-500 delay-200 fill-mode-both">
             <div className="lg:col-span-3">
               <ApplicationsOverTime dateRange={dateRange} />
             </div>
@@ -219,25 +219,25 @@ const StatCard = memo(function StatCard({
   const isPercentage = value.includes('%');
   
   const animatedValue = useAnimatedCounter(numericValue, {
-    delay: (index || 0) * 100 + 400,
-    duration: 1500
+    delay: (index || 0) * 50 + 50,
+    duration: 500
   });
 
   return (
     <div
-      className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-30 transition-all hover:bg-surface-container hover:shadow-xl hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
-      style={{ animationDelay: `${index ? index * 100 : 0}ms` }}
+      className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-30 transition-all hover:bg-surface-container hover:shadow-xl hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4 duration-300 fill-mode-both"
+      style={{ animationDelay: `${index ? index * 50 : 0}ms` }}
     >
       <div className="flex justify-between items-start">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/60">{title}</span>
+        <span className="text-label-sm font-bold text-on-surface-variant/60">{title}</span>
         {direction !== 'neutral' && (
-          <div className={`flex items-center gap-1 ${direction === 'up' ? 'text-success' : 'text-error'} animate-in fade-in zoom-in duration-500`} style={{ animationDelay: `${(index || 0) * 100 + 1000}ms` }}>
+          <div className={`flex items-center gap-1 ${direction === 'up' ? 'text-success' : 'text-error'} animate-in fade-in zoom-in duration-300`} style={{ animationDelay: `${(index || 0) * 50 + 200}ms` }}>
             {direction === 'up' ? (
               <TrendingUp className="w-3 h-3" />
             ) : (
               <TrendingDown className="w-3 h-3" />
             )}
-            <span className="text-[10px] font-bold">{trend}%</span>
+            <span className="text-label-sm font-bold">{trend}%</span>
           </div>
         )}
       </div>
@@ -291,23 +291,23 @@ const ApplicationsOverTime = memo(function ApplicationsOverTime({ dateRange }: {
   return (
     <div
       onClick={() => navigate('/app/applications')}
-      className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 cursor-pointer hover:bg-surface-container transition-all group animate-in fade-in slide-in-from-left-4 duration-1000 fill-mode-both"
+      className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 cursor-pointer hover:bg-surface-container transition-all group animate-in fade-in slide-in-from-left-4 duration-500 fill-mode-both"
     >
       <div className="flex items-center gap-2 mb-6">
-        <h3 className="text-label-sm font-bold text-on-surface uppercase tracking-wider">Activity</h3>
+        <h3 className="text-title-sm font-bold text-on-surface">Activity</h3>
       </div>
 
       <div className="flex items-end justify-between gap-1.5 h-40">
         {overTime?.map((bar: any, i: number) => (
           <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-2 group/bar">
             <div
-              className="w-full max-w-6 bg-primary/20 rounded-t-md transition-all duration-700 group-hover/bar:bg-primary/40 animate-in fade-in slide-in-from-bottom-full fill-mode-both"
+              className="w-full max-w-6 bg-primary/20 rounded-t-md transition-all duration-300 group-hover/bar:bg-primary/40 animate-in fade-in slide-in-from-bottom-full fill-mode-both"
               style={{
                 height: `${(bar.count / maxCount) * 100}%`,
-                animationDelay: `${i * 30 + 800}ms`
+                animationDelay: `${i * 30 + 150}ms`
               }}
             />
-            <span className="text-[8px] font-bold text-on-surface-variant/40 uppercase tracking-tight whitespace-nowrap overflow-hidden text-ellipsis w-full text-center min-h-3">
+            <span className="text-label-sm font-bold text-on-surface-variant/40 whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
               {shouldShowLabel(i, overTime.length) ? formatDate(bar.period) : ""}
             </span>
           </div>
@@ -323,23 +323,23 @@ const RecentActivity = memo(function RecentActivity() {
   if (isLoading) return <Skeleton className="h-60 rounded-2xl bg-surface-container-low" />;
 
   return (
-    <div className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 animate-in fade-in slide-in-from-right-4 duration-1000 fill-mode-both">
+    <div className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 animate-in fade-in slide-in-from-right-4 duration-500 fill-mode-both">
       <div className="flex items-center gap-2 mb-6">
-        <h3 className="text-label-sm font-bold text-on-surface uppercase tracking-wider">Activity</h3>
+        <h3 className="text-title-sm font-bold text-on-surface">Activity</h3>
       </div>
 
       <div className="space-y-1">
         {recent?.slice(0, 5).map((item: any, i: number) => (
           <div
             key={i}
-            className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-surface-container transition-colors group animate-in fade-in slide-in-from-right-2 duration-500 fill-mode-both"
-            style={{ animationDelay: `${i * 100 + 1000}ms` }}
+            className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-surface-container transition-colors group animate-in fade-in slide-in-from-right-2 duration-300 fill-mode-both"
+            style={{ animationDelay: `${i * 50 + 200}ms` }}
           >
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold text-on-surface truncate group-hover:text-primary transition-colors">{item.company}</p>
-              <p className="text-[9px] text-on-surface-variant uppercase tracking-wider">{item.toStatus}</p>
+              <p className="text-label-sm text-on-surface-variant">{item.toStatus}</p>
             </div>
-            <span className="text-[9px] text-on-surface-variant/30 font-medium whitespace-nowrap ml-4">
+            <span className="text-label-sm text-on-surface-variant/30 font-medium whitespace-nowrap ml-4">
               {new Date(item.changedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
             </span>
           </div>

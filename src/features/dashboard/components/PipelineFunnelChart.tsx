@@ -1,6 +1,7 @@
 import { usePipelineFunnel } from '../api/useAnalytics';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Funnel, FunnelChart, Tooltip, ResponsiveContainer, Cell, LabelList } from "recharts";
+import { STATUS_DASHBOARD_COLORS } from '@/lib/status';
 
 export function PipelineFunnelChart({ dateRange }: { dateRange: string }) {
   const { data, isLoading } = usePipelineFunnel(dateRange);
@@ -17,11 +18,11 @@ export function PipelineFunnelChart({ dateRange }: { dateRange: string }) {
   }));
 
   return (
-       <div className="p-8 rounded-2xl bg-surface-container-low border border-outline-variant/10 group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 fill-mode-both hover:shadow-2xl transition-all">
+       <div className="p-8 rounded-2xl bg-surface-container-low border border-outline-variant/10 group animate-in fade-in slide-in-from-bottom-8 duration-500 delay-150 fill-mode-both">
       <div className="flex items-center justify-between mb-8">
-        <h3 className="text-label-sm font-bold text-on-surface uppercase tracking-wider">Pipeline Funnel</h3>
+        <h3 className="text-label-sm font-bold text-on-surface">Pipeline Funnel</h3>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/40">Efficiency</span>
+          <span className="text-label-sm text-on-surface-variant/40">Efficiency</span>
         </div>
       </div>
       
@@ -34,9 +35,9 @@ export function PipelineFunnelChart({ dateRange }: { dateRange: string }) {
               contentStyle={{
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(8px)',
-                border: '1px solid #dcbed1',
+                border: '1px solid var(--color-outline)',
                 borderRadius: '12px',
-                fontSize: '10px',
+                fontSize: '11px',
                 fontWeight: '700',
                 textTransform: 'uppercase',
                 padding: '8px 12px',
@@ -46,17 +47,17 @@ export function PipelineFunnelChart({ dateRange }: { dateRange: string }) {
             <Funnel
               data={chartData}
               dataKey="value"
-              animationDuration={1500}
-              animationBegin={500}
+              animationDuration={300}
+              animationBegin={150}
             >
               <LabelList 
                 position="bottom" 
-                fill="#56404f" 
+                fill="#4b5563" 
                 stroke="none" 
                 dataKey="name" 
-                fontSize={10}
+                fontSize={11}
                 fontWeight={800}
-                className="uppercase tracking-wider"
+                className="uppercase"
               />
               {chartData.map((entry: any, index: number) => (
                 <Cell 
@@ -75,13 +76,5 @@ export function PipelineFunnelChart({ dateRange }: { dateRange: string }) {
 }
 
 function getStatusColor(status: string) {
-  const colors: Record<string, string> = {
-    'APPLIED': '#a8009a',
-    'PHONE_SCREEN': '#9c318d',
-    'INTERVIEW': '#5c6000',
-    'OFFER': '#0f766e',
-    'CLOSED': '#56404f',
-    'SAVED': '#dcbed1'
-  };
-  return colors[status] || '#1a1a2e';
+  return STATUS_DASHBOARD_COLORS[status as keyof typeof STATUS_DASHBOARD_COLORS] || '#1a1a2e';
 }

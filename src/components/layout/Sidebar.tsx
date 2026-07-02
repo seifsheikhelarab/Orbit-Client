@@ -43,9 +43,7 @@ function NavItem({ item, index }: { item: typeof NAV_ITEMS[0], index: number }) 
             "text-sm tracking-wide transition-all duration-200",
             isActive ? "translate-x-1" : "group-hover:translate-x-1"
           )}>{item.name}</span>
-           {isActive && (
-             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-accent rounded-r-full animate-slide-in-left" />
-           )}
+           {isActive && null}
         </>
       )}
     </NavLink>
@@ -65,11 +63,8 @@ export function Sidebar() {
         ? "translate-x-0 opacity-100"
         : "max-md:-translate-x-full max-md:opacity-0 max-md:pointer-events-none"
     )}>
-      {/* Editorial Grid Decor */}
-       <div className="absolute inset-0 opacity-[0.02] pointer-events-none select-none overflow-hidden" aria-hidden="true">
-         <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: 'linear-gradient(to right, var(--color-on-primary) 1px, transparent 1px), linear-gradient(to bottom, var(--color-on-primary) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-       </div>
 
+       
       <nav className="flex flex-col gap-2 flex-1 relative z-10">
         {NAV_ITEMS.map((item, index) => (
           <NavItem key={item.name} item={item} index={index} />

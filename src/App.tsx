@@ -34,30 +34,9 @@ function KeyboardShortcuts() {
 
 function LoadingFallback() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-100 w-full animate-in fade-in duration-500">
-      <div className="relative size-16 mb-8">
-        {/* Animated geometric dossier grid */}
-        <div className="absolute inset-0 grid grid-cols-2 gap-1.5 rotate-45 animate-pulse">
-          <div className="bg-primary/20 rounded-sm animate-in fade-in zoom-in duration-700 delay-100" />
-          <div className="bg-primary/40 rounded-sm animate-in fade-in zoom-in duration-700 delay-200" />
-          <div className="bg-primary/60 rounded-sm animate-in fade-in zoom-in duration-700 delay-300" />
-          <div className="bg-primary rounded-sm animate-in fade-in zoom-in duration-700 delay-400" />
-        </div>
-        
-        {/* Scanning telemetry line */}
-        <div className="absolute top-0 left-0 w-full h-px bg-primary/40 -translate-y-4 animate-[scan_2s_ease-in-out_infinite]" />
-      </div>
-      
-      <div className="space-y-2 text-center">
-        <p className="font-headline font-bold text-label-lg tracking-widest uppercase text-primary/80 animate-pulse">
-          Decrypting Dossiers
-        </p>
-        <div className="flex items-center justify-center gap-1">
-          <span className="size-1 rounded-full bg-primary/20 animate-bounce [animation-delay:-0.3s]" />
-          <span className="size-1 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
-          <span className="size-1 rounded-full bg-primary/60 animate-bounce" />
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-100 w-full animate-in fade-in duration-300">
+      <div className="size-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin mb-6" />
+      <p className="font-headline font-semibold text-sm text-primary/60">Loading Orbit...</p>
     </div>
   );
 }

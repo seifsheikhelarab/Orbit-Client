@@ -11,15 +11,12 @@ export function useAnimatedCounter(
   target: number,
   { duration = 1200, delay = 0, decimals = 0, enabled = true }: UseAnimatedCounterOptions = {}
 ) {
-  const [displayValue, setDisplayValue] = useState(0);
+  const [displayValue, setDisplayValue] = useState(enabled ? 0 : target);
   const frameRef = useRef<number | undefined>(undefined);
   const startTimeRef = useRef<number>(0);
 
   useEffect(() => {
-    if (!enabled) {
-      setDisplayValue(target);
-      return;
-    }
+    if (!enabled) return;
 
     const startDelay = setTimeout(() => {
       startTimeRef.current = performance.now();

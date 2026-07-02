@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { buildPipelineSankeyData } from './sankeyData';
+import { buildPipelineSankeyData } from './SankeyChart';
 
 describe('buildPipelineSankeyData', () => {
   it('keeps only forward pipeline links and aggregates duplicates', () => {

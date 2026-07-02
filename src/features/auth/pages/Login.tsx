@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { signIn } from '@/lib/auth-client';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const t = (delay: string) => ({
   opacity: 0,
@@ -64,20 +65,21 @@ export function Login() {
           </div>
 
           {/* Google Login Action */}
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={handleGoogle}
-            className="w-full flex items-center justify-center gap-3 bg-surface border border-outline-variant hover:bg-surface-container-low hover:shadow-md transition-all duration-200 py-3 px-4 rounded-lg font-medium text-on-surface-variant cursor-pointer active:scale-[0.98]"
+            className="w-full text-on-surface-variant border-outline-variant"
             style={mounted ? tVisible : t('0.12s')}
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.65l-3.57-2.77c-.99.66-2.26 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
               <path d="M5.84 14.11c-.22-.66-.35-1.36-.35-2.11s.13-1.45.35-2.11V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.83z" fill="#FBBC05"></path>
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
             </svg>
-            <span>Login with Google</span>
-          </button>
+            Login with Google
+          </Button>
 
           {/* Divider */}
           <div className="relative my-8" style={mounted ? tVisible : t('0.16s')}>
@@ -146,14 +148,11 @@ export function Login() {
             </div>
 
             {/* Submit Button */}
-            <button
+            <Button
               disabled={loading}
               type="submit"
-              className={`w-full font-bold py-4 px-6 rounded-lg shadow-lg shadow-primary/20 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${
-                loading
-                  ? 'bg-primary/70 text-on-primary/70 cursor-wait'
-                  : 'bg-primary hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 active:scale-[0.98] text-on-primary'
-              }`}
+              className="w-full shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
+              size="lg"
               style={mounted ? tVisible : t('0.35s')}
             >
               {loading ? (
@@ -164,7 +163,7 @@ export function Login() {
               ) : (
                 'Sign In'
               )}
-            </button>
+            </Button>
           </form>
 
           {/* Footer Link */}

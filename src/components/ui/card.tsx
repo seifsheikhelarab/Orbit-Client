@@ -14,7 +14,7 @@ function Card({
       data-size={size}
       data-variant={variant}
       className={cn(
-        "flex flex-col gap-6 overflow-hidden rounded-[2rem] border border-outline/50 bg-surface-container-low/50 p-8 shadow-sm transition-all duration-300 ease-out-quart",
+        "flex flex-col gap-6 overflow-hidden rounded-2xl border border-outline/50 bg-surface-container-low/50 p-8 transition-all duration-300 ease-out-quart",
          variant === "glass" && "bg-surface/60 backdrop-blur-xl border-on-surface/20 shadow-xl",
          variant === "elevated" && "border-none bg-surface shadow-2xl shadow-primary/5",
         variant === "outline" && "border border-outline bg-transparent shadow-none p-6",

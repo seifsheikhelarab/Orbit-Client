@@ -25,7 +25,7 @@ function PageHeader({
     <div className={cn("flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10", className)}>
       <div className={cn("flex items-center gap-5", fullWidth ? "" : "max-w-2xl")}>
         {Icon && (
-          <div className={cn("p-4 rounded-xl shadow-sm shrink-0 transition-transform duration-150 hover:scale-105", iconColor)}>
+          <div className={cn("p-4 rounded-xl shrink-0", iconColor)}>
             <Icon className="w-6 h-6" />
           </div>
         )}
