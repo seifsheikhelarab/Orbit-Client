@@ -1,16 +1,22 @@
-import SkeletonBase from "react-loading-skeleton";
 import { cn } from "@/lib/utils";
 
-function Skeleton({ className, shimmer = true, ...props }: React.ComponentProps<typeof SkeletonBase> & { shimmer?: boolean }) {
+/**
+ * Skeleton loading placeholder using pure CSS.
+ * Replaces react-loading-skeleton to reduce bundle size.
+ * Uses the shimmer animation defined in index.css.
+ */
+function Skeleton({ className, shimmer = true, style, ...props }: { className?: string; shimmer?: boolean; style?: React.CSSProperties; [key: string]: any }) {
   return (
-    <SkeletonBase
+    <div
       className={cn(
         "rounded-xl",
-        shimmer 
-          ? "bg-surface-container relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent"
+        shimmer
+          ? "bg-surface-container relative overflow-hidden skeleton-shimmer"
           : "bg-surface-container-high animate-pulse",
         className
       )}
+      style={{ height: style?.height || '1em', width: style?.width || '100%', ...style }}
+      aria-hidden="true"
       {...props}
     />
   )

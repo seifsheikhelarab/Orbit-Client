@@ -1,4 +1,4 @@
-import { LayoutDashboard, Briefcase, Calendar, FileText, Settings, UserCircle, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Briefcase, Calendar, FileText, Settings, UserCircle, Sparkles, HelpCircle } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/hooks/useUIStore';
@@ -22,12 +22,12 @@ function NavItem({ item, index }: { item: typeof NAV_ITEMS[0], index: number }) 
   return (
     <NavLink
       to={item.path}
-      className={({ isActive }) =>
+        className={({ isActive }) =>
         cn(
           'flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-200 ease-out-quart cursor-pointer font-headline relative group',
           'animate-in slide-in-from-left-4 fade-in duration-300',
           isActive
-            ? 'bg-on-primary/10 text-on-primary font-semibold shadow-xl shadow-inverse-surface/10'
+            ? 'bg-dossier/10 text-on-primary font-semibold shadow-xl shadow-dossier/5'
             : 'text-on-primary/60 hover:bg-on-primary/5 hover:text-on-primary font-medium'
         )
       }
@@ -35,15 +35,15 @@ function NavItem({ item, index }: { item: typeof NAV_ITEMS[0], index: number }) 
     >
       {({ isActive }) => (
         <>
+          {isActive && <div className="nav-dossier-glow absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-8 bg-dossier rounded-r shadow-[0_0_6px_rgba(217,119,6,0.4)]" />}
           <Icon className={cn(
             "size-5 shrink-0 transition-all duration-200 ease-out-quart",
-            isActive && "text-accent scale-110"
+            isActive && "text-dossier scale-110"
           )} />
           <span className={cn(
             "text-sm tracking-wide transition-all duration-200",
             isActive ? "translate-x-1" : "group-hover:translate-x-1"
           )}>{item.name}</span>
-           {isActive && null}
         </>
       )}
     </NavLink>
@@ -63,9 +63,16 @@ export function Sidebar() {
         ? "translate-x-0 opacity-100"
         : "max-md:-translate-x-full max-md:opacity-0 max-md:pointer-events-none"
     )}>
+      {/* Dossier scanline decoration */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(217, 119, 6, 0.5) 40px, rgba(217, 119, 6, 0.5) 41px)`
+        }} />
+      </div>
+      <div className="absolute top-1/3 right-0 w-32 h-32 bg-dossier/5 rounded-full blur-3xl pointer-events-none" />
 
-       
-      <nav className="flex flex-col gap-2 flex-1 relative z-10">
+
+      <nav className="flex flex-col gap-2 flex-1 relative z-10 mt-4">
         {NAV_ITEMS.map((item, index) => (
           <NavItem key={item.name} item={item} index={index} />
         ))}
@@ -77,6 +84,13 @@ export function Sidebar() {
             <NavItem key={item.name} item={item} index={NAV_ITEMS.length + index} />
           ))}
         </nav>
+        <button
+          className="flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-200 ease-out-quart text-on-primary/40 hover:text-on-primary/70 hover:bg-on-primary/5 font-medium text-sm tracking-wide w-full"
+          onClick={() => window.open(`${import.meta.env.BASE_URL}/docs`, '_blank')}
+        >
+          <HelpCircle className="size-4 shrink-0" />
+          <span>Documentation</span>
+        </button>
       </div>
     </aside>
   );

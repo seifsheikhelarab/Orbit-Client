@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Loader2, Save, Trash2, ArrowLeft, Calendar, X } from "lucide-react"
-import { motion } from "framer-motion"
-
 import { Button } from "@/components/ui/button"
 import { Input, Textarea, Label } from "@/components/ui"
 import { Card } from "@/components/ui/card"
@@ -84,12 +82,7 @@ export function ApplicationForm({
     }, [isDirty]);
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="max-w-2xl mx-auto"
-        >
+        <div className="max-w-2xl mx-auto animate-page-enter">
             <div className="flex items-center justify-between mb-8 border-b border-outline pb-4">
                 <Button
                     variant="outline"
@@ -311,6 +304,6 @@ export function ApplicationForm({
                     </Button>
                 </form>
             </Card>
-        </motion.div>
+        </div>
     )
 }

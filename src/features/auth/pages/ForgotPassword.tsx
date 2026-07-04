@@ -28,7 +28,7 @@ export function ForgotPassword() {
 
   if (sent) {
     return (
-      <main className="grow flex items-center justify-center px-4 py-12 min-h-screen">
+      <main className="grow flex items-center justify-center px-4 py-12 min-h-screen animate-page-enter">
         <div className="w-full max-w-md text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-success/10 rounded-full mb-6">
             <CheckCircle className="w-8 h-8 text-success" />
@@ -49,7 +49,7 @@ export function ForgotPassword() {
   }
 
   return (
-    <main className="grow flex items-center justify-center px-4 py-12 min-h-screen">
+    <main className="grow flex items-center justify-center px-4 py-12 min-h-screen animate-page-enter">
       <div className="relative w-full max-w-md">
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl opacity-50"></div>
         

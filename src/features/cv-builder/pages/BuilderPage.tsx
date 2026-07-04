@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, ArrowLeft, Save, Download, Eye, Edit2, User, Briefcase, GraduationCap, Lightbulb, Mail, ChevronDown, Plus, Trash2, Settings2, Award, Heart, Globe } from "lucide-react";
+import { Loader2, ArrowLeft, Save, Download, Eye, User, Briefcase, GraduationCap, Lightbulb, Mail, ChevronDown, Plus, Trash2, Settings2, Award, Heart, Globe, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { pdf } from "@react-pdf/renderer";
 import { PreviewBuffer } from "../components/PreviewBuffer";
@@ -158,12 +158,12 @@ export function BuilderPage() {
                         options={["modern", "professional", "minimal"]}
                         onChange={(template) => setSettings((prev) => ({ ...prev, template: template as ResumeSettings["template"] }))}
                     />
-                    <div className="space-y-4 bg-surface-container-low/50 p-6 rounded-3xl border border-outline/30">
-                        <Label className="text-[11px] uppercase tracking-widest font-bold text-primary/60">Accent color</Label>
+                    <div className="space-y-4 bg-surface-container-low/50 p-6 rounded-2xl border border-outline/30">
+                        <Label className="text-xs font-bold uppercase tracking-wider text-primary/60">Accent color</Label>
                         <p className="text-xs text-on-surface-variant/70 italic">Used for headers, dividers, links, and emphasis in the PDF.</p>
                         <div className="flex gap-4 items-center mt-2">
                             <div 
-                                className="w-14 h-14 rounded-2xl border-4 border-surface shadow-lg ring-1 ring-outline/20 shrink-0 transition-transform hover:scale-105"
+                                className="w-14 h-14 rounded-2xl border-4 border-surface ring-1 ring-outline/20 shrink-0 transition-transform hover:scale-105"
                                 style={{ backgroundColor: settings.color || "#1e3a8a" }}
                             />
                             <div className="relative flex-1">
@@ -401,93 +401,77 @@ export function BuilderPage() {
                 </div>
             </CollapsibleSection>
         </main>
-    );
-
-    return (
+    );    return (
         <div className="min-h-screen pt-[64px] flex flex-col bg-surface">
-            <div className="h-20 border-b border-outline/50 bg-surface/80 backdrop-blur-xl flex items-center justify-between px-8 shrink-0 z-20">
-                <div className="flex items-center gap-6">
+            <div className="h-16 border-b border-outline/50 bg-surface/80 backdrop-blur-xl flex items-center justify-between px-6 shrink-0 z-20">
+                <div className="flex items-center gap-4 min-w-0">
                     <Button 
                         variant="ghost" 
                         size="icon" 
                         onClick={() => navigate("/app/resumes")}
-                        className="rounded-full hover:bg-primary/5 hover:text-primary transition-all duration-300"
+                        className="rounded-full shrink-0"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
-                    <div className="h-8 w-px bg-gradient-to-b from-transparent via-outline to-transparent" />
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-3 group">
-                            {isEditingName ? (
-                                <input 
-                                    autoFocus 
-                                    type="text" 
-                                    value={newName} 
-                                    onChange={(e) => setNewName(e.target.value)} 
-                                    onBlur={() => { if (!newName.trim()) setNewName(document.name); setIsEditingName(false); }} 
-                                    onKeyDown={(e) => { if (e.key === "Enter") handleSave(); if (e.key === "Escape") { setNewName(document.name); setIsEditingName(false); } }} 
-                                    className="bg-transparent border-b-2 border-primary outline-none font-bold text-xl px-1 py-0.5 text-on-surface w-64" 
-                                />
-                            ) : (
-                                <>
-                                    <h1 className="font-bold text-xl tracking-tight text-on-surface group-hover:text-primary transition-colors cursor-pointer" onClick={() => setIsEditingName(true)}>
-                                        {newName || document.name}
-                                    </h1>
-                                    <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 rounded-full" onClick={() => setIsEditingName(true)}>
-                                        <Edit2 className="w-3 h-3" />
-                                    </Button>
-                                </>
-                            )}
-                        </div>
-                        <div className="flex items-center gap-2 mt-0.5">
-                            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-primary/5 text-[10px] font-bold uppercase tracking-wider text-primary border border-primary/10">
-                                <div className={`w-1 h-1 rounded-full ${docType === "COVER_LETTER" ? "bg-amber-500" : "bg-primary"}`} />
-                                {docType === "COVER_LETTER" ? "Cover Letter" : "Resume"}
-                            </span>
-                            <span className="text-[10px] font-medium text-on-surface-variant/40 italic">
-                                Last updated: {new Date(document.updatedAt || Date.now()).toLocaleDateString()}
-                            </span>
-                            
-                        </div>
+                    <div className="h-6 w-px bg-outline/50 shrink-0" />
+                    <div className="flex items-center gap-3 min-w-0">
+                        {isEditingName ? (
+                            <input 
+                                autoFocus 
+                                type="text" 
+                                value={newName} 
+                                onChange={(e) => setNewName(e.target.value)} 
+                                onBlur={() => { if (!newName.trim()) setNewName(document.name); setIsEditingName(false); }} 
+                                onKeyDown={(e) => { if (e.key === "Enter") handleSave(); if (e.key === "Escape") { setNewName(document.name); setIsEditingName(false); } }} 
+                                className="bg-transparent border-b-2 border-primary outline-none font-bold text-lg px-1 py-0.5 text-on-surface" 
+                            />
+                        ) : (
+                            <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setIsEditingName(true)}>
+                                <h1 className="font-bold text-lg tracking-tight text-on-surface truncate max-w-48 group-hover:text-primary transition-colors">
+                                    {newName || document.name}
+                                </h1>
+                                <Pencil className="size-3.5 text-on-surface-variant/40 group-hover:text-primary transition-colors shrink-0" />
+                            </div>
+                        )}
+                        <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-primary/5 text-label-sm font-bold uppercase tracking-wider text-primary border border-primary/10 shrink-0">
+                            <div className={`w-1 h-1 rounded-full ${docType === "COVER_LETTER" ? "bg-amber-500" : "bg-primary"}`} />
+                            {docType === "COVER_LETTER" ? "Cover Letter" : "Resume"}
+                        </span>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 shrink-0">
                     <Button 
                         variant="outline" 
                         size="icon" 
-                        onClick={() => setIsPreviewOpen(true)} 
-                        className="h-11 w-11 lg:hidden rounded-2xl"
+                        className="h-9 w-9 lg:hidden"
+                        onClick={() => setIsPreviewOpen(true)}
                     >
                         <Eye className="w-4 h-4" />
                     </Button>
-                    <div className="hidden sm:flex items-center gap-2 bg-surface-container-low/50 p-1 rounded-2xl border border-outline/30">
-                        <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={handleDownloadPdf} 
-                            disabled={isDownloading}
-                            className="rounded-xl font-bold text-xs h-9 px-4 hover:bg-surface hover:shadow-sm transition-all"
-                        >
-                            {isDownloading ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <Download className="w-3.5 h-3.5 mr-2" />}
-                            Export PDF
-                        </Button>
-                        <Button 
-                            size="sm" 
-                            onClick={() => handleSave()} 
-                            disabled={updateResume.isPending}
-                            className="rounded-xl font-bold text-xs h-9 px-6 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
-                        >
-                            {updateResume.isPending ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <Save className="w-3.5 h-3.5 mr-2" />}
-                            Save
-                        </Button>
-                    </div>
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={handleDownloadPdf} 
+                        disabled={isDownloading}
+                    >
+                        {isDownloading ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Download className="w-3.5 h-3.5 mr-1.5" />}
+                        Export
+                    </Button>
+                    <Button 
+                        size="sm" 
+                        onClick={() => handleSave()} 
+                        disabled={updateResume.isPending}
+                    >
+                        {updateResume.isPending ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Save className="w-3.5 h-3.5 mr-1.5" />}
+                        Save
+                    </Button>
                 </div>
             </div>
 
             <div className="flex-1 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
                 {docType === "COVER_LETTER" ? coverLetterForm : resumeForm}
-                <div className="hidden lg:flex lg:col-span-8 overflow-hidden bg-surface-container-low/30 justify-center items-start p-12 relative">
-                    <div className="w-full h-full max-w-[900px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] rounded-sm overflow-hidden ring-1 ring-outline/50">
+                <div className="hidden lg:flex lg:col-span-8 overflow-hidden bg-surface-container-low justify-center items-start p-8 relative">
+                    <div className="w-full h-full max-w-[900px] shadow-lg rounded-sm overflow-hidden ring-1 ring-outline/50">
                         <PreviewBuffer
                             document={document}
                             docType={docType}
@@ -495,16 +479,6 @@ export function BuilderPage() {
                             coverLetterData={coverLetterData}
                             settings={settings}
                         />
-                    </div>
-                    <div className="absolute bottom-12 right-12">
-                        <button 
-                            onClick={() => handleSave()} 
-                            disabled={updateResume.isPending} 
-                            aria-label="Save resume"
-                            className="w-16 h-16 bg-primary text-on-primary rounded-2xl shadow-2xl shadow-primary/40 flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
-                        >
-                            {updateResume.isPending ? <Loader2 className="w-6 h-6 animate-spin" /> : <Save className="w-6 h-6 group-hover:rotate-12 transition-transform" />}
-                        </button>
                     </div>
                 </div>
             </div>
@@ -530,8 +504,8 @@ export function BuilderPage() {
 function CollapsibleSection({ title, icon, defaultOpen, description, children }: { title: string; icon: React.ReactNode; defaultOpen?: boolean; description?: string; children: React.ReactNode }) {
     const [open, setOpen] = useState(defaultOpen ?? false);
     return (
-        <div className={`rounded-3xl border transition-all duration-500 overflow-hidden ${
-            open ? "border-primary/10 bg-surface shadow-2xl shadow-primary/5" : "border-outline bg-surface-container-low/30 hover:bg-surface-container-low/50"
+        <div className={`rounded-2xl border transition-all duration-500 overflow-hidden ${
+            open ? "border-primary/10 bg-surface" : "border-outline bg-surface-container-low/30 hover:bg-surface-container-low/50"
         }`}>
             <button 
                 type="button" 
@@ -606,28 +580,24 @@ function EntryPanel({ title, meta, defaultOpen, children }: { title: string; met
             </div>
         </div>
     );
-}
-
-function Field({ label, help, children }: { label: string; help?: string; children: React.ReactNode }) {
+}    function Field({ label, help, children }: { label: string; help?: string; children: React.ReactNode }) {
     return (
         <div className="space-y-2 group">
-            <Label className="text-[11px] uppercase tracking-widest font-bold text-primary/60 group-focus-within:text-primary transition-colors">{label}</Label>
-            {help && <p className="text-[11px] leading-relaxed text-on-surface-variant/50 italic">{help}</p>}
+            <Label className="text-xs font-bold uppercase tracking-wider text-primary/60 group-focus-within:text-primary transition-colors">{label}</Label>
+            {help && <p className="text-label-sm leading-relaxed text-on-surface-variant/50 italic">{help}</p>}
             <div className="relative">
                 {children}
             </div>
         </div>
     );
-}
-
-function SegmentedControl({ label, description, value, options, onChange }: { label: string; description?: string; value: string; options: readonly string[]; onChange: (value: string) => void }) {
+}    function SegmentedControl({ label, description, value, options, onChange }: { label: string; description?: string; value: string; options: readonly string[]; onChange: (value: string) => void }) {
     return (
         <div className="space-y-3">
             <div>
-                <Label className="text-[11px] uppercase tracking-widest font-bold text-primary/60">{label}</Label>
+                <Label className="text-xs font-bold uppercase tracking-wider text-primary/60">{label}</Label>
                 {description && <p className="mt-1 text-xs leading-relaxed text-on-surface-variant/70 italic">{description}</p>}
             </div>
-            <div className="relative grid grid-cols-3 gap-1 rounded-2xl bg-surface-container-high/50 p-1.5 shadow-inner">
+            <div className="relative grid grid-cols-3 gap-1 rounded-2xl bg-surface-container-high/50 p-1.5">
                 {options.map((option) => {
                     const isActive = value === option;
                     return (

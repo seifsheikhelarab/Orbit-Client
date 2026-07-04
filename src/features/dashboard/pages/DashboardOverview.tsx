@@ -1,16 +1,24 @@
-import { useState, memo, useMemo } from 'react';
+import { useState, memo, useMemo, lazy, Suspense } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ChevronDown, TrendingUp, TrendingDown, Sparkles, ArrowRight, LayoutDashboard } from 'lucide-react';
+import { ChevronDown, TrendingUp, TrendingDown, Sparkles, ArrowRight, LayoutDashboard, BarChart3 } from 'lucide-react';
 import { PageContainer, PageHeader } from '@/components/ui';
 import { Skeleton } from '@/components/ui/skeleton';
+import { FeatureTip } from '@/components/shared/FeatureTip';
 import {
   useAnalyticsSummary,
   useApplicationsOverTime,
   useRecentActivity
 } from '../api/useAnalytics';
-import { SankeyChart } from '../components/SankeyChart';
-import { PipelineFunnelChart } from '../components/PipelineFunnelChart';
 import { useAnimatedCounter, formatCounter } from '@/hooks/useAnimatedCounter';
+
+// SankeyChart and PipelineFunnelChart bring in recharts (346 kB / 103 kB gzip).
+// Lazy-load them since they're inside a collapsed-by-default panel.
+const SankeyChart = lazy(() => import('../components/SankeyChart').then(m => ({ default: m.SankeyChart })));
+const PipelineFunnelChart = lazy(() => import('../components/PipelineFunnelChart').then(m => ({ default: m.PipelineFunnelChart })));
+
+function ChartFallback() {
+  return <Skeleton className="h-[450px] rounded-2xl bg-surface-container-low" />;
+}
 
 const DATE_RANGES = [
   { label: '7 days', value: '7d' },
@@ -22,6 +30,7 @@ const DATE_RANGES = [
 
 export function DashboardOverview() {
   const [dateRange, setDateRange] = useState('30d');
+  const [chartsExpanded, setChartsExpanded] = useState(false);
   const { data: summary, isLoading } = useAnalyticsSummary(dateRange);
   const isEmpty = !isLoading && (summary?.totalApplications === 0 || summary?.totalApplications === undefined);
 
@@ -31,28 +40,28 @@ export function DashboardOverview() {
       value: summary?.totalApplications?.toString() || "0",
       trend: summary?.totalApplicationsTrend,
       trendDir: summary?.totalApplicationsTrendDirection,
-      accent: "from-primary/20 to-transparent",
+      hero: true,
     },
     {
-      title: "Active",
+      title: "Active Pipeline",
       value: summary?.activePipeline?.toString() || "0",
       trend: summary?.activeTrend,
       trendDir: summary?.activeTrendDirection,
-      accent: "from-tertiary-fixed/30 to-transparent",
+      hero: false,
     },
     {
       title: "Response Rate",
       value: `${summary?.responseRate || 0}%`,
       trend: summary?.responseRateTrend,
       trendDir: summary?.responseRateTrendDirection,
-      accent: "from-primary-fixed/40 to-transparent",
+      hero: false,
     },
     {
       title: "Offer Rate",
       value: `${summary?.offerRate || 0}%`,
       trend: summary?.offerRateTrend,
       trendDir: summary?.offerRateTrendDirection,
-      accent: "from-tertiary-fixed/40 to-transparent",
+      hero: false,
     }
   ], [summary]);
 
@@ -153,15 +162,25 @@ export function DashboardOverview() {
         </div>
       )}
 
+      {/* First-visit onboarding tip */}
+      <FeatureTip id="welcome" title="Welcome to Orbit">
+        Your dossier is ready. Add your first application in the{' '}
+        <strong>Applications</strong> tab — we&apos;ll track every status change,
+        follow-up, and interview date.
+      </FeatureTip>
+
       {/* Dashboard Content - Only show when not empty */}
       {!isEmpty && (
         <div className="space-y-8">
-          {/* Metric Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Metric Grid - Asymmetric: hero + 3 supporting */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {isLoading ? (
-              Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-32 rounded-2xl bg-surface-container-low" />
-              ))
+              <>
+                <Skeleton className="md:col-span-2 h-40 rounded-2xl bg-surface-container-low" />
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton key={i} className="h-40 rounded-2xl bg-surface-container-low" />
+                ))}
+              </>
             ) : (
               stats.map((stat, i) => (
                 <StatCard
@@ -170,27 +189,48 @@ export function DashboardOverview() {
                   value={stat.value}
                   trend={stat.trend}
                   trendDir={stat.trendDir as any}
+                  hero={stat.hero}
                   index={i}
                 />
               ))
             )}
           </div>
 
-          {/* Pipeline Visualization */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-500 delay-150 fill-mode-both">
-            <PipelineFunnelChart dateRange={dateRange} />
-            <div className="xl:col-span-2">
-              <SankeyChart />
-            </div>
-          </div>
-
-          {/* Secondary Insights */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-500 delay-200 fill-mode-both">
-            <div className="lg:col-span-3">
-              <ApplicationsOverTime dateRange={dateRange} />
-            </div>
-            <div className="lg:col-span-2">
-              <RecentActivity />
+          {/* Pipeline Visualization - collapsible */}
+          <div className="rounded-2xl bg-surface-container-low border border-outline-variant/10 overflow-hidden">
+            <button
+              onClick={() => setChartsExpanded(!chartsExpanded)}
+              className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-surface-container transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <BarChart3 className="size-5 text-dossier" />
+                <span className="text-title-sm font-bold text-on-surface group-hover:text-dossier transition-colors">
+                  Pipeline Intelligence
+                </span>
+              </div>
+              <ChevronDown className={`size-4 text-on-surface-variant transition-transform duration-300 ${chartsExpanded ? 'rotate-180' : ''}`} />
+            </button>
+            <div className={`transition-all duration-500 ease-out-expo overflow-hidden ${chartsExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+              <div className="p-6 pt-2 space-y-6">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  <Suspense fallback={<ChartFallback />}>
+                    <PipelineFunnelChart dateRange={dateRange} />
+                  </Suspense>
+                  <div className="xl:col-span-2">
+                    <Suspense fallback={<ChartFallback />}>
+                      <SankeyChart />
+                    </Suspense>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                  <div className="lg:col-span-3">
+                    <ApplicationsOverTime dateRange={dateRange} />
+                  </div>
+                  <div className="lg:col-span-2">
+                    <RecentActivity />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -204,17 +244,18 @@ const StatCard = memo(function StatCard({
   value,
   trend,
   trendDir,
+  hero,
   index,
 }: {
   title: string,
   value: string,
   trend?: string | number,
   trendDir?: 'up' | 'down' | 'neutral',
+  hero?: boolean,
   index?: number,
 }) {
   const direction = trendDir || 'neutral';
   
-  // Extract numeric value for animation
   const numericValue = parseFloat(value.replace(/[^0-9.]/g, '')) || 0;
   const isPercentage = value.includes('%');
   
@@ -223,9 +264,34 @@ const StatCard = memo(function StatCard({
     duration: 500
   });
 
+  if (hero) {
+    return (
+      <div className="md:col-span-2 p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-[160px] transition-all hover:bg-surface-container hover:shadow-xl hover:-translate-y-0.5 animate-in fade-in slide-in-from-bottom-4 duration-300 fill-mode-both dossier-scanline bg-dossier-glow relative overflow-hidden"
+        style={{ animationDelay: `${index ? index * 50 : 0}ms` }}
+      >
+        <div className="flex justify-between items-start relative z-10">
+          <span className="text-label-md font-bold uppercase tracking-widest text-dossier/70">{title}</span>
+          {direction !== 'neutral' && (
+            <div className={`flex items-center gap-1.5 ${direction === 'up' ? 'text-success' : 'text-error'} animate-in fade-in zoom-in duration-300`} style={{ animationDelay: `${(index || 0) * 50 + 200}ms` }}>
+              {direction === 'up' ? (
+                <TrendingUp className="w-4 h-4" />
+              ) : (
+                <TrendingDown className="w-4 h-4" />
+              )}
+              <span className="text-label-sm font-black">{trend}%</span>
+            </div>
+          )}
+        </div>
+        <p className="text-5xl font-black text-on-surface font-headline tracking-tight leading-none relative z-10">
+          {formatCounter(animatedValue, { suffix: isPercentage ? '%' : '' })}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div
-      className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-30 transition-all hover:bg-surface-container hover:shadow-xl hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4 duration-300 fill-mode-both"
+      className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-[130px] transition-all hover:bg-surface-container hover:shadow-lg hover:-translate-y-0.5 animate-in fade-in slide-in-from-bottom-4 duration-300 fill-mode-both"
       style={{ animationDelay: `${index ? index * 50 : 0}ms` }}
     >
       <div className="flex justify-between items-start">
@@ -241,7 +307,7 @@ const StatCard = memo(function StatCard({
           </div>
         )}
       </div>
-      <p className="text-3xl font-black text-on-surface font-headline tracking-tight leading-none">
+      <p className="text-2xl font-black text-on-surface font-headline tracking-tight leading-none">
         {formatCounter(animatedValue, { suffix: isPercentage ? '%' : '' })}
       </p>
     </div>

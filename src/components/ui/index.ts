@@ -20,3 +20,4 @@ export { DropdownMenu, DropdownMenuPortal, DropdownMenuTrigger, DropdownMenuCont
 export { ScrollArea, ScrollBar } from "./scroll-area"
 export { Avatar, AvatarImage, AvatarFallback } from "./avatar"
 export { Popover, PopoverTrigger, PopoverAnchor, PopoverContent } from "./popover"
+export { ConfirmDialog } from "./confirm-dialog"

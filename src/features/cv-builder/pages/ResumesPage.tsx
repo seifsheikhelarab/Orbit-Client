@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Plus, Trash2, Copy, Edit, Eye, FileText, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PageContainer, PageHeader } from "@/components/ui";
+import { PageContainer, PageHeader, ConfirmDialog } from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useResumes, useDeleteResume, useCreateResume, type Resume } from "../api/useResumes";
+import { StickerSheet } from "../components/StickerSheet";
 import { defaultResumeData, defaultCoverLetterContent, type ResumeType } from "../types";
 
 export function ResumesPage() {
@@ -16,16 +17,15 @@ export function ResumesPage() {
     const deleteResume = useDeleteResume();
     const createResume = useCreateResume();
     const [isCreating, setIsCreating] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
-    const handleDelete = async (id: string, e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (window.confirm("Are you sure you want to delete this?")) {
-            try {
-                await deleteResume.mutateAsync(id);
-            } catch (error) {
-                console.error(error);
-            }
+    const handleDelete = async () => {
+        if (!deleteTarget) return;
+        try {
+            await deleteResume.mutateAsync(deleteTarget.id);
+            setDeleteTarget(null);
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -102,37 +102,12 @@ export function ResumesPage() {
         >
             <Link to={`/app/resumes/${item.id}`} className="flex flex-col h-full">
                 <div className="relative aspect-[3/4] bg-surface-container-low overflow-hidden">
-                    {/* Editorial Resume Preview */}
-                    <div className="absolute inset-4 rounded-lg bg-surface shadow-sm border border-outline-variant/30 overflow-hidden">
-                        {/* Header area */}
-                        <div className="h-8 bg-primary/10 border-b border-outline-variant/20 flex items-center px-3">
-                            <div className="w-16 h-2 rounded-full bg-primary/30" />
-                        </div>
-                        {/* Content lines - resume preview mockup */}
-                        <div className="p-4 space-y-2">
-                            <div className="h-3 w-3/4 rounded-full bg-on-surface/10" />
-                            <div className="h-2 w-1/2 rounded-full bg-on-surface/5" />
-                            <div className="h-2 w-2/3 rounded-full bg-on-surface/5" />
-                            <div className="mt-3 space-y-1.5">
-                                <div className="h-1.5 w-full rounded-full bg-on-surface/5" />
-                                <div className="h-1.5 w-full rounded-full bg-on-surface/5" />
-                                <div className="h-1.5 w-3/4 rounded-full bg-on-surface/5" />
-                            </div>
-                            <div className="mt-3 pt-3 border-t border-outline-variant/20">
-                                <div className="h-2 w-20 rounded-full bg-accent/20" />
-                                <div className="mt-2 space-y-1">
-                                    <div className="h-1.5 w-full rounded-full bg-on-surface/5" />
-                                    <div className="h-1.5 w-5/6 rounded-full bg-on-surface/5" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Type badge */}
-                    <div className="absolute top-3 right-3 px-2 py-1 rounded-md bg-surface shadow-sm border border-outline-variant/30">
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant/60">
-                            {item.type === "COVER_LETTER" ? "CL" : "CV"}
-                        </span>
-                    </div>
+                    <StickerSheet
+                        type={item.type}
+                        content={item.content}
+                        settings={item.settings}
+                        name={item.name}
+                    />
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-inverse-surface/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
                         <div className="bg-primary text-on-primary p-2.5 rounded-full hover:bg-primary-hover transition-colors" aria-label="Edit resume" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
@@ -154,7 +129,7 @@ export function ResumesPage() {
                 <Button variant="ghost" size="sm" onClick={(e) => handleDuplicate(item, e)} disabled={isCreating} className="text-xs" aria-label={`Duplicate ${item.name}`}>
                     <Copy className="w-3 h-3 mr-1" />Duplicate
                 </Button>
-                <Button variant="ghost" size="sm" onClick={(e) => handleDelete(item.id, e)} className="text-xs text-error" aria-label={`Delete ${item.name}`}>
+                <Button variant="ghost" size="sm" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteTarget({ id: item.id, name: item.name }); }} className="text-xs text-error" aria-label={`Delete ${item.name}`}>
                     <Trash2 className="w-3 h-3" />
                 </Button>
             </div>
@@ -222,6 +197,18 @@ export function ResumesPage() {
                         </div>
                     </button>
                 </div>
+            )}
+            {deleteTarget && (
+                <ConfirmDialog
+                    open={!!deleteTarget}
+                    onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+                    title="Delete document"
+                    description={`Are you sure you want to delete "${deleteTarget.name}"? This action cannot be undone.`}
+                    confirmLabel="Delete"
+                    variant="destructive"
+                    onConfirm={handleDelete}
+                    isPending={deleteResume.isPending}
+                />
             )}
         </PageContainer>
     );

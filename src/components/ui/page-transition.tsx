@@ -9,6 +9,8 @@ interface PageTransitionProps {
   stagger?: boolean;
   /** Animation direction: 'up' (default), 'lateral' (side-to-side) */
   direction?: 'up' | 'lateral';
+  /** Route transition mode: 'enter-only' (default) skips exit, 'full' does exit-then-enter */
+  mode?: 'enter-only' | 'full';
 }
 
 // Routes that should use lateral (side-to-side) transitions
@@ -21,21 +23,37 @@ const LATERAL_ROUTES = [
   '/app/interviews',
 ];
 
+const EXIT_DURATION = 150;  // ms — matches CSS exit animation duration
+const ENTER_DURATION = 500; // ms — matches CSS enter animation duration
+
 /**
- * Wraps page content with enter animations.
- * Uses CSS animations for performance - no framer-motion needed.
+ * Wraps page content with enter + optional exit animations.
+ * Uses CSS animations for performance — no framer-motion needed.
  * Respects prefers-reduced-motion.
  *
  * Direction guide:
  * - 'up': Slide up + fade (good for stacked pages)
- * - 'lateral': Slide in from right + fade (good for lateral navigation)
+ * - 'lateral': Slide in from right (forward) / left (backward)
+ *
+ * mode:
+ * - 'enter-only' (default): Animate in on mount, no exit. Simple and fast.
+ * - 'full': Exit old content, then enter new. Safer transition.
  */
-export function PageTransition({ children, className, stagger = true, direction }: PageTransitionProps) {
+export function PageTransition({ children, className, stagger = true, direction, mode = 'full' }: PageTransitionProps) {
   const location = useLocation();
-  const [isEntering, setIsEntering] = useState(false);
+  const [phase, setPhase] = useState<'enter' | 'exit' | 'idle'>('enter');
+  const [cachedChildren, setCachedChildren] = useState(children);
   const prevPathRef = useRef(location.pathname);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const isFirstRender = useRef(true);
 
-  // Auto-detect direction based on route type
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
   const detectedDirection = direction || (
     LATERAL_ROUTES.some(route => location.pathname.startsWith(route))
       ? 'lateral'
@@ -43,28 +61,68 @@ export function PageTransition({ children, className, stagger = true, direction 
   );
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      // Initial mount — just enter
+      isFirstRender.current = false;
+      setCachedChildren(children);
+      setPhase('enter');
+      timerRef.current = setTimeout(() => {
+        setPhase('idle');
+      }, ENTER_DURATION);
+      return;
+    }
+
     if (prevPathRef.current !== location.pathname) {
-      setIsEntering(true);
       prevPathRef.current = location.pathname;
 
-      const timer = setTimeout(() => setIsEntering(false), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [location.pathname]);
+      if (mode === 'full') {
+        // Phase 1: Exit old content
+        setPhase('exit');
 
-  const animationClass = detectedDirection === 'lateral' ? 'animate-page-enter-lateral' : 'animate-page-enter';
+        timerRef.current = setTimeout(() => {
+          // Phase 2: Swap to new content and enter
+          setCachedChildren(children);
+          setPhase('enter');
+
+          timerRef.current = setTimeout(() => {
+            setPhase('idle');
+          }, ENTER_DURATION);
+        }, EXIT_DURATION);
+      } else {
+        // enter-only: just swap and enter
+        setCachedChildren(children);
+        setPhase('enter');
+
+        timerRef.current = setTimeout(() => {
+          setPhase('idle');
+        }, ENTER_DURATION);
+      }
+    } else {
+      // Same route — sync children immediately without animation
+      setCachedChildren(children);
+    }
+  }, [location.pathname, children, mode]);
+
+  const isAnimating = phase === 'exit' || phase === 'enter';
+
+  let animationClass = '';
+  if (phase === 'enter') {
+    animationClass = detectedDirection === 'lateral' ? 'animate-page-enter-lateral' : 'animate-page-enter';
+  } else if (phase === 'exit') {
+    animationClass = detectedDirection === 'lateral' ? 'animate-page-exit-lateral' : 'animate-page-exit';
+  }
 
   return (
     <div
-      key={location.pathname}
+      key={phase === 'enter' ? location.pathname : prevPathRef.current}
       className={cn(
         animationClass,
-        stagger && 'stagger-children',
-        isEntering && 'pointer-events-none',
+        phase === 'enter' && stagger && 'stagger-children',
+        isAnimating && 'pointer-events-none',
         className
       )}
     >
-      {children}
+      {cachedChildren}
     </div>
   );
 }

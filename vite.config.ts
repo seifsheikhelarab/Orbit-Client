@@ -20,6 +20,25 @@ export default defineConfig({
     }
   },
   build: {
-    chunkSizeWarningLimit: 2000 // BuilderPage includes PDF generation libs
+    chunkSizeWarningLimit: 2000, // BuilderPage includes PDF generation libs
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          // Split heavy vendor libs for independent caching
+          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/') || id.includes('node_modules/react-router')) {
+            return 'vendor-react';
+          }
+          if (id.includes('node_modules/@radix-ui/')) {
+            return 'vendor-ui';
+          }
+          if (id.includes('node_modules/react-hook-form') || id.includes('node_modules/@hookform') || id.includes('node_modules/zod')) {
+            return 'vendor-forms';
+          }
+          if (id.includes('node_modules/@react-pdf') || id.includes('node_modules/pdfjs-dist') || id.includes('node_modules/@react-pdf-viewer')) {
+            return 'vendor-pdf';
+          }
+        }
+      }
+    }
   }
 })

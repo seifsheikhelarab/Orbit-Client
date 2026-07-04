@@ -1,17 +1,9 @@
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { signIn } from '@/lib/auth-client';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
-const t = (delay: string) => ({
-  opacity: 0,
-  transform: 'translateY(12px)',
-  transition: `opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${delay}, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${delay}`
-});
-
-const tVisible = { opacity: 1, transform: 'translateY(0)' };
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -19,12 +11,6 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setMounted(true));
-    return () => cancelAnimationFrame(id);
-  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,16 +35,16 @@ export function Login() {
   };
 
   return (
-    <main className="grow flex items-center justify-center px-4 py-12 min-h-screen relative overflow-hidden">
+    <main className="grow flex items-center justify-center px-4 py-12 min-h-screen relative overflow-hidden animate-page-enter">
       {/* Decorative Background Elements - floating */}
       <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl opacity-50 animate-[floatGentle_6s_ease-in-out_infinite]" />
       <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-accent/20 rounded-full blur-3xl opacity-50 animate-[floatGentle_8s_ease-in-out_infinite_1s]" />
 
-      <div className="relative w-full max-w-md" style={mounted ? tVisible : { opacity: 0, transform: 'translateY(12px)', transition: 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+      <div className="relative w-full max-w-md">
         {/* Login Card */}
         <div className="relative bg-surface border border-outline-variant/30 rounded-xl shadow-xl shadow-primary/5 p-8 md:p-10 backdrop-blur-sm">
           {/* Brand & Header */}
-          <div className="text-center mb-10" style={mounted ? tVisible : t('0.08s')}>
+          <div className="text-center mb-10">
             <img src="/icon.png" alt="Orbit" className="w-16 h-16 mx-auto mb-6 animate-float-gentle" />
             <h1 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2">Welcome back</h1>
             <p className="text-on-surface-variant text-sm">Please enter your details to sign in.</p>
@@ -70,7 +56,6 @@ export function Login() {
             variant="outline"
             onClick={handleGoogle}
             className="w-full text-on-surface-variant border-outline-variant"
-            style={mounted ? tVisible : t('0.12s')}
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
@@ -82,7 +67,7 @@ export function Login() {
           </Button>
 
           {/* Divider */}
-          <div className="relative my-8" style={mounted ? tVisible : t('0.16s')}>
+          <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-outline-variant/50"></div>
             </div>
@@ -100,7 +85,7 @@ export function Login() {
               </div>
             )}
             {/* Email Input */}
-            <div className="space-y-2" style={mounted ? tVisible : t('0.20s')}>
+            <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-on-surface">Email Address</label>
               <Input
                 id="email"
@@ -113,7 +98,7 @@ export function Login() {
             </div>
 
             {/* Password Input */}
-            <div className="space-y-2" style={mounted ? tVisible : t('0.25s')}>
+            <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium text-on-surface">Password</label>
               <div className="relative">
                 <Input
@@ -139,7 +124,7 @@ export function Login() {
             </div>
 
             {/* Helpers */}
-            <div className="flex items-center justify-between" style={mounted ? tVisible : t('0.30s')}>
+            <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 group cursor-pointer">
                 <input type="checkbox" className="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" />
                 <span className="text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Remember me</span>
@@ -153,7 +138,6 @@ export function Login() {
               type="submit"
               className="w-full shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
               size="lg"
-              style={mounted ? tVisible : t('0.35s')}
             >
               {loading ? (
                 <>
@@ -167,14 +151,14 @@ export function Login() {
           </form>
 
           {/* Footer Link */}
-          <p className="mt-10 text-center text-sm text-on-surface-variant" style={mounted ? tVisible : t('0.40s')}>
+          <p className="mt-10 text-center text-sm text-on-surface-variant">
             Don't have an account?
             <Link to="/register" className="font-bold text-primary hover:text-secondary transition-colors ml-1 hover:underline">Create an account</Link>
           </p>
         </div>
 
         {/* Additional Branding Context */}
-        <div className="mt-12 text-center" style={mounted ? tVisible : t('0.45s')}>
+        <div className="mt-12 text-center">
           <p className="text-xs text-on-surface-variant leading-relaxed px-4">
             By continuing, you agree to Orbit's
             <a href="#" className="underline hover:text-on-surface transition-colors ml-1">Terms of Service</a> and

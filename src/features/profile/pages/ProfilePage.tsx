@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { 
     Loader2, Save, User, Briefcase, GraduationCap, 
-    Lightbulb, Plus, Trash2, Heart, Globe, Award, Sparkles,
+    Lightbulb, Plus, Trash2, Heart, Globe, Sparkles,
     ChevronRight, ChevronDown, ChevronUp, Layers
 } from "lucide-react";
 import { toast } from "sonner";
@@ -58,8 +58,8 @@ export default function ProfilePage() {
     return (
         <PageContainer maxWidth="xl" className="pb-24 relative overflow-hidden">
             {/* Background Telemetry Decor */}
-            <div className="absolute top-0 right-0 w-1/3 h-full opacity-[0.02] pointer-events-none select-none">
-                <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to right, var(--color-primary) 1px, transparent 1px), linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+            <div className="absolute top-0 right-0 w-1/3 h-full opacity-[0.03] pointer-events-none select-none">
+                <div className="absolute inset-0 animate-telemetry-pulse" style={{ backgroundImage: 'radial-gradient(circle, var(--color-dossier) 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
             </div>
 
             <PageHeader
@@ -71,7 +71,8 @@ export default function ProfilePage() {
                     <Button 
                         onClick={handleSave}
                         disabled={updateProfile.isPending}
-                        className="shadow-2xl shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 active:scale-95"
+                        variant="dossier"
+                        className="shadow-2xl shadow-dossier/20 hover:shadow-dossier/30 transition-all duration-300 active:scale-95"
                     >
                         {updateProfile.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
                         Sync Dossier
@@ -83,12 +84,12 @@ export default function ProfilePage() {
                 <div className="lg:col-span-8 space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     {/* Basics Section */}
                     <Section title="Identity & Summary" icon={<User className="w-5 h-5" />} index={0}>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-surface-container-low/30 p-8 rounded-4xl border border-outline-variant/10">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-surface-container-low/30 p-8 rounded-2xl border border-outline-variant/10">
                             <Field label="Full Name">
                                 <Input 
                                     value={formData.basics.name} 
                                     onChange={e => setFormData({...formData, basics: {...formData.basics, name: e.target.value}})}
-                                    className="bg-surface border-outline-variant/30 focus-visible:ring-primary/10 rounded-xl"
+                                    className="bg-surface border-dossier/30 focus-visible:ring-dossier/10 rounded-xl"
                                 />
                             </Field>
                             <Field label="Professional Label">
@@ -103,7 +104,7 @@ export default function ProfilePage() {
                                 <Input 
                                     value={formData.basics.email} 
                                     onChange={e => setFormData({...formData, basics: {...formData.basics, email: e.target.value}})}
-                                    className="bg-surface border-outline-variant/30 focus-visible:ring-primary/10 rounded-xl"
+                                    className="bg-surface border-dossier/30 focus-visible:ring-dossier/10 rounded-xl"
                                 />
                             </Field>
                             <Field label="Contact Phone">
@@ -128,7 +129,7 @@ export default function ProfilePage() {
                                         rows={5} 
                                         value={formData.basics.summary} 
                                         onChange={e => setFormData({...formData, basics: {...formData.basics, summary: e.target.value}})}
-                                        className="bg-surface border-outline-variant/30 focus-visible:ring-primary/10 rounded-2xl resize-none leading-relaxed"
+                                        className="bg-surface border-dossier/30 focus-visible:ring-dossier/10 rounded-2xl resize-none leading-relaxed"
                                     />
                                 </Field>
                             </div>
@@ -141,7 +142,7 @@ export default function ProfilePage() {
                             {formData.work.map((exp, i) => {
                                 const isCollapsed = collapsed[`work-${i}`];
                                 return (
-                                <div key={i} className={`rounded-4xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all animate-in fade-in slide-in-from-left-4 duration-500 ${isCollapsed ? 'p-4' : 'p-8'}`} style={{ animationDelay: `${i * 100}ms` }}>
+                                <div key={i} className={`rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all ${isCollapsed ? 'p-4' : 'p-8'}`}>
                                     <div className="flex items-center gap-2 mb-4">
                                         <button 
                                             onClick={() => toggleCollapse(`work-${i}`)}
@@ -195,12 +196,11 @@ export default function ProfilePage() {
                                 </div>
                             )})}
                             <Button 
-                                variant="outline" 
-                                className="w-full border-dashed border-outline-variant/40 py-10 rounded-4xl text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
+                                variant="outline"                                    className="w-full border-dashed border-outline-variant/40 py-10 rounded-2xl text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
                                 onClick={() => setFormData({...formData, work: [...formData.work, {company: "", position: "", startDate: "", endDate: "", highlights: ""}]})}
                             >
                                 <Plus className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" /> 
-                                Append Professional Record
+                                Add Experience
                             </Button>
                         </div>
                     </Section>
@@ -211,10 +211,10 @@ export default function ProfilePage() {
                             {formData.education.map((edu, i) => {
                                 const isCollapsed = collapsed[`education-${i}`];
                                 return (
-                                <div key={i} className={`rounded-4xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all animate-in fade-in slide-in-from-left-4 duration-500 ${isCollapsed ? 'p-4' : 'p-8'}`} style={{ animationDelay: `${i * 100}ms` }}>
-                                    <div className="flex items-center gap-2 mb-4">
-                                        <button 
-                                            onClick={() => toggleCollapse(`education-${i}`)}
+                                <div key={i} className={`rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all ${isCollapsed ? 'p-4' : 'p-8'}`}>
+                                     <div className="flex items-center gap-2 mb-4">
+                                         <button 
+                                             onClick={() => toggleCollapse(`education-${i}`)}
                                             className="p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant/40 hover:text-primary"
                                         >
                                             {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
@@ -246,12 +246,11 @@ export default function ProfilePage() {
                                 </div>
                             )})}
                             <Button 
-                                variant="outline" 
-                                className="w-full border-dashed border-outline-variant/40 py-10 rounded-4xl text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
+                                variant="outline"                                    className="w-full border-dashed border-outline-variant/40 py-10 rounded-2xl text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
                                 onClick={() => setFormData({...formData, education: [...formData.education, {institution: "", studyType: "", area: "", startDate: "", endDate: "", score: ""}]})}
                             >
                                 <Plus className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" /> 
-                                Append Academic Record
+                                Add Education
                             </Button>
                         </div>
                     </Section>
@@ -262,10 +261,10 @@ export default function ProfilePage() {
                             {formData.projects.map((proj, i) => {
                                 const isCollapsed = collapsed[`projects-${i}`];
                                 return (
-                                <div key={i} className={`rounded-4xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all animate-in fade-in slide-in-from-left-4 duration-500 ${isCollapsed ? 'p-4' : 'p-8'}`} style={{ animationDelay: `${i * 100}ms` }}>
-                                    <div className="flex items-center gap-2 mb-4">
-                                        <button 
-                                            onClick={() => toggleCollapse(`projects-${i}`)}
+                                <div key={i} className={`rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all ${isCollapsed ? 'p-4' : 'p-8'}`}>
+                                     <div className="flex items-center gap-2 mb-4">
+                                         <button 
+                                             onClick={() => toggleCollapse(`projects-${i}`)}
                                             className="p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant/40 hover:text-primary"
                                         >
                                             {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
@@ -297,25 +296,21 @@ export default function ProfilePage() {
                                 </div>
                             )})}
                             <Button 
-                                variant="outline" 
-                                className="w-full border-dashed border-outline-variant/40 py-10 rounded-4xl text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
+                                variant="outline"                                    className="w-full border-dashed border-outline-variant/40 py-10 rounded-2xl text-primary/60 hover:text-primary hover:border-primary/20 hover:bg-primary/5 transition-all group" 
                                 onClick={() => setFormData({...formData, projects: [...formData.projects, {name: "", description: "", highlights: "", url: "", startDate: "", endDate: ""}]})}
                             >
                                 <Plus className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" /> 
-                                Append Project Initiative
+                                Add Project
                             </Button>
                         </div>
                     </Section>
 
                     {/* Skills Section */}
                     <Section title="Expertise & Skills" icon={<Lightbulb className="w-5 h-5" />} index={4}>
-                        <div className="p-8 rounded-4xl bg-surface-container-low/30 border border-outline-variant/10 space-y-8 relative overflow-hidden">
-                             <div className="absolute top-0 right-0 p-8 opacity-[0.03] rotate-12">
-                                <Award className="size-32" />
-                            </div>
-                            <div className="flex flex-wrap gap-2.5 relative z-10">
+                        <div className="p-8 rounded-2xl bg-surface-container-low/30 border border-outline-variant/10 space-y-8">
+                                 <div className="flex flex-wrap gap-2">
                                 {formData.skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-2 pl-4 pr-2 py-2 bg-surface border border-outline-variant/30 rounded-full text-xs font-bold text-on-surface shadow-sm hover:shadow-md hover:border-primary/20 transition-all animate-in zoom-in-95 duration-300">
+                                    <div key={i} className="flex items-center gap-2 pl-4 pr-2 py-2 bg-surface border border-outline-variant/30 rounded-full text-xs font-bold text-on-surface hover:shadow-md hover:border-primary/20 transition-all animate-in zoom-in-95 duration-300">
                                         <span>{skill.name}</span>
                                         <button 
                                             onClick={() => setFormData({...formData, skills: formData.skills.filter((_, idx) => idx !== i)})}
@@ -357,7 +352,7 @@ export default function ProfilePage() {
                             </div>
                             <div className="space-y-4">
                                 {formData.volunteer.map((vol, i) => (
-                                    <div key={i} className="rounded-3xl bg-surface-container-low/20 border border-outline-variant/5 group relative transition-all overflow-hidden">
+                                    <div key={i} className="rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 group relative transition-all overflow-hidden">
                                         <button 
                                             onClick={() => {
                                                 const isOpen = document.getElementById(`volunteer-${i}`);
@@ -369,7 +364,7 @@ export default function ProfilePage() {
                                             <div className="flex items-start justify-between">
                                                 <div>
                                                     <p className="text-xs font-bold text-on-surface">{vol.organization || "Untitled organization"}</p>
-                                                    <p className="text-[10px] text-on-surface-variant font-medium mt-0.5">{vol.position || "Add role"}</p>
+                                                    <p className="text-label-sm text-on-surface-variant font-medium mt-0.5">{vol.position || "Add role"}</p>
                                                 </div>
                                                 <ChevronRight className="w-4 h-4 text-on-surface-variant/30 group-hover:text-primary transition-all" />
                                             </div>
@@ -387,14 +382,14 @@ export default function ProfilePage() {
                                                     onClick={e => { e.stopPropagation(); setFormData({...formData, volunteer: formData.volunteer.filter((_, idx) => idx !== i)}) }}
                                                     className="w-full text-center text-xs font-bold text-error hover:text-error-hover transition-colors py-2"
                                                 >
-                                                    Remove Record
+                                                    Remove
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
-                                <Button variant="outline" size="sm" className="w-full border-dashed rounded-2xl" onClick={() => setFormData({...formData, volunteer: [...formData.volunteer, {organization: "", position: "", highlights: "", startDate: "", endDate: ""}]})}>
-                                    <Plus className="size-3 mr-2" /> Add Record
+                                <Button variant="outline" size="sm" className="w-full border-dashed" onClick={() => setFormData({...formData, volunteer: [...formData.volunteer, {organization: "", position: "", highlights: "", startDate: "", endDate: ""}]})}>
+                                    <Plus className="size-3 mr-2" /> Add
                                 </Button>
                             </div>
                         </div>
@@ -407,7 +402,7 @@ export default function ProfilePage() {
                             </div>
                             <div className="space-y-4">
                                 {formData.languages.map((lang, i) => (
-                                    <div key={i} className="rounded-3xl bg-surface-container-low/20 border border-outline-variant/5 group relative transition-all overflow-hidden">
+                                    <div key={i} className="rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 group relative transition-all overflow-hidden">
                                         <button 
                                             onClick={() => {
                                                 const isOpen = document.getElementById(`language-${i}`);
@@ -419,7 +414,7 @@ export default function ProfilePage() {
                                             <div className="flex items-start justify-between">
                                                 <div>
                                                     <p className="text-xs font-bold text-on-surface">{lang.name || "Untitled language"}</p>
-                                                    <p className="text-[10px] text-on-surface-variant font-medium mt-0.5">{lang.fluency || "Add fluency"}</p>
+                                                    <p className="text-label-sm text-on-surface-variant font-medium mt-0.5">{lang.fluency || "Add fluency"}</p>
                                                 </div>
                                                 <ChevronRight className="w-4 h-4 text-on-surface-variant/30 group-hover:text-primary transition-all" />
                                             </div>
@@ -435,14 +430,14 @@ export default function ProfilePage() {
                                                     onClick={e => { e.stopPropagation(); setFormData({...formData, languages: formData.languages.filter((_, idx) => idx !== i)}) }}
                                                     className="w-full text-center text-xs font-bold text-error hover:text-error-hover transition-colors py-2"
                                                 >
-                                                    Remove Record
+                                                    Remove
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
-                                <Button variant="outline" size="sm" className="w-full border-dashed rounded-2xl" onClick={() => setFormData({...formData, languages: [...formData.languages, {name: "", fluency: "", highlights: "", startDate: ""}]})}>
-                                    <Plus className="size-3 mr-2" /> Add Record
+                                <Button variant="outline" size="sm" className="w-full border-dashed" onClick={() => setFormData({...formData, languages: [...formData.languages, {name: "", fluency: "", highlights: "", startDate: ""}]})}>
+                                    <Plus className="size-3 mr-2" /> Add
                                 </Button>
                             </div>
                         </div>
@@ -451,95 +446,40 @@ export default function ProfilePage() {
 
                 <div className="lg:col-span-4 space-y-8 animate-in fade-in slide-in-from-right-8 duration-1000 delay-500 fill-mode-both">
                     <div className="sticky top-24 space-y-8">
-                        {/* AI Readiness Card */}
-                        <div className="p-8 rounded-[40px] bg-linear-to-br from-primary via-primary-hover to-primary text-on-primary shadow-2xl shadow-primary/30 relative overflow-hidden group">
-                            <div className="absolute -top-12 -right-12 size-48 bg-accent/20 rounded-full blur-3xl transition-transform duration-700 group-hover:scale-110" />
-                            
-                            <div className="relative z-10 space-y-6">
-                                <div className="flex items-center gap-3">
-                                    <Sparkles className="size-5 text-accent animate-icon-float" />
-                                    <h3 className="font-bold text-lg tracking-tight">Intelligence Readiness</h3>
-                                </div>
-                                <p className="text-on-primary/70 text-xs leading-relaxed font-medium">
-                                    Our models use this dossier as the ground truth. The higher the completeness, the better the tailoring accuracy.
-                                </p>
-                                
-                                <div className="space-y-4 pt-2">
-                                    <ScoreItem label="Identity Record" score={formData.basics.name && formData.basics.summary ? 100 : 40} />
-                                    <ScoreItem label="Experience Volume" score={Math.min(formData.work.length * 25, 100)} />
-                                    <ScoreItem label="Skill Density" score={Math.min(formData.skills.length * 10, 100)} />
-                                </div>
-
-                                <div className="pt-4 border-t border-on-primary/10 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-on-primary/40">
-                                    <span>Sync Status</span>
-                                    <span className="text-accent flex items-center gap-1.5">
-                                        <div className="size-1 bg-accent rounded-full animate-pulse" />
-                                        Connected
-                                    </span>
-                                </div>
+                        {/* Navigation */}
+                        <button className="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/10 text-left hover:bg-surface-container transition-all" onClick={() => navigate("/app/autocv")}>
+                            <div className="size-8 rounded-lg bg-dossier/10 flex items-center justify-center text-dossier shrink-0">
+                                <Sparkles className="size-4" />
                             </div>
-                        </div>
-                        
-                        {/* Navigation Shortcut */}
-                        <div className="p-8 rounded-4xl bg-surface-container-low border border-outline-variant/10 group cursor-pointer hover:border-primary/20 transition-all" onClick={() => navigate("/app/autocv")}>
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="size-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
-                                    <Sparkles className="size-5" />
-                                </div>
-                                <ChevronRight className="size-4 text-on-surface-variant/40 group-hover:translate-x-1 transition-transform" />
+                            <div className="min-w-0">
+                                <p className="text-sm font-bold text-on-surface">AutoCV Engine</p>
+                                <p className="text-xs text-on-surface-variant">Tailor dossiers</p>
                             </div>
-                            <h4 className="font-bold text-on-surface">AutoCV Engine</h4>
-                            <p className="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mt-1">Generate tailored dossiers</p>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
         </PageContainer>
     );
-}
-
-function Section({ title, icon, children, index }: { title: string; icon: React.ReactNode; children: React.ReactNode; index: number }) {
+}    function Section({ title, icon, children, index }: { title: string; icon: React.ReactNode; children: React.ReactNode; index: number }) {
     return (
-        <section className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both" style={{ animationDelay: `${index * 150}ms` }}>
-            <div className="flex items-center gap-4">
-                <div className="size-12 rounded-2xl bg-surface-container-low border border-outline-variant/20 flex items-center justify-center text-primary shadow-sm">
+        <section className="space-y-6 animate-in fade-in duration-700" style={{ animationDelay: `${index * 100}ms` }}>
+            <div className="flex items-center gap-3">
+                <div className="size-10 rounded-lg flex items-center justify-center bg-primary/10 text-primary shrink-0">
                     {icon}
                 </div>
-                <div>
-                    <h2 className="text-display-sm text-on-surface">{title}</h2>
-                    <div className="h-0.5 w-12 bg-accent mt-2 rounded-full" />
-                </div>
+                <h2 className="text-title-lg font-bold text-on-surface">{title}</h2>
             </div>
             {children}
         </section>
     );
-}
-
-function Field({ label, help, children }: { label: string; help?: string; children: React.ReactNode }) {
+}    function Field({ label, help, children }: { label: string; help?: string; children: React.ReactNode }) {
     return (
-        <div className="space-y-2.5">
-            <div className="flex flex-col gap-0.5 px-1">
-                <Label className="text-label-sm text-on-surface-variant font-bold">{label}</Label>
-                {help && <p className="text-[10px] text-on-surface-variant/40 font-medium leading-tight">{help}</p>}
-            </div>
+        <div className="space-y-2">
+            <Label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">{label}</Label>
+            {help && <p className="text-label-md text-on-surface-variant/50 leading-tight">{help}</p>}
             {children}
         </div>
     );
 }
 
-function ScoreItem({ label, score }: { label: string; score: number }) {
-    return (
-        <div className="space-y-2">
-            <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-on-primary/60">
-                <span>{label}</span>
-                <span className="text-accent">{score}%</span>
-            </div>
-            <div className="h-1 bg-on-primary/5 rounded-full overflow-hidden">
-                <div 
-                    className="h-full bg-accent transition-all duration-1000 ease-out-expo" 
-                    style={{ width: `${score}%` }} 
-                />
-            </div>
-        </div>
-    );
-}

@@ -36,20 +36,20 @@ function EmptyState({
 
   const defaultContent = {
     applications: {
-      title: "No applications yet",
-      description: "Start tracking your job search. Add positions you're interested in and we'll help you stay organized.",
+      title: "No applications logged yet",
+      description: "Your dossier is empty. Start tracking your search — every application brings you closer to the offer.",
     },
     search: {
-      title: "No results found",
-      description: "Try adjusting your search terms or clearing some filters to see more options.",
+      title: "No matches on file",
+      description: "Your search turned up empty. Broaden your terms or clear filters to browse the full dossier.",
     },
     inbox: {
-      title: "All caught up",
-      description: "Nothing new here right now. We'll let you know when something changes.",
+      title: "All clear",
+      description: "No new signals right now. We'll ping you when something lands.",
     },
     default: {
-      title: "Nothing here yet",
-      description: "Get started by adding your first item — we'll help you keep track of everything.",
+      title: "Nothing filed yet",
+      description: "This dossier section is blank. Add your first entry to get things moving.",
     },
   };
 

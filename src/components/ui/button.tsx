@@ -12,6 +12,7 @@ const buttonVariants = cva(
         default: "bg-primary text-on-primary hover:bg-primary-hover hover:shadow-md shadow-sm active:animate-click-ripple",
         secondary: "bg-secondary-container text-on-secondary-container hover:bg-surface-container hover:shadow-sm",
         accent: "bg-accent text-on-accent hover:bg-accent/90 hover:shadow-md",
+        dossier: "bg-dossier text-on-dossier hover:bg-dossier/90 hover:shadow-md shadow-sm active:animate-click-ripple",
         outline: "border border-outline bg-transparent text-on-surface hover:bg-surface-container-low hover:border-on-surface hover:shadow-sm",
         ghost: "text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface",
         destructive: "bg-error text-on-error hover:bg-error/90 hover:shadow-md",

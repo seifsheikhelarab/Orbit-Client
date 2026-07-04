@@ -282,7 +282,7 @@ return (
               className="border-outline-variant/50 hover:bg-surface-container-low hover:border-outline transition-all duration-300"
             >
               <Filter className="w-4 h-4 mr-2 opacity-70" />
-              Parameters
+              Filters
               {activeFilterCount > 0 && (
                 <span className="ml-2 size-5 flex items-center justify-center bg-primary text-on-primary text-[10px] font-bold rounded-full">
                   {activeFilterCount}

@@ -496,7 +496,7 @@ export function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-start gap-8">
             <div>
               <div className="text-lg font-bold text-on-surface mb-2">Orbit</div>
-              <p className="text-sm text-on-surface-variant">© {new Date().getFullYear()} Orbit. All rights reserved.</p>
+              <p className="text-sm text-on-surface-variant">© {new Date().getFullYear()} Ace Stores. All rights reserved.</p>
             </div>
             <div className="flex flex-wrap gap-8 text-sm">
               <a href="/privacy" className="text-on-surface-variant hover:text-on-surface transition-colors">Privacy</a>

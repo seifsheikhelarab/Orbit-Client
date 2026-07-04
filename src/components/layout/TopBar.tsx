@@ -79,7 +79,7 @@ export function TopBar() {
           <h2 className={cn(
             "text-on-surface text-display-sm font-bold tracking-tight",
             "transition-all duration-200",
-            "group-hover:text-primary"
+            "group-hover:text-dossier"
           )}>
             Orbit
           </h2>

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
-import type { ResumeData } from "../../cv-builder/types";
+import type { ResumeData, CoverLetterContent } from "../../cv-builder/types";
 
 export interface ProfileData {
     id: string;
@@ -42,7 +42,7 @@ export function useAutoCV() {
                 jobData: any;
                 tailoredContent: {
                     resumeContent: ResumeData;
-                    coverLetter: string;
+                    coverLetter: CoverLetterContent;
                 };
             };
         }

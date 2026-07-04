@@ -3,101 +3,107 @@
 @theme {
     --color-primary: #1a1a2e;
     --color-primary-hover: #16213e;
-    --color-primary-container: #e8e8ed;
+    --color-primary-container: #ece7f0;
     --color-on-primary: #ffffff;
     --color-on-primary-container: #1a1a2e;
     
     --color-secondary: #4a5568;
-    --color-secondary-container: #f7f8fa;
+    --color-secondary-container: #f5f4f7;
     --color-on-secondary: #ffffff;
     --color-on-secondary-container: #2d3748;
     
-    --color-accent: #0f766e;
-    --color-accent-container: #ccfbf1;
+    --color-accent: #0d9488;
+    --color-accent-container: #d1faf0;
     --color-on-accent: #ffffff;
-    --color-on-accent-container: #134e4a;
+    --color-on-accent-container: #115e59;
+    
+    --color-dossier: #d97706;
+    --color-dossier-container: #fef9e7;
+    --color-on-dossier: #ffffff;
+    --color-on-dossier-container: #78350f;
     
     --color-surface: #ffffff;
-    --color-surface-dim: #f8f9fa;
+    --color-surface-dim: #faf8f6;
     --color-surface-bright: #ffffff;
     
-    --color-surface-container-lowest: #ffffff;
-    --color-surface-container-low: #f8f9fa;
-    --color-surface-container: #f1f3f5;
-    --color-surface-container-high: #e5e7eb;
-    --color-surface-container-highest: #d1d5db;
+    --color-surface-container-lowest: #fffdfc;
+    --color-surface-container-low: #faf8f6;
+    --color-surface-container: #f2f0ed;
+    --color-surface-container-high: #e7e4e0;
+    --color-surface-container-highest: #d4d1cc;
     
     --color-on-surface: #111827;
-    --color-on-surface-variant: #4b5563;
+    --color-on-surface-variant: #545250;
     
-    --color-background: #fafbfc;
+    --color-background: #fcf9f6;
     --color-on-background: #111827;
     
     --color-error: #dc2626;
-    --color-error-container: #fef2f2;
+    --color-error-container: #fee9e7;
     --color-on-error: #ffffff;
     --color-on-error-container: #991b1b;
     
     --color-success: #059669;
-    --color-success-container: #ecfdf5;
+    --color-success-container: #e1f7ed;
     --color-on-success: #ffffff;
     --color-on-success-container: #064e3b;
     
-    --color-outline: #d1d5db;
-    --color-outline-variant: #e5e7eb;
+    --color-outline: #d4d1cc;
+    --color-outline-variant: #e7e4e0;
     
     --color-primary-fixed: #1a1a2e;
-    --color-primary-fixed-dim: #e8e8ed;
+    --color-primary-fixed-dim: #ece7f0;
     --color-on-primary-fixed: #ffffff;
     --color-on-primary-fixed-dim: #1a1a2e;
     
-    --color-accent-fixed: #0f766e;
-    --color-accent-fixed-dim: #ccfbf1;
+    --color-accent-fixed: #0d9488;
+    --color-accent-fixed-dim: #d1faf0;
     --color-on-accent-fixed: #ffffff;
-    --color-on-accent-fixed-dim: #134e4a;
+    --color-on-accent-fixed-dim: #115e59;
     
     --color-inverse-primary: #a5b4fc;
-    --color-inverse-surface: #111827;
-    --color-inverse-on-surface: #f8f9fa;
+    --color-inverse-surface: #1a1a2e;
+    --color-inverse-on-surface: #faf8f6;
     
-    --color-muted: #f3f4f6;
-    --color-muted-foreground: #6b7280;
+    --color-muted: #f2f0ed;
+    --color-muted-foreground: #73716e;
     
     --color-popover: #ffffff;
     --color-popover-foreground: #111827;
     
-    --color-input: #f8f9fa;
-    --color-ring: #1a1a2e;
+    --color-input: #faf8f6;
+    --color-ring: #0d9488;
     
-    --color-border: #e5e7eb;
+    --color-border: #e7e4e0;
   
     --color-status-saved: #4f46e5;
     --color-status-applied: #4f46e5;
     --color-status-phone-screen: #8b5cf6;
-    --color-status-interview: #f59e0b;
-    --color-status-offer: #10b981;
+    --color-status-interview: #d97706;
+    --color-status-offer: #059669;
     --color-status-closed: #64748b;
   
-    --color-status-bg-saved: #e0e7ff;
-    --color-status-bg-applied: #dbeafe;
-    --color-status-bg-phone-screen: #f3e8ff;
-    --color-status-bg-interview: #fef3c7;
-    --color-status-bg-offer: #dcfce7;
-    --color-status-bg-closed: #f1f5f9;
+    --color-status-bg-saved: #eef0ff;
+    --color-status-bg-applied: #eef0ff;
+    --color-status-bg-phone-screen: #f5f0ff;
+    --color-status-bg-interview: #fef9e7;
+    --color-status-bg-offer: #e1f7ed;
+    --color-status-bg-closed: #f2f0ed;
   
     --color-status-text-saved: #3730a3;
-    --color-status-text-applied: #1e40af;
+    --color-status-text-applied: #3730a3;
     --color-status-text-phone-screen: #6b21a8;
-    --color-status-text-interview: #92400e;
-    --color-status-text-offer: #166534;
-    --color-status-text-closed: #475569;
+    --color-status-text-interview: #78350f;
+    --color-status-text-offer: #064e3b;
+    --color-status-text-closed: #545250;
   
     --font-headline: 'Manrope', system-ui, sans-serif;
-    --font-body: 'Inter', system-ui, sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   
-    --text-display-lg: 3.5rem;
-    --text-display-md: 2.5rem;
-    --text-display-sm: 2rem;
+    --text-display-lg: 4rem;
+    --text-display-md: 3rem;
+    --text-display-sm: 2.25rem;
     --text-headline-lg: 1.75rem;
     --text-headline-md: 1.5rem;
     --text-headline-sm: 1.25rem;
@@ -107,30 +113,54 @@
     --text-body-lg: 1.125rem;
     --text-body-md: 1rem;
     --text-body-sm: 0.875rem;
-    --text-label-lg: 0.875rem;
-    --text-label-md: 0.75rem;
-    --text-label-sm: 0.6875rem;
+    --text-label-lg: 0.8125rem;
+    --text-label-md: 0.6875rem;
+    --text-label-sm: 0.625rem;
   
-    --leading-display: 1.1;
-    --leading-headline: 1.2;
-    --leading-title: 1.4;
-    --leading-body: 1.6;
-    --leading-label: 1.4;
+    --leading-display: 1.05;
+    --leading-headline: 1.15;
+    --leading-title: 1.35;
+    --leading-body: 1.65;
+    --leading-label: 1.3;
   
-    --tracking-display: -0.02em;
-    --tracking-headline: -0.01em;
-    --tracking-title: 0;
+    --tracking-display: -0.025em;
+    --tracking-headline: -0.015em;
+    --tracking-title: -0.005em;
     --tracking-body: 0;
-    --tracking-label: 0.05em;
-    --tracking-label-wide: 0.1em;
+    --tracking-label: 0.06em;
+    --tracking-label-wide: 0.12em;
 
   @keyframes scan {
     0%, 100% { transform: translateY(-16px); opacity: 0; }
     50% { transform: translateY(64px); opacity: 1; }
   }
 
+  @keyframes dossierScan {
+    0% { transform: translateY(-100%); opacity: 0; }
+    10% { opacity: 0.06; }
+    90% { opacity: 0.06; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+
+  @keyframes contentScan {
+    0% { transform: translateY(-100%); opacity: 0; }
+    10% { opacity: 0.04; }
+    90% { opacity: 0.04; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+
   @keyframes shimmer {
     100% { transform: translateX(100%); }
+  }
+
+  @keyframes telemetryPulse {
+    0%, 100% { opacity: 0.15; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.5); }
+  }
+
+  @keyframes dossierGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.05); }
+    50% { box-shadow: 0 0 20px 4px rgba(217, 119, 6, 0.08); }
   }
 }
 
@@ -206,6 +236,87 @@
 
   .font-body {
     font-family: var(--font-body);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  .dossier-scanline {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dossier-scanline::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(217, 119, 6, 0.03) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .dossier-scanline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(180deg, transparent 0%, rgba(217, 119, 6, 0.04) 50%, transparent 100%);
+    animation: dossierScan 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .dossier-content-bg {
+    position: relative;
+    background-color: var(--color-surface-container-lowest);
+  }
+
+  .dossier-content-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(217, 119, 6, 0.015) 48px, rgba(217, 119, 6, 0.015) 49px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .dossier-content-bg::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(180deg, transparent 0%, rgba(217, 119, 6, 0.03) 50%, transparent 100%);
+    animation: contentScan 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .bg-dossier-glow {
+    animation: dossierGlow 3s ease-in-out infinite;
+  }
+
+  .nav-dossier-glow {
+    position: relative;
+  }
+
+  .nav-dossier-glow::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: var(--color-dossier);
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 8px rgba(217, 119, 6, 0.3);
+  }
+
+  .animate-telemetry-pulse {
+    animation: telemetryPulse 2s ease-in-out infinite;
   }
 
   .ease-out-quart {
@@ -463,7 +574,7 @@
   @keyframes pageTransitionIn {
     from {
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(16px);
     }
     to {
       opacity: 1;
@@ -482,12 +593,43 @@
     }
   }
 
+  /* Exit animations — faster than enters */
+  @keyframes pageTransitionOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes pageTransitionOutLateral {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-12px);
+    }
+  }
+
   .animate-page-enter {
-    animation: pageTransitionIn 0.4s ease-out-quart forwards;
+    animation: pageTransitionIn 0.45s ease-out-quart forwards;
   }
 
   .animate-page-enter-lateral {
-    animation: pageTransitionInLateral 0.35s ease-out-quart forwards;
+    animation: pageTransitionInLateral 0.4s ease-out-quart forwards;
+  }
+
+  .animate-page-exit {
+    animation: pageTransitionOut 0.15s ease-out-quart forwards;
+  }
+
+  .animate-page-exit-lateral {
+    animation: pageTransitionOutLateral 0.15s ease-out-quart forwards;
   }
 
   /* Stagger children on page enter */
@@ -502,6 +644,8 @@
   @media (prefers-reduced-motion: reduce) {
     .animate-page-enter,
     .animate-page-enter-lateral,
+    .animate-page-exit,
+    .animate-page-exit-lateral,
     .animate-fade-slide-up,
     .animate-bar-reveal,
     .animate-activity-slide-in,
@@ -679,3 +823,4 @@
     scroll-behavior: auto !important;
   }
 }
+

@@ -26,10 +26,12 @@ export function AppLayout() {
       <div className="flex flex-1 overflow-hidden">
         <SidebarOverlay />
         <Sidebar />
-        <main className="flex-1 overflow-y-auto bg-surface-container-lowest">
-          <PageTransition>
-            <Outlet />
-          </PageTransition>
+        <main className="flex-1 overflow-y-auto dossier-content-bg">
+          <div className="relative z-10">
+            <PageTransition>
+              <Outlet />
+            </PageTransition>
+          </div>
         </main>
       </div>
     </div>
