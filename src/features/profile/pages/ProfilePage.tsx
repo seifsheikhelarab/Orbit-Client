@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useProfile, useUpdateProfile } from "../api/useProfile";
+import { useState, useEffect, useRef } from "react";
+import { useProfile, useUpdateProfile, useParseCv } from "../api/useProfile";
 import { defaultResumeData, ResumeData } from "../../cv-builder/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,18 +8,32 @@ import { Textarea } from "@/components/ui/textarea";
 import { 
     Loader2, Save, User, Briefcase, GraduationCap, 
     Lightbulb, Plus, Trash2, Heart, Globe, Sparkles,
-    ChevronRight, ChevronDown, ChevronUp, Layers
+    ChevronRight, ChevronDown, ChevronUp, Layers,
+    Upload, FileText, AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageContainer, PageHeader } from "@/components/ui";
 import { useNavigate } from "react-router-dom";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function ProfilePage() {
     const { data: profile, isLoading } = useProfile();
     const updateProfile = useUpdateProfile();
+    const parseCv = useParseCv();
     const [formData, setFormData] = useState<ResumeData>(defaultResumeData);
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+    const [showCvDialog, setShowCvDialog] = useState(false);
+    const [parsedCvData, setParsedCvData] = useState<ResumeData | null>(null);
+    const [cvFileName, setCvFileName] = useState("");
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (profile?.content) {
@@ -34,6 +48,45 @@ export default function ProfilePage() {
         } catch (error) {
             toast.error("Failed to update dossier");
         }
+    };
+
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        const ext = file.name.split(".").pop()?.toLowerCase();
+        if (!ext || !["pdf", "docx", "doc"].includes(ext)) {
+            toast.error("Please upload a PDF or DOCX file");
+            if (fileInputRef.current) fileInputRef.current.value = "";
+            return;
+        }
+
+        // Validate file size (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            toast.error("File size must be under 10MB");
+            if (fileInputRef.current) fileInputRef.current.value = "";
+            return;
+        }
+
+        try {
+            setCvFileName(file.name);
+            const parsed = await parseCv.mutateAsync(file);
+            setParsedCvData(parsed);
+            setShowCvDialog(true);
+        } catch (error) {
+            toast.error("Failed to parse CV. Please check the file and try again.");
+        } finally {
+            if (fileInputRef.current) fileInputRef.current.value = "";
+        }
+    };
+
+    const handleApplyParsedCv = () => {
+        if (!parsedCvData) return;
+        setFormData(parsedCvData);
+        setShowCvDialog(false);
+        setParsedCvData(null);
+        toast.success(`Profile populated from ${cvFileName}`);
     };
 
     const toggleCollapse = (key: string) => {
@@ -68,17 +121,106 @@ export default function ProfilePage() {
                 description="Your central record of experience and skills used for AI tailoring."
                 className="mb-12"
                 actions={
-                    <Button 
-                        onClick={handleSave}
-                        disabled={updateProfile.isPending}
-                        variant="dossier"
-                        className="shadow-2xl shadow-dossier/20 hover:shadow-dossier/30 transition-all duration-300 active:scale-95"
-                    >
-                        {updateProfile.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                        Sync Dossier
-                    </Button>
+                    <div className="flex items-center gap-3">
+                        {/* Hidden file input */}
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept=".pdf,.docx,.doc"
+                            className="hidden"
+                            onChange={handleFileSelect}
+                        />
+
+                        <Button
+                            variant="outline"
+                            disabled={parseCv.isPending}
+                            onClick={() => fileInputRef.current?.click()}
+                            className="shadow-sm hover:shadow-md transition-all duration-300 active:scale-95"
+                        >
+                            {parseCv.isPending ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                    Parsing...
+                                </>
+                            ) : (
+                                <>
+                                    <Upload className="w-4 h-4 mr-2" />
+                                    Import CV
+                                </>
+                            )}
+                        </Button>
+
+                        <Button 
+                            onClick={handleSave}
+                            disabled={updateProfile.isPending}
+                            variant="dossier"
+                            className="shadow-2xl shadow-dossier/20 hover:shadow-dossier/30 transition-all duration-300 active:scale-95"
+                        >
+                            {updateProfile.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                            Sync Dossier
+                        </Button>
+                    </div>
                 }
             />
+
+            {/* CV Parsing Confirmation Dialog */}
+            <Dialog open={showCvDialog} onOpenChange={setShowCvDialog}>
+                <DialogContent className="sm:max-w-lg">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-3">
+                            <div className="size-10 rounded-xl bg-dossier/10 flex items-center justify-center text-dossier">
+                                <FileText className="size-5" />
+                            </div>
+                            <div>
+                                <span>Import CV Data</span>
+                                <p className="text-sm font-normal text-on-surface-variant mt-0.5">
+                                    {cvFileName}
+                                </p>
+                            </div>
+                        </DialogTitle>
+                        <DialogDescription className="pt-4">
+                            <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/5 border border-warning/10">
+                                <AlertCircle className="size-5 text-warning shrink-0 mt-0.5" />
+                                <div className="text-sm text-on-surface-variant leading-relaxed">
+                                    This will replace your current professional dossier entries with the data extracted from your CV.
+                                    Existing data will be overwritten. You can review and edit everything before saving.
+                                </div>
+                            </div>
+
+                            {parsedCvData && (
+                                <div className="mt-6 space-y-3">
+                                    <p className="text-xs font-bold uppercase tracking-wider text-on-surface-variant/60">
+                                        Extracted Summary
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {parsedCvData.basics.name && (
+                                            <SummaryItem label="Name" value={parsedCvData.basics.name} />
+                                        )}
+                                        {parsedCvData.basics.email && (
+                                            <SummaryItem label="Email" value={parsedCvData.basics.email} />
+                                        )}
+                                        <SummaryItem label="Experience" value={`${parsedCvData.work.length} entries`} />
+                                        <SummaryItem label="Education" value={`${parsedCvData.education.length} entries`} />
+                                        <SummaryItem label="Skills" value={`${parsedCvData.skills.length} entries`} />
+                                        {parsedCvData.projects.length > 0 && (
+                                            <SummaryItem label="Projects" value={`${parsedCvData.projects.length} entries`} />
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="gap-3">
+                        <Button variant="outline" onClick={() => { setShowCvDialog(false); setParsedCvData(null); }}>
+                            Cancel
+                        </Button>
+                        <Button variant="dossier" onClick={handleApplyParsedCv}>
+                            <FileText className="w-4 h-4 mr-2" />
+                            Apply to Dossier
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start stagger-children">
                 <div className="lg:col-span-8 space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -461,7 +603,18 @@ export default function ProfilePage() {
             </div>
         </PageContainer>
     );
-}    function Section({ title, icon, children, index }: { title: string; icon: React.ReactNode; children: React.ReactNode; index: number }) {
+}
+
+function SummaryItem({ label, value }: { label: string; value: string }) {
+    return (
+        <div className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/10">
+            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant/60">{label}</span>
+            <span className="text-xs font-bold text-on-surface truncate max-w-[140px] ml-2">{value}</span>
+        </div>
+    );
+}
+
+function Section({ title, icon, children, index }: { title: string; icon: React.ReactNode; children: React.ReactNode; index: number }) {
     return (
         <section className="space-y-6 animate-in fade-in duration-700" style={{ animationDelay: `${index * 100}ms` }}>
             <div className="flex items-center gap-3">

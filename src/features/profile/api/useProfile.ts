@@ -49,6 +49,19 @@ export function useAutoCV() {
     });
 }
 
+export function useParseCv() {
+    return useMutation({
+        mutationFn: async (file: File) => {
+            const formData = new FormData();
+            formData.append("cv", file);
+            const response = await api.post("/profile/parse-cv", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            return response.data.data as ResumeData;
+        }
+    });
+}
+
 export function useSaveAutoCV() {
     const queryClient = useQueryClient();
 
