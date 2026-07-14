@@ -32,9 +32,18 @@ export function ResumesPage() {
     const handleCreate = (type: ResumeType) => {
         setIsCreating(true);
         const data = type === "RESUME"
-            ? { name: "Untitled Resume", content: defaultResumeData, settings: defaultResumeData.settings }
-            : { name: "Untitled Cover Letter", type, content: defaultCoverLetterContent, settings: {} };
-        
+            ? {
+                name: "Untitled Resume",
+                content: defaultResumeData as unknown as Record<string, unknown>,
+                settings: defaultResumeData.settings as unknown as Record<string, unknown>,
+            }
+            : {
+                name: "Untitled Cover Letter",
+                type,
+                content: defaultCoverLetterContent as unknown as Record<string, unknown>,
+                settings: {} as Record<string, unknown>,
+            };
+
         createResume.mutate(data, {
             onSuccess: (res) => {
                 if (res?.data?.id) navigate(`/app/resumes/${res.data.id}`);

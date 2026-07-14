@@ -8,18 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-interface InterviewRound {
-    id: string;
-    applicationId: string;
-    roundType: string;
-    scheduledAt: string;
-    interviewerName: string | null;
-    notes: string | null;
-    outcome: string | null;
-    company: string;
-    jobTitle: string;
-}
-
 export function InterviewsPage() {
     const { data: interviews, isLoading } = useUpcomingInterviews();
     
@@ -78,7 +66,7 @@ export function InterviewsPage() {
                 </div>
             ) : (
                 <div className="space-y-4">
-                    {sortedInterviews.map((interview: InterviewRound, index: number) => (
+                    {sortedInterviews.map((interview, index) => (
                         <div 
                             key={interview.id}
                             className={cn(

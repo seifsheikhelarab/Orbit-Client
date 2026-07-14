@@ -24,6 +24,18 @@ export interface InterviewRound {
     createdAt: string;
 }
 
+export interface UpcomingInterview {
+    id: string;
+    applicationId: string;
+    roundType: string;
+    scheduledAt: string;
+    interviewerName: string | null;
+    notes: string | null;
+    outcome: string | null;
+    company: string;
+    jobTitle: string;
+}
+
 export interface StatusHistoryItem {
     id: string;
     applicationId: string;
@@ -225,7 +237,7 @@ export function useUpcomingInterviews() {
     return useQuery({
         queryKey: ["interviews", "upcoming"],
         queryFn: async () => {
-            const res = await api.get<{ data: InterviewRound[] }>("/applications/interviews/upcoming");
+            const res = await api.get<{ data: UpcomingInterview[] }>("/applications/interviews/upcoming");
             return (res.data?.data ?? res.data) ?? [];
         }
     });
