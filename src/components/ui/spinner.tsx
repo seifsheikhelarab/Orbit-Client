@@ -21,13 +21,14 @@ export interface SpinnerProps extends VariantProps<typeof spinnerVariants> {
   color?: "primary" | "secondary" | "white" | "muted";
 }
 
+const colorClasses = {
+  primary: "border-primary border-t-transparent",
+  secondary: "border-secondary border-t-transparent",
+  white: "border-white border-t-transparent",
+  muted: "border-muted-foreground border-t-transparent"
+} as const;
+
 export function Spinner({ size, color = "primary", className }: SpinnerProps) {
-  const colorClasses = {
-    primary: "border-primary border-t-transparent",
-    secondary: "border-secondary border-t-transparent",
-    white: "border-white border-t-transparent",
-    muted: "border-muted-foreground border-t-transparent"
-  };
 
   return (
     <div

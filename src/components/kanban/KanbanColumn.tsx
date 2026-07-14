@@ -74,6 +74,7 @@ export const KanbanColumn = memo(function KanbanColumn({
 
             <div className="p-4">
                 <button
+                    type="button"
                     onClick={handleAddClick}
                     className={cn(
                         "flex items-center justify-center gap-2 w-full py-3 rounded-xl text-label-sm font-semibold",

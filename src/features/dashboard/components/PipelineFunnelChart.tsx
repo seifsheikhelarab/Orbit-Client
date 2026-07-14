@@ -9,8 +9,14 @@ export function PipelineFunnelChart({ dateRange }: { dateRange: string }) {
   if (isLoading) return <Skeleton className="h-[450px] rounded-2xl bg-surface-container-low" />;
   if (!data) return null;
 
+  interface PipelineItem {
+    status: string;
+    count: number;
+    conversionFromPrev: number;
+  }
+
   // Map backend status to user-friendly names
-  const chartData = data.map((item: any) => ({
+  const chartData = (data as PipelineItem[]).map((item) => ({
     name: item.status.replace(/_/g, ' '),
     value: item.count,
     conversion: item.conversionFromPrev,
@@ -59,7 +65,7 @@ export function PipelineFunnelChart({ dateRange }: { dateRange: string }) {
                 fontWeight={800}
                 className="uppercase"
               />
-              {chartData.map((entry: any, index: number) => (
+              {chartData.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
                   fill={entry.fill} 

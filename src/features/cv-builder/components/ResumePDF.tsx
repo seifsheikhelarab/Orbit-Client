@@ -2,9 +2,10 @@ import { Document } from '@react-pdf/renderer';
 import { ModernTemplate } from './templates/ModernTemplate';
 import { ProfessionalTemplate } from './templates/ProfessionalTemplate';
 import { MinimalTemplate } from './templates/MinimalTemplate';
+import type { ResumeData } from '../types';
 
 interface ResumePDFProps {
-    data: any;
+    data: ResumeData;
 }
 
 export const ResumePDF = ({ data }: ResumePDFProps) => {

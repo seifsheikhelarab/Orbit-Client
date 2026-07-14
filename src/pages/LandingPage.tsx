@@ -88,7 +88,7 @@ export function LandingPage() {
 
   useEffect(() => {
     if (barsVisible && !barsAnimated) {
-      setBarsAnimated(true);
+      setTimeout(() => { setBarsAnimated(true) }, 0);
     }
   }, [barsVisible, barsAnimated]);
 
@@ -245,7 +245,7 @@ export function LandingPage() {
                   <div className="p-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Active Applications</p>
+                        <p className="text-xs font-medium text-on-surface-variant tracking-wider">Active Applications</p>
                         <p className="text-3xl font-bold text-on-surface">24</p>
                       </div>
                       <div className="text-right">

@@ -77,7 +77,7 @@ export default function AttachResumePage() {
                     </Button>
                     <div>
                         <h1 className="text-3xl font-headline font-bold text-on-surface tracking-tight">Attach Document</h1>
-                        <p className="text-on-surface-variant font-medium">Select a resume or cover letter for this dossier.</p>
+                        <p className="text-on-surface-variant font-medium">Select a resume or cover letter for this application.</p>
                     </div>
                 </div>
 
@@ -103,6 +103,7 @@ export default function AttachResumePage() {
                     <div className="grid gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 fill-mode-both">
                         {filtered.map((resume: Resume, index: number) => (
                             <button
+                                type="button"
                                 key={resume.id}
                                 onClick={() => setSelected(resume)}
                                 className={cn(
@@ -122,7 +123,7 @@ export default function AttachResumePage() {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="font-headline font-bold text-on-surface text-lg leading-tight truncate">{resume.name}</p>
-                                    <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mt-1">{resume.type.replace("_", " ")}</p>
+                                    <p className="text-xs font-bold tracking-widest text-on-surface-variant/60 mt-1">{resume.type.replace("_", " ")}</p>
                                 </div>
                                 {selected?.id === resume.id && (
                                     <div className="p-2 rounded-full bg-primary text-on-primary animate-in zoom-in duration-300"><Check className="w-4 h-4" /></div>

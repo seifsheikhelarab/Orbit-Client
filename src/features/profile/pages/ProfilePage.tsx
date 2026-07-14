@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect, useRef } from "react";
 import { useProfile, useUpdateProfile, useParseCv } from "../api/useProfile";
 import { defaultResumeData, ResumeData } from "../../cv-builder/types";
@@ -37,7 +38,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         if (profile?.content) {
-            setFormData(profile.content);
+            setTimeout(() => { setFormData(profile.content) }, 0);
         }
     }, [profile]);
 
@@ -45,8 +46,8 @@ export default function ProfilePage() {
         try {
             await updateProfile.mutateAsync(formData);
             toast.success("Professional profile synchronized");
-        } catch (error) {
-            toast.error("Failed to update dossier");
+        } catch {
+            toast.error("Failed to update profile");
         }
     };
 
@@ -74,7 +75,7 @@ export default function ProfilePage() {
             const parsed = await parseCv.mutateAsync(file);
             setParsedCvData(parsed);
             setShowCvDialog(true);
-        } catch (error) {
+        } catch {
             toast.error("Failed to parse CV. Please check the file and try again.");
         } finally {
             if (fileInputRef.current) fileInputRef.current.value = "";
@@ -93,7 +94,7 @@ export default function ProfilePage() {
         setCollapsed(prev => ({ ...prev, [key]: !prev[key] }));
     };
 
-    const moveItem = (array: any[], from: number, to: number) => {
+    const moveItem = <T,>(array: T[], from: number, to: number): T[] => {
         const result = [...array];
         const [item] = result.splice(from, 1);
         result.splice(to, 0, item);
@@ -102,9 +103,33 @@ export default function ProfilePage() {
 
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-100 w-full animate-in fade-in duration-500">
-                <Loader2 className="size-10 animate-spin text-primary/20" />
-            </div>
+            <PageContainer maxWidth="xl" className="pb-24">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+                    <div className="flex items-center gap-4">
+                        <Skeleton className="size-14 rounded-xl" />
+                        <div>
+                            <Skeleton className="h-10 w-48 mb-2" />
+                            <Skeleton className="h-5 w-72" />
+                        </div>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                    <div className="lg:col-span-8 space-y-10">
+                        {Array.from({ length: 4 }).map((_, i) => (
+                            <div key={i} className="space-y-4">
+                                <div className="flex items-center gap-3">
+                                    <Skeleton className="size-10 rounded-lg" />
+                                    <Skeleton className="h-6 w-40" />
+                                </div>
+                                <Skeleton className="h-40 rounded-2xl" />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="lg:col-span-4">
+                        <Skeleton className="h-20 rounded-xl" />
+                    </div>
+                </div>
+            </PageContainer>
         );
     }
 
@@ -112,12 +137,12 @@ export default function ProfilePage() {
         <PageContainer maxWidth="xl" className="pb-24 relative overflow-hidden">
             {/* Background Telemetry Decor */}
             <div className="absolute top-0 right-0 w-1/3 h-full opacity-[0.03] pointer-events-none select-none">
-                <div className="absolute inset-0 animate-telemetry-pulse" style={{ backgroundImage: 'radial-gradient(circle, var(--color-dossier) 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
+                <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle, var(--color-primary) 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
             </div>
 
             <PageHeader
                 icon={User}
-                title="Professional Dossier"
+                title="Professional Profile"
                 description="Your central record of experience and skills used for AI tailoring."
                 className="mb-12"
                 actions={
@@ -153,11 +178,11 @@ export default function ProfilePage() {
                         <Button 
                             onClick={handleSave}
                             disabled={updateProfile.isPending}
-                            variant="dossier"
-                            className="shadow-2xl shadow-dossier/20 hover:shadow-dossier/30 transition-all duration-300 active:scale-95"
+                            variant="accent"
+                            className="shadow-2xl shadow-accent/20 hover:shadow-accent/30 transition-all duration-300 active:scale-95"
                         >
                             {updateProfile.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                            Sync Dossier
+                            Sync Profile
                         </Button>
                     </div>
                 }
@@ -168,7 +193,7 @@ export default function ProfilePage() {
                 <DialogContent className="sm:max-w-lg">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-3">
-                            <div className="size-10 rounded-xl bg-dossier/10 flex items-center justify-center text-dossier">
+                            <div className="size-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
                                 <FileText className="size-5" />
                             </div>
                             <div>
@@ -182,14 +207,14 @@ export default function ProfilePage() {
                             <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/5 border border-warning/10">
                                 <AlertCircle className="size-5 text-warning shrink-0 mt-0.5" />
                                 <div className="text-sm text-on-surface-variant leading-relaxed">
-                                    This will replace your current professional dossier entries with the data extracted from your CV.
+                                    This will replace your current professional profile entries with the data extracted from your CV.
                                     Existing data will be overwritten. You can review and edit everything before saving.
                                 </div>
                             </div>
 
                             {parsedCvData && (
                                 <div className="mt-6 space-y-3">
-                                    <p className="text-xs font-bold uppercase tracking-wider text-on-surface-variant/60">
+                                    <p className="text-xs font-bold tracking-wider text-on-surface-variant/60">
                                         Extracted Summary
                                     </p>
                                     <div className="grid grid-cols-2 gap-4">
@@ -214,16 +239,16 @@ export default function ProfilePage() {
                         <Button variant="outline" onClick={() => { setShowCvDialog(false); setParsedCvData(null); }}>
                             Cancel
                         </Button>
-                        <Button variant="dossier" onClick={handleApplyParsedCv}>
+                        <Button variant="accent" onClick={handleApplyParsedCv}>
                             <FileText className="w-4 h-4 mr-2" />
-                            Apply to Dossier
+                            Apply to Profile
                         </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start stagger-children">
-                <div className="lg:col-span-8 space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start stagger-children">
+                <div className="lg:col-span-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     {/* Basics Section */}
                     <Section title="Identity & Summary" icon={<User className="w-5 h-5" />} index={0}>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-surface-container-low/30 p-8 rounded-2xl border border-outline-variant/10">
@@ -231,7 +256,7 @@ export default function ProfilePage() {
                                 <Input 
                                     value={formData.basics.name} 
                                     onChange={e => setFormData({...formData, basics: {...formData.basics, name: e.target.value}})}
-                                    className="bg-surface border-dossier/30 focus-visible:ring-dossier/10 rounded-xl"
+                                    className="bg-surface border-accent/30 focus-visible:ring-accent/10 rounded-xl"
                                 />
                             </Field>
                             <Field label="Professional Label">
@@ -246,7 +271,7 @@ export default function ProfilePage() {
                                 <Input 
                                     value={formData.basics.email} 
                                     onChange={e => setFormData({...formData, basics: {...formData.basics, email: e.target.value}})}
-                                    className="bg-surface border-dossier/30 focus-visible:ring-dossier/10 rounded-xl"
+                                    className="bg-surface border-accent/30 focus-visible:ring-accent/10 rounded-xl"
                                 />
                             </Field>
                             <Field label="Contact Phone">
@@ -271,7 +296,7 @@ export default function ProfilePage() {
                                         rows={5} 
                                         value={formData.basics.summary} 
                                         onChange={e => setFormData({...formData, basics: {...formData.basics, summary: e.target.value}})}
-                                        className="bg-surface border-dossier/30 focus-visible:ring-dossier/10 rounded-2xl resize-none leading-relaxed"
+                                        className="bg-surface border-accent/30 focus-visible:ring-accent/10 rounded-2xl resize-none leading-relaxed"
                                     />
                                 </Field>
                             </div>
@@ -287,6 +312,7 @@ export default function ProfilePage() {
                                 <div key={i} className={`rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all ${isCollapsed ? 'p-4' : 'p-8'}`}>
                                     <div className="flex items-center gap-2 mb-4">
                                         <button 
+                                            type="button"
                                             onClick={() => toggleCollapse(`work-${i}`)}
                                             className="p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant/40 hover:text-primary"
                                             title={isCollapsed ? "Expand" : "Minimize"}
@@ -295,6 +321,7 @@ export default function ProfilePage() {
                                         </button>
                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button 
+                                                type="button"
                                                 disabled={i === 0}
                                                 onClick={() => setFormData({...formData, work: moveItem(formData.work, i, i - 1)})}
                                                 className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -302,6 +329,7 @@ export default function ProfilePage() {
                                                 <ChevronUp className="w-3.5 h-3.5" />
                                             </button>
                                             <button 
+                                                type="button"
                                                 disabled={i === formData.work.length - 1}
                                                 onClick={() => setFormData({...formData, work: moveItem(formData.work, i, i + 1)})}
                                                 className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -311,13 +339,14 @@ export default function ProfilePage() {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             {isCollapsed ? (
-                                                <button onClick={() => toggleCollapse(`work-${i}`)} className="text-left w-full">
+                                                <button type="button" onClick={() => toggleCollapse(`work-${i}`)} className="text-left w-full">
                                                     <p className="text-sm font-bold text-on-surface truncate">{exp.position || "Add role"}</p>
                                                     <p className="text-xs text-on-surface-variant truncate">{exp.company || "Add organization"}</p>
                                                 </button>
                                             ) : null}
                                         </div>
                                         <button 
+                                            type="button"
                                             onClick={() => setFormData({...formData, work: formData.work.filter((_, idx) => idx !== i)})}
                                             className="ml-auto opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5"
                                         >
@@ -356,24 +385,25 @@ export default function ProfilePage() {
                                 <div key={i} className={`rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all ${isCollapsed ? 'p-4' : 'p-8'}`}>
                                      <div className="flex items-center gap-2 mb-4">
                                          <button 
+                                             type="button"
                                              onClick={() => toggleCollapse(`education-${i}`)}
                                             className="p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant/40 hover:text-primary"
                                         >
                                             {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
                                         </button>
                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button disabled={i === 0} onClick={() => setFormData({...formData, education: moveItem(formData.education, i, i - 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
-                                            <button disabled={i === formData.education.length - 1} onClick={() => setFormData({...formData, education: moveItem(formData.education, i, i + 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
+                                            <button type="button" disabled={i === 0} onClick={() => setFormData({...formData, education: moveItem(formData.education, i, i - 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
+                                            <button type="button" disabled={i === formData.education.length - 1} onClick={() => setFormData({...formData, education: moveItem(formData.education, i, i + 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             {isCollapsed ? (
-                                                <button onClick={() => toggleCollapse(`education-${i}`)} className="text-left w-full">
+                                                <button type="button" onClick={() => toggleCollapse(`education-${i}`)} className="text-left w-full">
                                                     <p className="text-sm font-bold text-on-surface truncate">{edu.area || "Add field of study"}</p>
                                                     <p className="text-xs text-on-surface-variant truncate">{edu.institution || "Add institution"}</p>
                                                 </button>
                                             ) : null}
                                         </div>
-                                        <button onClick={() => setFormData({...formData, education: formData.education.filter((_, idx) => idx !== i)})} className="ml-auto opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5">
+                                        <button type="button" onClick={() => setFormData({...formData, education: formData.education.filter((_, idx) => idx !== i)})} className="ml-auto opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5">
                                             <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -406,23 +436,24 @@ export default function ProfilePage() {
                                 <div key={i} className={`rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 relative group transition-all ${isCollapsed ? 'p-4' : 'p-8'}`}>
                                      <div className="flex items-center gap-2 mb-4">
                                          <button 
+                                             type="button"
                                              onClick={() => toggleCollapse(`projects-${i}`)}
                                             className="p-2 rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant/40 hover:text-primary"
                                         >
                                             {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
                                         </button>
                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button disabled={i === 0} onClick={() => setFormData({...formData, projects: moveItem(formData.projects, i, i - 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
-                                            <button disabled={i === formData.projects.length - 1} onClick={() => setFormData({...formData, projects: moveItem(formData.projects, i, i + 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
+                                            <button type="button" disabled={i === 0} onClick={() => setFormData({...formData, projects: moveItem(formData.projects, i, i - 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
+                                            <button type="button" disabled={i === formData.projects.length - 1} onClick={() => setFormData({...formData, projects: moveItem(formData.projects, i, i + 1)})} className="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant/40 hover:text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             {isCollapsed ? (
-                                                <button onClick={() => toggleCollapse(`projects-${i}`)} className="text-left w-full">
+                                                <button type="button" onClick={() => toggleCollapse(`projects-${i}`)} className="text-left w-full">
                                                     <p className="text-sm font-bold text-on-surface truncate">{proj.name || "Add project title"}</p>
                                                 </button>
                                             ) : null}
                                         </div>
-                                        <button onClick={() => setFormData({...formData, projects: formData.projects.filter((_, idx) => idx !== i)})} className="ml-auto opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5">
+                                        <button type="button" onClick={() => setFormData({...formData, projects: formData.projects.filter((_, idx) => idx !== i)})} className="ml-auto opacity-0 group-hover:opacity-100 text-on-surface-variant/40 hover:text-error transition-all p-2 rounded-full hover:bg-error/5">
                                             <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -455,6 +486,7 @@ export default function ProfilePage() {
                                     <div key={i} className="flex items-center gap-2 pl-4 pr-2 py-2 bg-surface border border-outline-variant/30 rounded-full text-xs font-bold text-on-surface hover:shadow-md hover:border-primary/20 transition-all animate-in zoom-in-95 duration-300">
                                         <span>{skill.name}</span>
                                         <button 
+                                            type="button"
                                             onClick={() => setFormData({...formData, skills: formData.skills.filter((_, idx) => idx !== i)})}
                                             className="size-5 rounded-full flex items-center justify-center hover:bg-error/10 hover:text-error transition-colors"
                                         >
@@ -490,17 +522,16 @@ export default function ProfilePage() {
                         <div className="space-y-6">
                             <div className="flex items-center gap-3">
                                 <Heart className="size-5 text-error/60" />
-                                <h3 className="text-label-sm font-black text-on-surface uppercase tracking-widest">Volunteering</h3>
+                                <h3 className="text-label-sm font-black text-on-surface tracking-widest">Volunteering</h3>
                             </div>
                             <div className="space-y-4">
-                                {formData.volunteer.map((vol, i) => (
+                                {formData.volunteer.map((vol, i) => {
+                                const isVolHidden = collapsed[`volunteer-${i}`] ?? true;
+                                    return (
                                     <div key={i} className="rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 group relative transition-all overflow-hidden">
-                                        <button 
-                                            onClick={() => {
-                                                const isOpen = document.getElementById(`volunteer-${i}`);
-                                                isOpen?.classList.toggle('hidden');
-                                                isOpen?.querySelector('input')?.focus();
-                                            }}
+                                         <button 
+                                             type="button"
+                                             onClick={() => toggleCollapse(`volunteer-${i}`)}
                                             className="w-full p-6 text-left"
                                         >
                                             <div className="flex items-start justify-between">
@@ -511,7 +542,7 @@ export default function ProfilePage() {
                                                 <ChevronRight className="w-4 h-4 text-on-surface-variant/30 group-hover:text-primary transition-all" />
                                             </div>
                                         </button>
-                                        <div id={`volunteer-${i}`} className="hidden px-6 pb-6 pt-0 border-t border-outline-variant/10">
+                                        <div className={`${isVolHidden ? 'hidden' : ''} px-6 pb-6 pt-0 border-t border-outline-variant/10`}>
                                             <div className="pt-4 space-y-3">
                                                 <Field label="Organization"><Input value={vol.organization} onChange={e => { const v = [...formData.volunteer]; v[i] = {...v[i], organization: e.target.value}; setFormData({...formData, volunteer: v}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
                                                 <Field label="Role"><Input value={vol.position} onChange={e => { const v = [...formData.volunteer]; v[i] = {...v[i], position: e.target.value}; setFormData({...formData, volunteer: v}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
@@ -521,6 +552,7 @@ export default function ProfilePage() {
                                                 </div>
                                                 <Field label="Impact"><Textarea rows={2} value={vol.highlights} onChange={e => { const v = [...formData.volunteer]; v[i] = {...v[i], highlights: e.target.value}; setFormData({...formData, volunteer: v}) }} className="bg-surface border-outline-variant/30 rounded-xl resize-none" /></Field>
                                                 <button 
+                                                    type="button"
                                                     onClick={e => { e.stopPropagation(); setFormData({...formData, volunteer: formData.volunteer.filter((_, idx) => idx !== i)}) }}
                                                     className="w-full text-center text-xs font-bold text-error hover:text-error-hover transition-colors py-2"
                                                 >
@@ -529,7 +561,7 @@ export default function ProfilePage() {
                                             </div>
                                         </div>
                                     </div>
-                                ))}
+                                )})}
                                 <Button variant="outline" size="sm" className="w-full border-dashed" onClick={() => setFormData({...formData, volunteer: [...formData.volunteer, {organization: "", position: "", highlights: "", startDate: "", endDate: ""}]})}>
                                     <Plus className="size-3 mr-2" /> Add
                                 </Button>
@@ -540,17 +572,16 @@ export default function ProfilePage() {
                         <div className="space-y-6">
                             <div className="flex items-center gap-3">
                                 <Globe className="size-5 text-accent/60" />
-                                <h3 className="text-label-sm font-black text-on-surface uppercase tracking-widest">Languages</h3>
+                                <h3 className="text-label-sm font-black text-on-surface tracking-widest">Languages</h3>
                             </div>
                             <div className="space-y-4">
-                                {formData.languages.map((lang, i) => (
+                                {formData.languages.map((lang, i) => {
+                                    const isLangHidden = collapsed[`language-${i}`] ?? true;
+                                    return (
                                     <div key={i} className="rounded-2xl bg-surface-container-low/20 border border-outline-variant/5 group relative transition-all overflow-hidden">
                                         <button 
-                                            onClick={() => {
-                                                const isOpen = document.getElementById(`language-${i}`);
-                                                isOpen?.classList.toggle('hidden');
-                                                isOpen?.querySelector('input')?.focus();
-                                            }}
+                                            type="button"
+                                            onClick={() => toggleCollapse(`language-${i}`)}
                                             className="w-full p-6 text-left"
                                         >
                                             <div className="flex items-start justify-between">
@@ -561,7 +592,7 @@ export default function ProfilePage() {
                                                 <ChevronRight className="w-4 h-4 text-on-surface-variant/30 group-hover:text-primary transition-all" />
                                             </div>
                                         </button>
-                                        <div id={`language-${i}`} className="hidden px-6 pb-6 pt-0 border-t border-outline-variant/10">
+                                        <div className={`${isLangHidden ? 'hidden' : ''} px-6 pb-6 pt-0 border-t border-outline-variant/10`}>
                                             <div className="pt-4 space-y-3">
                                                 <div className="grid grid-cols-2 gap-3">
                                                     <Field label="Language"><Input value={lang.name} onChange={e => { const l = [...formData.languages]; l[i] = {...l[i], name: e.target.value}; setFormData({...formData, languages: l}) }} className="bg-surface border-outline-variant/30 rounded-xl" /></Field>
@@ -577,7 +608,7 @@ export default function ProfilePage() {
                                             </div>
                                         </div>
                                     </div>
-                                ))}
+                                    )})}
                                 <Button variant="outline" size="sm" className="w-full border-dashed" onClick={() => setFormData({...formData, languages: [...formData.languages, {name: "", fluency: "", highlights: "", startDate: ""}]})}>
                                     <Plus className="size-3 mr-2" /> Add
                                 </Button>
@@ -590,12 +621,12 @@ export default function ProfilePage() {
                     <div className="sticky top-24 space-y-8">
                         {/* Navigation */}
                         <button className="flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/10 text-left hover:bg-surface-container transition-all" onClick={() => navigate("/app/autocv")}>
-                            <div className="size-8 rounded-lg bg-dossier/10 flex items-center justify-center text-dossier shrink-0">
+                            <div className="size-8 rounded-lg bg-accent/10 flex items-center justify-center text-accent shrink-0">
                                 <Sparkles className="size-4" />
                             </div>
                             <div className="min-w-0">
                                 <p className="text-sm font-bold text-on-surface">AutoCV Engine</p>
-                                <p className="text-xs text-on-surface-variant">Tailor dossiers</p>
+                                <p className="text-xs text-on-surface-variant">Tailor profiles</p>
                             </div>
                         </button>
                     </div>
@@ -608,7 +639,7 @@ export default function ProfilePage() {
 function SummaryItem({ label, value }: { label: string; value: string }) {
     return (
         <div className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/10">
-            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant/60">{label}</span>
+            <span className="text-xs font-bold tracking-wider text-on-surface-variant/60">{label}</span>
             <span className="text-xs font-bold text-on-surface truncate max-w-[140px] ml-2">{value}</span>
         </div>
     );
@@ -629,7 +660,7 @@ function Section({ title, icon, children, index }: { title: string; icon: React.
 }    function Field({ label, help, children }: { label: string; help?: string; children: React.ReactNode }) {
     return (
         <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">{label}</Label>
+            <Label className="text-xs font-bold tracking-wider text-on-surface-variant">{label}</Label>
             {help && <p className="text-label-md text-on-surface-variant/50 leading-tight">{help}</p>}
             {children}
         </div>

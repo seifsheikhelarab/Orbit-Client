@@ -1,19 +1,19 @@
 import { useState, useEffect, useRef } from "react";
-import { pdf } from "@react-pdf/renderer";
 import { Loader2 } from "lucide-react";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import type { ResumeData, CoverLetterContent, ResumeSettings } from "../types";
 
 // Import styles
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 interface PreviewBufferProps {
-    document: any;
+    document: { id?: string; name?: string; content?: Record<string, unknown>; settings?: Record<string, unknown> } | null;
     docType: "RESUME" | "COVER_LETTER";
-    resumeData: any;
-    coverLetterData: any;
-    settings: any;
+    resumeData: ResumeData;
+    coverLetterData: CoverLetterContent;
+    settings: ResumeSettings;
     syncDelay?: number;
 }
 
@@ -43,10 +43,11 @@ export function PreviewBuffer({
 
         let isCancelled = false;
         const currentRenderId = ++renderCountRef.current;
-        setIsRendering(true);
+        setTimeout(() => setIsRendering(true), 0);
 
         const generatePreview = async () => {
             try {
+                const { pdf } = await import("@react-pdf/renderer");
                 const { ResumePDF } = await import("../components/ResumePDF");
                 const { CoverLetterTemplate } = await import("../components/templates/CoverLetterTemplate");
                 

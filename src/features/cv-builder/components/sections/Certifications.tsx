@@ -82,7 +82,7 @@ function SortableCertificationItem({
                         <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
                             {useWatch({ control, name: `certifications.${index}.name` }) || `Certification ${index + 1}`}
                         </span>
-                        <span className="text-[10px] text-on-surface-variant truncate">
+                        <span className="text-label-sm text-on-surface-variant truncate">
                             {useWatch({ control, name: `certifications.${index}.issuer` }) || "No issuer provided"}
                         </span>
                     </div>
@@ -106,7 +106,7 @@ function SortableCertificationItem({
                 <div className="px-6 pb-6 pt-2 border-t border-outline bg-surface-container-low">
                     <div className="grid gap-4 grid-cols-2">
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`certifications-${index}-name`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Certification Name</Label>
+                            <Label htmlFor={`certifications-${index}-name`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">Certification Name</Label>
                              <Input
                                  id={`certifications-${index}-name`}
                                  {...register(`certifications.${index}.name`)}
@@ -115,7 +115,7 @@ function SortableCertificationItem({
                              />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`certifications-${index}-issuer`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Issuer</Label>
+                            <Label htmlFor={`certifications-${index}-issuer`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">Issuer</Label>
                              <Input
                                  id={`certifications-${index}-issuer`}
                                  {...register(`certifications.${index}.issuer`)}
@@ -124,7 +124,7 @@ function SortableCertificationItem({
                              />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`certifications-${index}-startDate`} className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-tight">Date Issued</Label>
+                            <Label htmlFor={`certifications-${index}-startDate`} className="text-label-sm font-bold text-on-surface-variant/60 tracking-tight">Date Issued</Label>
                              <Input
                                  id={`certifications-${index}-startDate`}
                                  {...register(`certifications.${index}.startDate`)}
@@ -133,7 +133,7 @@ function SortableCertificationItem({
                              />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`certifications-${index}-url`} className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-tight">Verification URL</Label>
+                            <Label htmlFor={`certifications-${index}-url`} className="text-label-sm font-bold text-on-surface-variant/60 tracking-tight">Verification URL</Label>
                              <Input
                                  id={`certifications-${index}-url`}
                                  {...register(`certifications.${index}.url`)}
@@ -179,7 +179,7 @@ export function Certifications({ control, register }: CertificationsProps) {
                     </div>
                     <div>
                         <h2 className="text-base font-bold text-on-surface">Certifications</h2>
-                        <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Awards & Achievements</p>
+                        <p className="text-label-sm text-on-surface-variant tracking-wider font-bold">Awards & Achievements</p>
                     </div>
                 </div>
                 <Button

@@ -82,8 +82,11 @@ export function ResumesPage() {
     if (isError) {
         return (
             <PageContainer maxWidth="xl">
-                <div className="flex flex-col items-center justify-center py-16">
-                    <p className="text-error">Failed to load documents.</p>
+                <div className="flex flex-col items-center justify-center py-16 gap-4">
+                    <p className="text-on-surface">Failed to load documents. Check your connection and try again.</p>
+                    <Button onClick={() => window.location.reload()}>
+                        Try Again
+                    </Button>
                 </div>
             </PageContainer>
         );
@@ -179,7 +182,7 @@ export function ResumesPage() {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {items.map((item, index) => renderCard(item, index))}
-                    <button 
+                    <button type="button"
                         onClick={() => handleCreate(activeTab)}
                         disabled={isCreating}
                         className={cn(

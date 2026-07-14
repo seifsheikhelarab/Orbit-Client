@@ -43,9 +43,9 @@ export const KanbanColumn = memo(function KanbanColumn({
             <div className={cn("flex items-center justify-between p-3 border-b-2", colors.border)}>
                 <div className="flex items-center gap-2">
                     <div className={cn("w-2.5 h-2.5 rounded-full", colors.dot)} />
-                    <h3 className="font-bold text-sm uppercase tracking-wider truncate">{config.label}</h3>
+                    <h3 className="font-bold text-sm tracking-wider truncate">{config.label}</h3>
                     <span className={cn(
-                        "px-2 py-0.5 rounded-full text-[10px] font-bold",
+                        "px-2 py-0.5 rounded-full text-label-sm font-bold",
                         "bg-surface-container-high text-on-surface-variant"
                     )}>
                         {count}
@@ -59,6 +59,7 @@ export const KanbanColumn = memo(function KanbanColumn({
 
             <div className="p-3 border-t border-outline/50">
                 <button
+                    type="button"
                     onClick={onAddClick}
                     className={cn(
                         "flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide",

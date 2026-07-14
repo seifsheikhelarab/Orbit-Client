@@ -53,19 +53,19 @@ typography:
     lineHeight: 1.2
     letterSpacing: "-0.01em"
   title:
-    fontFamily: "Inter, system-ui, sans-serif"
+    fontFamily: "DM Sans, system-ui, sans-serif"
     fontSize: "clamp(0.875rem, 2vw, 1.125rem)"
     fontWeight: 600
     lineHeight: 1.4
     letterSpacing: "0"
   body:
-    fontFamily: "Inter, system-ui, sans-serif"
+    fontFamily: "DM Sans, system-ui, sans-serif"
     fontSize: "clamp(0.875rem, 2vw, 1rem)"
     fontWeight: 400
     lineHeight: 1.6
     letterSpacing: "0"
   label:
-    fontFamily: "Inter, system-ui, sans-serif"
+    fontFamily: "DM Sans, system-ui, sans-serif"
     fontSize: "0.6875rem"
     fontWeight: 600
     lineHeight: 1.4
@@ -183,7 +183,7 @@ components:
 
 Orbit is a command center for the job search — confident, sharp, and calm. Every surface is purposeful; nothing is decorative for the sake of filling space. The deep midnight navy background of the sidebar anchors the user, while the teal accent provides navigational clarity without demanding attention. The tonal surface palette (low to high) creates editorial depth through background shifts rather than shadows, keeping the interface clean and legible.
 
-This system explicitly rejects the generic SaaS cream aesthetic — the muted grays, the uniform card grids, the forgettable B2B dashboard tropes. Instead, each surface has presence through intentional typography (Manrope's sharp geometry for headings, Inter's clarity for body text), generous whitespace, and a restrained color palette that lets data take center stage.
+This system explicitly rejects the generic SaaS cream aesthetic — the muted grays, the uniform card grids, the forgettable B2B dashboard tropes. Instead, each surface has presence through intentional typography (Manrope's sharp geometry for headings, DM Sans' clean warmth for body text), generous whitespace, and a restrained color palette that lets data take center stage.
 
 The job search is uncertain and emotionally taxing. Orbit counters that with a steady, predictable interface. Motion is exponential-eased and purposeful. Navigation is consistent. Every interaction confirms intent through crisp, tactile feedback — the scale-down on click, the hover shadow, the active-state color shift.
 
@@ -236,9 +236,9 @@ Six named statuses, each with a background, text, and border token:
 ## 3. Typography
 
 **Display Font:** Manrope (with system-ui, sans-serif fallback)
-**Body Font:** Inter (with system-ui, sans-serif fallback)
+**Body Font:** DM Sans (with system-ui, sans-serif fallback)
 
-**Character:** A geometric + humanist pairing. Manrope's sharp, open apertures give headings presence and precision. Inter's tall x-height and clean counters keep body text legible at small sizes. Together they balance authority (Manrope) with readability (Inter) — the command center voice.
+**Character:** A geometric + humanist pairing. Manrope's sharp, open apertures give headings presence and precision. DM Sans's rounded terminals and even weight keep body text legible and warm. Together they balance authority (Manrope) with approachability (DM Sans) — the command center voice.
 
 ### Hierarchy
 - **Display** (ExtraBold 800, clamp(2rem, 5vw, 3.5rem), line-height 1.1, tracking -0.02em): Dashboard metric values, page titles on landing views. `text-wrap: balance` recommended. Appears on no more than one element per viewport.
@@ -338,7 +338,7 @@ At rest, cards use surface-container-low. Hover raises to surface-container. The
 ### Do:
 - **Do** use tonal layering for depth instead of shadows. Shadow is for interactive states only.
 - **Do** keep the teal accent to ≤5% of any viewport. Its rarity is directional.
-- **Do** use Manrope for headings and Inter for body text. Don't swap them.
+- **Do** use Manrope for headings and DM Sans for body text. Don't swap them.
 - **Do** cap body text at 65-75ch in reading contexts.
 - **Do** use text-wrap: balance on headings and text-wrap: pretty on prose.
 - **Do** use surface-container-low as the default card and container background.

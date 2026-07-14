@@ -112,7 +112,7 @@ export function InterviewRoundsList({
                 <div className="p-2 rounded-lg bg-tertiary-container">
                     <Calendar className="w-4 h-4 text-on-tertiary-container" />
                 </div>
-                <h2 className="text-sm font-bold uppercase tracking-wider">Interview Rounds</h2>
+                <h2 className="text-sm font-bold tracking-wider">Interview Rounds</h2>
                 <div className="flex-1" />
                 <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                     <DialogTrigger asChild>

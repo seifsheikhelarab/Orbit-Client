@@ -82,7 +82,7 @@ function SortableEducationItem({
                             <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
                             {useWatch({ control, name: `education.${index}.studyType` }) || `Education ${index + 1}`}
                         </span>
-                            <span className="text-[10px] text-on-surface-variant truncate">
+                            <span className="text-label-sm text-on-surface-variant truncate">
                             {useWatch({ control, name: `education.${index}.institution` }) || "New Institution"}
                         </span>
                     </div>
@@ -106,7 +106,7 @@ function SortableEducationItem({
                  <div className="px-6 pb-6 pt-2 border-t border-outline-variant/30 bg-surface-container-low">
                     <div className="grid gap-4 grid-cols-2">
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`education-${index}-institution`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Institution</Label>
+                            <Label htmlFor={`education-${index}-institution`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">Institution</Label>
                             <Input
                                 id={`education-${index}-institution`}
                                 {...register(`education.${index}.institution`)}
@@ -115,7 +115,7 @@ function SortableEducationItem({
                             />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`education-${index}-area`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Field of Study</Label>
+                            <Label htmlFor={`education-${index}-area`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">Field of Study</Label>
                             <Input
                                 id={`education-${index}-area`}
                                 {...register(`education.${index}.area`)}
@@ -124,7 +124,7 @@ function SortableEducationItem({
                             />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`education-${index}-studyType`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Degree / Type</Label>
+                            <Label htmlFor={`education-${index}-studyType`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">Degree / Type</Label>
                             <Input
                                 id={`education-${index}-studyType`}
                                 {...register(`education.${index}.studyType`)}
@@ -133,7 +133,7 @@ function SortableEducationItem({
                             />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`education-${index}-score`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">GPA / Score</Label>
+                            <Label htmlFor={`education-${index}-score`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">GPA / Score</Label>
                             <Input
                                 id={`education-${index}-score`}
                                 {...register(`education.${index}.score`)}
@@ -142,7 +142,7 @@ function SortableEducationItem({
                             />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`education-${index}-startDate`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">
+                            <Label htmlFor={`education-${index}-startDate`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">
                                 Start Date
                             </Label>
                             <Input
@@ -153,7 +153,7 @@ function SortableEducationItem({
                             />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`education-${index}-endDate`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">
+                            <Label htmlFor={`education-${index}-endDate`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">
                                 End Date
                             </Label>
                             <Input
@@ -201,7 +201,7 @@ export function Education({ control, register }: EducationProps) {
                     </div>
                     <div>
                         <h2 className="text-base font-bold text-on-surface">Education</h2>
-                        <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Academic Background</p>
+                        <p className="text-label-sm text-on-surface-variant tracking-wider font-bold">Academic Background</p>
                     </div>
                 </div>
                 <Button

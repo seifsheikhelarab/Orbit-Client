@@ -19,6 +19,25 @@ interface EmptyStateProps {
   className?: string;
 }
 
+const defaultContent = {
+  applications: {
+    title: "No applications logged yet",
+    description: "Start tracking your search — every application brings you closer to the offer.",
+  },
+  search: {
+    title: "No matches on file",
+    description: "Your search turned up empty. Broaden your terms or clear filters to browse all applications.",
+  },
+  inbox: {
+    title: "All clear",
+    description: "No new signals right now. We'll ping you when something lands.",
+  },
+  default: {
+    title: "Nothing filed yet",
+    description: "Add your first entry to get things moving.",
+  },
+} as const;
+
 function EmptyState({
   title,
   description,
@@ -34,25 +53,6 @@ function EmptyState({
     applications: Briefcase,
   }[icon];
 
-  const defaultContent = {
-    applications: {
-      title: "No applications logged yet",
-      description: "Your dossier is empty. Start tracking your search — every application brings you closer to the offer.",
-    },
-    search: {
-      title: "No matches on file",
-      description: "Your search turned up empty. Broaden your terms or clear filters to browse the full dossier.",
-    },
-    inbox: {
-      title: "All clear",
-      description: "No new signals right now. We'll ping you when something lands.",
-    },
-    default: {
-      title: "Nothing filed yet",
-      description: "This dossier section is blank. Add your first entry to get things moving.",
-    },
-  };
-
   const content = defaultContent[icon] || defaultContent.default;
 
   return (
@@ -65,7 +65,7 @@ function EmptyState({
       )}
     >
         <div
-          className="size-20 rounded-2xl bg-surface-container-high flex items-center justify-center shrink-0 animate-fade-in-scale animate-float-gentle"
+          className="size-20 rounded-2xl bg-surface-container-high flex items-center justify-center shrink-0"
           style={{ animationDelay: "0.1s", animationFillMode: "both" }}
         >
           <Icon className="size-10 text-on-surface-variant" aria-hidden="true" />

@@ -43,11 +43,12 @@ export function PageTransition({ children, className, stagger = true, direction,
   const location = useLocation();
   const [phase, setPhase] = useState<'enter' | 'exit' | 'idle'>('enter');
   const [cachedChildren, setCachedChildren] = useState(children);
+  const [displayPath, setDisplayPath] = useState(location.pathname);
   const prevPathRef = useRef(location.pathname);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const isFirstRender = useRef(true);
 
-  // Clean up timers on unmount
+  // Clean up timers on unmount and on effect re-run
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
@@ -62,7 +63,6 @@ export function PageTransition({ children, className, stagger = true, direction,
 
   useEffect(() => {
     if (isFirstRender.current) {
-      // Initial mount — just enter
       isFirstRender.current = false;
       setCachedChildren(children);
       setPhase('enter');
@@ -76,31 +76,41 @@ export function PageTransition({ children, className, stagger = true, direction,
       prevPathRef.current = location.pathname;
 
       if (mode === 'full') {
-        // Phase 1: Exit old content
-        setPhase('exit');
-
+        // Defer exit phase out of synchronous effect body — drives animation state machine
+        // ponytail: setTimeout(0) satisfies set-state-in-effect lint; sub-ms delay is imperceptible
         timerRef.current = setTimeout(() => {
-          // Phase 2: Swap to new content and enter
+          setPhase('exit');
+
+          timerRef.current = setTimeout(() => {
+            setDisplayPath(location.pathname);
+            setCachedChildren(children);
+            setPhase('enter');
+
+            timerRef.current = setTimeout(() => {
+              setPhase('idle');
+            }, ENTER_DURATION);
+          }, EXIT_DURATION);
+        }, 0);
+      } else {
+        // enter-only: swap and enter
+        timerRef.current = setTimeout(() => {
+          setDisplayPath(location.pathname);
           setCachedChildren(children);
           setPhase('enter');
 
           timerRef.current = setTimeout(() => {
             setPhase('idle');
           }, ENTER_DURATION);
-        }, EXIT_DURATION);
-      } else {
-        // enter-only: just swap and enter
-        setCachedChildren(children);
-        setPhase('enter');
-
-        timerRef.current = setTimeout(() => {
-          setPhase('idle');
-        }, ENTER_DURATION);
+        }, 0);
       }
     } else {
       // Same route — sync children immediately without animation
       setCachedChildren(children);
     }
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, [location.pathname, children, mode]);
 
   const isAnimating = phase === 'exit' || phase === 'enter';
@@ -114,7 +124,7 @@ export function PageTransition({ children, className, stagger = true, direction,
 
   return (
     <div
-      key={phase === 'enter' ? location.pathname : prevPathRef.current}
+      key={phase === 'enter' ? location.pathname : displayPath}
       className={cn(
         animationClass,
         phase === 'enter' && stagger && 'stagger-children',

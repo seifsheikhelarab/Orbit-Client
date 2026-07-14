@@ -12,6 +12,18 @@ import {
   useDismissNotification,
 } from '../api/useNotifications';
 
+interface Notification {
+  id: string;
+  title: string;
+  body: string;
+  type: string;
+  readAt?: string;
+  applicationId?: string;
+  jobTitle?: string;
+  company?: string;
+  createdAt: string;
+}
+
 export function NotificationsPage() {
   const navigate = useNavigate();
   const { data: notifications, isLoading } = useNotifications();
@@ -20,7 +32,7 @@ export function NotificationsPage() {
   const snooze = useSnoozeNotification();
   const dismiss = useDismissNotification();
 
-  const unreadCount = notifications?.filter((n: any) => !n.readAt)?.length || 0;
+  const unreadCount = notifications?.filter((n: Notification) => !n.readAt)?.length || 0;
 
   return (
     <PageContainer maxWidth="2xl">
@@ -30,7 +42,7 @@ export function NotificationsPage() {
         description="Manage your follow-up reminders and alerts."
         actions={
           unreadCount > 0 && (
-            <button
+            <button type="button"
               onClick={() => markAllAsRead.mutate()}
               disabled={markAllAsRead.isPending}
               className="text-sm text-primary hover:underline disabled:opacity-50"
@@ -49,7 +61,7 @@ export function NotificationsPage() {
             <Skeleton className="h-20 rounded-xl" />
           </>
         ) : notifications && notifications.length > 0 ? (
-          notifications.map((notification: any) => (
+          notifications.map((notification: Notification) => (
             <NotificationCard
               key={notification.id}
               notification={notification}
@@ -82,7 +94,7 @@ function NotificationCard({
   onDismiss,
   onNavigate,
 }: {
-  notification: any;
+  notification: Notification;
   onMarkAsRead: () => void;
   onSnooze: (days: number) => void;
   onDismiss: () => void;
@@ -96,7 +108,7 @@ function NotificationCard({
       variant={isUnread ? 'elevated' : 'default'}
       size="default"
       className={`cursor-pointer transition-all duration-150 hover:bg-surface-container-low ${
-        isOverdue ? 'border-l-4 border-l-error' : ''
+        isOverdue ? 'ring-1 ring-error/30' : ''
       }`}
       onClick={onNavigate}
     >
@@ -131,20 +143,20 @@ function NotificationCard({
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {isUnread && (
-            <button
+            <button type="button"
               onClick={(e) => { e.stopPropagation(); onMarkAsRead(); }}
               className="text-xs text-primary hover:underline font-medium"
             >
               Mark read
             </button>
           )}
-          <button
+          <button type="button"
             onClick={(e) => { e.stopPropagation(); onSnooze(3); }}
             className="text-xs text-on-surface-variant hover:text-on-surface font-medium"
           >
             Snooze
           </button>
-          <button
+          <button type="button"
             onClick={(e) => { e.stopPropagation(); onDismiss(); }}
             className="text-xs text-on-surface-variant hover:text-error font-medium"
           >

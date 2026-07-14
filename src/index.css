@@ -23,19 +23,19 @@
     --color-on-dossier-container: #78350f;
     
     --color-surface: #ffffff;
-    --color-surface-dim: #faf8f6;
+    --color-surface-dim: #f5f6fa;
     --color-surface-bright: #ffffff;
     
-    --color-surface-container-lowest: #fffdfc;
-    --color-surface-container-low: #faf8f6;
-    --color-surface-container: #f2f0ed;
-    --color-surface-container-high: #e7e4e0;
-    --color-surface-container-highest: #d4d1cc;
+    --color-surface-container-lowest: #fafbfe;
+    --color-surface-container-low: #f5f6fa;
+    --color-surface-container: #edeef5;
+    --color-surface-container-high: #e0e2eb;
+    --color-surface-container-highest: #d0d3de;
     
     --color-on-surface: #111827;
-    --color-on-surface-variant: #545250;
+    --color-on-surface-variant: #4e5160;
     
-    --color-background: #fcf9f6;
+    --color-background: #f7f8fc;
     --color-on-background: #111827;
     
     --color-error: #dc2626;
@@ -48,8 +48,8 @@
     --color-on-success: #ffffff;
     --color-on-success-container: #064e3b;
     
-    --color-outline: #d4d1cc;
-    --color-outline-variant: #e7e4e0;
+    --color-outline: #d0d3de;
+    --color-outline-variant: #e0e2eb;
     
     --color-primary-fixed: #1a1a2e;
     --color-primary-fixed-dim: #ece7f0;
@@ -63,18 +63,18 @@
     
     --color-inverse-primary: #a5b4fc;
     --color-inverse-surface: #1a1a2e;
-    --color-inverse-on-surface: #faf8f6;
+    --color-inverse-on-surface: #f5f6fa;
     
-    --color-muted: #f2f0ed;
-    --color-muted-foreground: #73716e;
+    --color-muted: #edeef5;
+    --color-muted-foreground: #6b6e7a;
     
     --color-popover: #ffffff;
     --color-popover-foreground: #111827;
     
-    --color-input: #faf8f6;
+    --color-input: #f5f6fa;
     --color-ring: #0d9488;
     
-    --color-border: #e7e4e0;
+    --color-border: #e0e2eb;
   
     --color-status-saved: #4f46e5;
     --color-status-applied: #4f46e5;
@@ -88,14 +88,14 @@
     --color-status-bg-phone-screen: #f5f0ff;
     --color-status-bg-interview: #fef9e7;
     --color-status-bg-offer: #e1f7ed;
-    --color-status-bg-closed: #f2f0ed;
+    --color-status-bg-closed: #edeef5;
   
     --color-status-text-saved: #3730a3;
     --color-status-text-applied: #3730a3;
     --color-status-text-phone-screen: #6b21a8;
     --color-status-text-interview: #78350f;
     --color-status-text-offer: #064e3b;
-    --color-status-text-closed: #545250;
+    --color-status-text-closed: #4e5160;
   
     --font-headline: 'Manrope', system-ui, sans-serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
@@ -130,38 +130,10 @@
     --tracking-label: 0.06em;
     --tracking-label-wide: 0.12em;
 
-  @keyframes scan {
-    0%, 100% { transform: translateY(-16px); opacity: 0; }
-    50% { transform: translateY(64px); opacity: 1; }
-  }
-
-  @keyframes dossierScan {
-    0% { transform: translateY(-100%); opacity: 0; }
-    10% { opacity: 0.06; }
-    90% { opacity: 0.06; }
-    100% { transform: translateY(100vh); opacity: 0; }
-  }
-
-  @keyframes contentScan {
-    0% { transform: translateY(-100%); opacity: 0; }
-    10% { opacity: 0.04; }
-    90% { opacity: 0.04; }
-    100% { transform: translateY(100vh); opacity: 0; }
-  }
-
   @keyframes shimmer {
     100% { transform: translateX(100%); }
   }
 
-  @keyframes telemetryPulse {
-    0%, 100% { opacity: 0.15; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(1.5); }
-  }
-
-  @keyframes dossierGlow {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.05); }
-    50% { box-shadow: 0 0 20px 4px rgba(217, 119, 6, 0.08); }
-  }
 }
 
 
@@ -240,83 +212,6 @@
 
   .font-mono {
     font-family: var(--font-mono);
-  }
-
-  .dossier-scanline {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .dossier-scanline::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 0%, rgba(217, 119, 6, 0.03) 50%, transparent 100%);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .dossier-scanline::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: linear-gradient(180deg, transparent 0%, rgba(217, 119, 6, 0.04) 50%, transparent 100%);
-    animation: dossierScan 6s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .dossier-content-bg {
-    position: relative;
-    background-color: var(--color-surface-container-lowest);
-  }
-
-  .dossier-content-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(217, 119, 6, 0.015) 48px, rgba(217, 119, 6, 0.015) 49px);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .dossier-content-bg::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 80px;
-    background: linear-gradient(180deg, transparent 0%, rgba(217, 119, 6, 0.03) 50%, transparent 100%);
-    animation: contentScan 8s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .bg-dossier-glow {
-    animation: dossierGlow 3s ease-in-out infinite;
-  }
-
-  .nav-dossier-glow {
-    position: relative;
-  }
-
-  .nav-dossier-glow::before {
-    content: '';
-    position: absolute;
-    left: -12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 60%;
-    background: var(--color-dossier);
-    border-radius: 0 2px 2px 0;
-    box-shadow: 0 0 8px rgba(217, 119, 6, 0.3);
-  }
-
-  .animate-telemetry-pulse {
-    animation: telemetryPulse 2s ease-in-out infinite;
   }
 
   .ease-out-quart {
@@ -762,7 +657,6 @@
     font-weight: 600;
     line-height: var(--leading-label);
     letter-spacing: var(--tracking-label-wide);
-    text-transform: uppercase;
   }
 
   .text-balance {

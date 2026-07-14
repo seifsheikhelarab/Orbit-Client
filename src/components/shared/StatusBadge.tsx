@@ -60,4 +60,5 @@ function LargeStatusBadge({ status, icon, className, ...props }: LargeStatusBadg
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { StatusBadge, LargeStatusBadge, statusBadgeVariants }

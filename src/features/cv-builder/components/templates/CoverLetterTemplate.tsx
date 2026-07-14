@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
 
 interface CoverLetterTemplateProps {
     content: CoverLetterContent;
-    settings?: Record<string, any>;
+    settings?: { color?: string };
 }
 
 export function CoverLetterTemplate({ content }: CoverLetterTemplateProps) {

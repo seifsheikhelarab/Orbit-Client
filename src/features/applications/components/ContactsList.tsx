@@ -74,7 +74,7 @@ export function ContactsList({ contacts, isLoading, onAdd, onDelete }: ContactsL
                 <div className="p-2 rounded-lg bg-secondary-container">
                     <UserPlus className="w-4 h-4 text-on-secondary-container" />
                 </div>
-                <h2 className="text-sm font-bold uppercase tracking-wider">Contacts</h2>
+                <h2 className="text-sm font-bold tracking-wider">Contacts</h2>
                 <div className="flex-1" />
                 <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                     <DialogTrigger asChild>
@@ -135,7 +135,7 @@ export function ContactsList({ contacts, isLoading, onAdd, onDelete }: ContactsL
                                     {contact.title && <p className="text-xs text-on-surface-variant">{contact.title}</p>}
                                     <div className="flex items-center gap-2 mt-1">
                                         {contact.email && (
-                                            <a href={`mailto:${contact.email}`} className="text-xs text-on-surface-variant hover:text-primary">
+                                            <a href={`mailto:${contact.email}`} aria-label={`Email ${contact.name}`} className="text-xs text-on-surface-variant hover:text-primary">
                                                 <Mail className="w-3 h-3" />
                                             </a>
                                         )}

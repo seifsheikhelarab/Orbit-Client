@@ -50,10 +50,11 @@ export function FeatureTip({
     >
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-bold tracking-wider text-accent uppercase mb-1">{title}</p>
+          <p className="text-xs font-bold tracking-wider text-accent mb-1">{title}</p>
           <div className="text-sm text-on-primary/80 leading-relaxed">{children}</div>
         </div>
         <button
+          type="button"
           onClick={() => { setVisible(false); markTipShown(id); }}
           className="shrink-0 size-6 flex items-center justify-center rounded-full bg-on-primary/10 hover:bg-on-primary/20 transition-colors"
           aria-label="Dismiss tip"

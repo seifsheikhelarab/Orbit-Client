@@ -148,7 +148,7 @@ export function DashboardOverview() {
               <div className="size-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-4">
                 <TrendingUp className="size-8 text-primary/30" />
               </div>
-              <p className="text-label-sm font-bold text-on-surface-variant/40 mb-1">Pipeline Funnel</p>
+              <p className="text-label-sm font-bold text-on-surface-variant/40 mb-1">Pipeline</p>
               <p className="text-label-sm text-on-surface-variant/40">Charts will appear when you add applications</p>
             </div>
             <div className="xl:col-span-2 p-8 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col items-center justify-center min-h-60">
@@ -164,7 +164,7 @@ export function DashboardOverview() {
 
       {/* First-visit onboarding tip */}
       <FeatureTip id="welcome" title="Welcome to Orbit">
-        Your dossier is ready. Add your first application in the{' '}
+        Add your first application in the{' '}
         <strong>Applications</strong> tab — we&apos;ll track every status change,
         follow-up, and interview date.
       </FeatureTip>
@@ -188,7 +188,7 @@ export function DashboardOverview() {
                   title={stat.title}
                   value={stat.value}
                   trend={stat.trend}
-                  trendDir={stat.trendDir as any}
+                  trendDir={stat.trendDir as 'up' | 'down' | 'neutral'}
                   hero={stat.hero}
                   index={i}
                 />
@@ -198,14 +198,14 @@ export function DashboardOverview() {
 
           {/* Pipeline Visualization - collapsible */}
           <div className="rounded-2xl bg-surface-container-low border border-outline-variant/10 overflow-hidden">
-            <button
+            <button type="button"
               onClick={() => setChartsExpanded(!chartsExpanded)}
               className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-surface-container transition-colors group"
             >
               <div className="flex items-center gap-3">
                 <BarChart3 className="size-5 text-dossier" />
                 <span className="text-title-sm font-bold text-on-surface group-hover:text-dossier transition-colors">
-                  Pipeline Intelligence
+                  Pipeline
                 </span>
               </div>
               <ChevronDown className={`size-4 text-on-surface-variant transition-transform duration-300 ${chartsExpanded ? 'rotate-180' : ''}`} />
@@ -266,11 +266,10 @@ const StatCard = memo(function StatCard({
 
   if (hero) {
     return (
-      <div className="md:col-span-2 p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-[160px] transition-all hover:bg-surface-container hover:shadow-xl hover:-translate-y-0.5 animate-in fade-in slide-in-from-bottom-4 duration-300 fill-mode-both dossier-scanline bg-dossier-glow relative overflow-hidden"
-        style={{ animationDelay: `${index ? index * 50 : 0}ms` }}
+      <div className="md:col-span-2 p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-[160px] transition-all hover:bg-surface-container hover:-translate-y-0.5"
       >
         <div className="flex justify-between items-start relative z-10">
-          <span className="text-label-md font-bold uppercase tracking-widest text-dossier/70">{title}</span>
+          <span className="text-label-sm font-bold tracking-widest text-on-surface-variant/60">{title}</span>
           {direction !== 'neutral' && (
             <div className={`flex items-center gap-1.5 ${direction === 'up' ? 'text-success' : 'text-error'} animate-in fade-in zoom-in duration-300`} style={{ animationDelay: `${(index || 0) * 50 + 200}ms` }}>
               {direction === 'up' ? (
@@ -291,8 +290,7 @@ const StatCard = memo(function StatCard({
 
   return (
     <div
-      className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-[130px] transition-all hover:bg-surface-container hover:shadow-lg hover:-translate-y-0.5 animate-in fade-in slide-in-from-bottom-4 duration-300 fill-mode-both"
-      style={{ animationDelay: `${index ? index * 50 : 0}ms` }}
+      className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 flex flex-col justify-between min-h-[130px] transition-all hover:bg-surface-container hover:-translate-y-0.5"
     >
       <div className="flex justify-between items-start">
         <span className="text-label-sm font-bold text-on-surface-variant/60">{title}</span>
@@ -320,7 +318,7 @@ const ApplicationsOverTime = memo(function ApplicationsOverTime({ dateRange }: {
 
   const maxCount = useMemo(() => {
     if (!overTime || overTime.length === 0) return 1;
-    return Math.max(...overTime.map((d: any) => d.count || 0), 1);
+    return Math.max(...overTime.map((d: { count: number }) => d.count || 0), 1);
   }, [overTime]);
 
   const formatDate = (period: string) => {
@@ -341,7 +339,7 @@ const ApplicationsOverTime = memo(function ApplicationsOverTime({ dateRange }: {
     }
   };
 
-  if (isLoading) return <Skeleton className="h-[60] rounded-2xl bg-surface-container-low" />;
+  if (isLoading) return <Skeleton className="h-16 rounded-2xl bg-surface-container-low" />;
 
   // Dynamic label density based on date range
   const shouldShowLabel = (index: number, total: number) => {
@@ -357,20 +355,19 @@ const ApplicationsOverTime = memo(function ApplicationsOverTime({ dateRange }: {
   return (
     <div
       onClick={() => navigate('/app/applications')}
-      className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 cursor-pointer hover:bg-surface-container transition-all group animate-in fade-in slide-in-from-left-4 duration-500 fill-mode-both"
+      className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 cursor-pointer hover:bg-surface-container transition-all group"
     >
       <div className="flex items-center gap-2 mb-6">
-        <h3 className="text-title-sm font-bold text-on-surface">Activity</h3>
+        <h3 className="text-title-sm font-bold text-on-surface">Applications Over Time</h3>
       </div>
 
       <div className="flex items-end justify-between gap-1.5 h-40">
-        {overTime?.map((bar: any, i: number) => (
+        {overTime?.map((bar: { count: number; period: string }, i: number) => (
           <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-2 group/bar">
             <div
-              className="w-full max-w-6 bg-primary/20 rounded-t-md transition-all duration-300 group-hover/bar:bg-primary/40 animate-in fade-in slide-in-from-bottom-full fill-mode-both"
+              className="w-full max-w-6 bg-primary/20 rounded-t-md transition-all duration-300 group-hover/bar:bg-primary/40"
               style={{
                 height: `${(bar.count / maxCount) * 100}%`,
-                animationDelay: `${i * 30 + 150}ms`
               }}
             />
             <span className="text-label-sm font-bold text-on-surface-variant/40 whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
@@ -389,17 +386,16 @@ const RecentActivity = memo(function RecentActivity() {
   if (isLoading) return <Skeleton className="h-60 rounded-2xl bg-surface-container-low" />;
 
   return (
-    <div className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 animate-in fade-in slide-in-from-right-4 duration-500 fill-mode-both">
+    <div className="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10">
       <div className="flex items-center gap-2 mb-6">
-        <h3 className="text-title-sm font-bold text-on-surface">Activity</h3>
+        <h3 className="text-title-sm font-bold text-on-surface">Recent Activity</h3>
       </div>
 
       <div className="space-y-1">
-        {recent?.slice(0, 5).map((item: any, i: number) => (
+        {recent?.slice(0, 5).map((item: { company: string; toStatus: string; changedAt: string }, i: number) => (
           <div
             key={i}
-            className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-surface-container transition-colors group animate-in fade-in slide-in-from-right-2 duration-300 fill-mode-both"
-            style={{ animationDelay: `${i * 50 + 200}ms` }}
+            className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-surface-container transition-colors group"
           >
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold text-on-surface truncate group-hover:text-primary transition-colors">{item.company}</p>

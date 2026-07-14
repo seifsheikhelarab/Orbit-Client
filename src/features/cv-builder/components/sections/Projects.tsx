@@ -82,7 +82,7 @@ function SortableProjectItem({
                         <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
                             {useWatch({ control, name: `projects.${index}.name` }) || `Project ${index + 1}`}
                         </span>
-                        <span className="text-[10px] text-on-surface-variant truncate">
+                        <span className="text-label-sm text-on-surface-variant truncate">
                             {useWatch({ control, name: `projects.${index}.url` }) || "No URL provided"}
                         </span>
                     </div>
@@ -106,7 +106,7 @@ function SortableProjectItem({
                 <div className="px-6 pb-6 pt-2 border-t border-outline bg-surface-container-low">
                     <div className="grid gap-4 grid-cols-2">
                         <div className="col-span-2 space-y-1.5">
-                            <Label htmlFor={`projects-${index}-name`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Project Name</Label>
+                            <Label htmlFor={`projects-${index}-name`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">Project Name</Label>
                              <Input
                                  id={`projects-${index}-name`}
                                  {...register(`projects.${index}.name`)}
@@ -115,7 +115,7 @@ function SortableProjectItem({
                              />
                         </div>
                         <div className="col-span-2 space-y-1.5">
-                            <Label htmlFor={`projects-${index}-description`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Description</Label>
+                            <Label htmlFor={`projects-${index}-description`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">Description</Label>
                              <Input
                                  id={`projects-${index}-description`}
                                  {...register(`projects.${index}.description`)}
@@ -124,7 +124,7 @@ function SortableProjectItem({
                              />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`projects-${index}-url`} className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-tight">Project URL</Label>
+                            <Label htmlFor={`projects-${index}-url`} className="text-label-sm font-bold text-on-surface-variant/60 tracking-tight">Project URL</Label>
                              <Input
                                  id={`projects-${index}-url`}
                                  {...register(`projects.${index}.url`)}
@@ -133,7 +133,7 @@ function SortableProjectItem({
                              />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`projects-${index}-startDate`} className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-tight">Start Date</Label>
+                            <Label htmlFor={`projects-${index}-startDate`} className="text-label-sm font-bold text-on-surface-variant/60 tracking-tight">Start Date</Label>
                              <Input
                                  id={`projects-${index}-startDate`}
                                  {...register(`projects.${index}.startDate`)}
@@ -179,7 +179,7 @@ export function Projects({ control, register }: ProjectsProps) {
                     </div>
                     <div>
                         <h2 className="text-base font-bold text-on-surface">Projects</h2>
-                        <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Personal & Side Projects</p>
+                        <p className="text-label-sm text-on-surface-variant tracking-wider font-bold">Personal & Side Projects</p>
                     </div>
                 </div>
                 <Button

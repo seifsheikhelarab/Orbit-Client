@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, Suspense, lazy } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useResume, useUpdateResume } from "../api/useResumes";
 import { ResumeData, defaultResumeData, CoverLetterContent, defaultCoverLetterContent, ResumeType, type ResumeSettings } from "../types";
@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2, ArrowLeft, Save, Download, Eye, User, Briefcase, GraduationCap, Lightbulb, Mail, ChevronDown, Plus, Trash2, Settings2, Award, Heart, Globe, Pencil } from "lucide-react";
 import { toast } from "sonner";
-import { pdf } from "@react-pdf/renderer";
-import { PreviewBuffer } from "../components/PreviewBuffer";
+
+const LazyPreviewBuffer = lazy(() => import("../components/PreviewBuffer").then(m => ({ default: m.PreviewBuffer })));
 
 export function BuilderPage() {
     const { id } = useParams<{ id: string }>();
@@ -26,6 +28,7 @@ export function BuilderPage() {
     
     // Track the last saved state to avoid unnecessary saves
     const lastSavedRef = useRef<string>("");
+    const isDirtyRef = useRef(false);
 
     const updateResume = useUpdateResume();
     const [isDownloading, setIsDownloading] = useState(false);
@@ -36,59 +39,66 @@ export function BuilderPage() {
     const docType = (document?.type as ResumeType) || "RESUME";
 
     useEffect(() => {
+        isDirtyRef.current = true;
+    }, [resumeData, coverLetterData, settings, newName]);
+
+    useEffect(() => {
         if (document) {
-            setNewName(document.name);
-            
             const currentContent = document.content || {};
             const stateString = JSON.stringify({ name: document.name, content: currentContent, settings: document.settings || {} });
             lastSavedRef.current = stateString;
 
-            if (docType === "RESUME") {
-                const loadedSettings = {
-                    ...defaultResumeData.settings,
-                    ...(currentContent.settings || {}),
-                    ...(document.settings || {})
-                };
-                const loadedResumeData = {
-                    ...defaultResumeData,
-                    ...currentContent,
-                    settings: loadedSettings,
-                    basics: {
-                        ...defaultResumeData.basics,
-                        ...(currentContent.basics || {})
-                    }
-                };
-                setResumeData(loadedResumeData);
-                setSettings(loadedSettings);
-            } else {
-                const loadedCoverLetterData = {
-                    ...defaultCoverLetterContent,
-                    ...currentContent
-                };
-                setCoverLetterData(loadedCoverLetterData);
-                setSettings(defaultResumeData.settings);
-            }
-        }
-    }, [document?.id]); // Only re-initialize when the ID changes
+            setTimeout(() => {
+                setNewName(document.name);
 
-    const handleSave = async (skipToast = false) => {
+                if (docType === "RESUME") {
+                    const loadedSettings = {
+                        ...defaultResumeData.settings,
+                        ...(currentContent.settings || {}),
+                        ...(document.settings || {})
+                    };
+                    const loadedResumeData = {
+                        ...defaultResumeData,
+                        ...currentContent,
+                        settings: loadedSettings,
+                        basics: {
+                            ...defaultResumeData.basics,
+                            ...(currentContent.basics || {})
+                        }
+                    };
+                    setResumeData(loadedResumeData);
+                    setSettings(loadedSettings);
+                } else {
+                    const loadedCoverLetterData = {
+                        ...defaultCoverLetterContent,
+                        ...currentContent
+                    };
+                    setCoverLetterData(loadedCoverLetterData);
+                    setSettings(defaultResumeData.settings);
+                }
+            }, 0);
+            isDirtyRef.current = false;
+        }
+    }, [document?.id, docType, document]);
+
+    const handleSave = useCallback(async (skipToast = false) => {
         if (!id) return;
         
         const content = docType === "RESUME" ? { ...resumeData, settings } : coverLetterData;
         const currentSettings = docType === "RESUME" ? settings : {};
         const stateString = JSON.stringify({ name: newName, content, settings: currentSettings });
         
-        // Final guard: if the stringified state matches what we last saved, don't trigger mutation
         if (stateString === lastSavedRef.current) return;
         
         try {
-            await updateResume.mutateAsync({ id, name: newName, content, settings: currentSettings });
+            await updateResume.mutateAsync({ id, name: newName, content: content as Record<string, unknown>, settings: currentSettings as Record<string, unknown> });
             lastSavedRef.current = stateString;
+            isDirtyRef.current = false;
             if (!skipToast) toast.success("Saved successfully");
-        } catch (error) {
+        } catch {
             if (!skipToast) toast.error("Failed to save");
         }
-    };
+    }, [id, docType, resumeData, settings, coverLetterData, newName, updateResume]);
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
@@ -99,19 +109,18 @@ export function BuilderPage() {
         };
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [id, newName, resumeData, coverLetterData, settings]);
+    }, [id, newName, resumeData, coverLetterData, settings, handleSave]);
 
     useEffect(() => {
         const onBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (formState.isDirty) { e.preventDefault(); e.returnValue = ""; }
+            if (isDirtyRef.current) { e.preventDefault(); e.returnValue = ""; }
         };
         window.addEventListener("beforeunload", onBeforeUnload);
         return () => window.removeEventListener("beforeunload", onBeforeUnload);
-    }, [resumeData, coverLetterData]);
-
-    const formState = { isDirty: false };
+    }, []);
 
     const generatePdfBlob = useCallback(async () => {
+        const { pdf } = await import("@react-pdf/renderer");
         const { ResumePDF } = await import("../components/ResumePDF");
         const { CoverLetterTemplate } = await import("../components/templates/CoverLetterTemplate");
         
@@ -132,7 +141,7 @@ export function BuilderPage() {
             a.click();
             URL.revokeObjectURL(url);
             toast.success("Downloaded PDF successfully");
-        } catch (error) {
+        } catch {
             toast.error("Failed to generate PDF");
         } finally {
             setIsDownloading(false);
@@ -140,11 +149,38 @@ export function BuilderPage() {
     };
 
     if (isLoading) {
-        return <div className="min-h-screen flex items-center justify-center pt-16"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+        return (
+            <div className="min-h-screen flex flex-col bg-surface pt-16">
+                <div className="h-16 border-b border-outline/50 bg-surface/80 backdrop-blur-xl flex items-center px-6 gap-4 shrink-0">
+                    <Skeleton className="size-9 rounded-full" />
+                    <Skeleton className="h-px w-px" />
+                    <Skeleton className="h-6 w-48" />
+                    <div className="ml-auto flex gap-3">
+                        <Skeleton className="h-9 w-20 rounded-xl" />
+                        <Skeleton className="h-9 w-16 rounded-xl" />
+                    </div>
+                </div>
+                <div className="flex-1 grid grid-cols-1 lg:grid-cols-12">
+                    <div className="lg:col-span-4 p-6 space-y-4 border-r border-outline">
+                        {Array.from({ length: 4 }).map((_, i) => (
+                            <Skeleton key={i} className="h-20 rounded-2xl" />
+                        ))}
+                    </div>
+                    <div className="hidden lg:flex lg:col-span-8 items-center justify-center">
+                        <Skeleton className="w-[600px] h-[800px] rounded-sm" />
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     if (isError || !document) {
-        return <div className="min-h-screen flex items-center justify-center pt-16 text-error">Failed to load document.</div>;
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center pt-16 gap-4">
+                <p className="text-on-surface">Failed to load document. Check your connection and try again.</p>
+                <Button onClick={() => window.location.reload()}>Try Again</Button>
+            </div>
+        );
     }
 
     const resumeForm = (
@@ -159,7 +195,7 @@ export function BuilderPage() {
                         onChange={(template) => setSettings((prev) => ({ ...prev, template: template as ResumeSettings["template"] }))}
                     />
                     <div className="space-y-4 bg-surface-container-low/50 p-6 rounded-2xl border border-outline/30">
-                        <Label className="text-xs font-bold uppercase tracking-wider text-primary/60">Accent color</Label>
+                        <Label className="text-xs font-bold tracking-wider text-primary/60">Accent color</Label>
                         <p className="text-xs text-on-surface-variant/70 italic">Used for headers, dividers, links, and emphasis in the PDF.</p>
                         <div className="flex gap-4 items-center mt-2">
                             <div 
@@ -169,6 +205,7 @@ export function BuilderPage() {
                             <div className="relative flex-1">
                                 <input 
                                     type="color" 
+                                    aria-label="Accent color"
                                     value={settings.color || "#1e3a8a"} 
                                     onChange={(e) => setSettings((prev) => ({ ...prev, color: e.target.value }))} 
                                     className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10" 
@@ -276,7 +313,7 @@ export function BuilderPage() {
                         {resumeData.skills.map((skill, i) => (
                             <div key={i} className="group flex items-center gap-1.5 px-3 py-1.5 bg-surface-container rounded-full text-sm border border-outline">
                                 <span>{skill.name}</span>
-                                <button onClick={() => { const s = resumeData.skills.filter((_, idx) => idx !== i); setResumeData({ ...resumeData, skills: s }); }} className="text-on-surface-variant hover:text-error transition-colors">×</button>
+                                <button type="button" onClick={() => { const s = resumeData.skills.filter((_, idx) => idx !== i); setResumeData({ ...resumeData, skills: s }); }} className="text-on-surface-variant hover:text-error transition-colors">×</button>
                             </div>
                         ))}
                     </div>
@@ -402,7 +439,8 @@ export function BuilderPage() {
             </CollapsibleSection>
         </main>
     );    return (
-        <div className="min-h-screen pt-[64px] flex flex-col bg-surface">
+        <div className="min-h-screen pt-16 flex flex-col bg-surface">
+            {/* ponytail: double-toolbar is intentional — editor needs persistent Save/Export + name editing. Keep if UX warrants it; merge into TopBar if it feels heavy. */}
             <div className="h-16 border-b border-outline/50 bg-surface/80 backdrop-blur-xl flex items-center justify-between px-6 shrink-0 z-20">
                 <div className="flex items-center gap-4 min-w-0">
                     <Button 
@@ -472,13 +510,15 @@ export function BuilderPage() {
                 {docType === "COVER_LETTER" ? coverLetterForm : resumeForm}
                 <div className="hidden lg:flex lg:col-span-8 overflow-hidden bg-surface-container-low justify-center items-start p-8 relative">
                     <div className="w-full h-full max-w-[900px] shadow-lg rounded-sm overflow-hidden ring-1 ring-outline/50">
-                        <PreviewBuffer
-                            document={document}
-                            docType={docType}
-                            resumeData={resumeData}
-                            coverLetterData={coverLetterData}
-                            settings={settings}
-                        />
+                        <Suspense fallback={<Spinner size="lg" className="absolute inset-0 m-auto" />}>
+                            <LazyPreviewBuffer
+                                document={document}
+                                docType={docType}
+                                resumeData={resumeData}
+                                coverLetterData={coverLetterData}
+                                settings={settings}
+                            />
+                        </Suspense>
                     </div>
                 </div>
             </div>
@@ -487,13 +527,15 @@ export function BuilderPage() {
                 <DialogContent className="lg:hidden max-w-[95vw] w-full h-[90vh] p-0 overflow-hidden flex flex-col">
                     <DialogHeader className="px-4 py-3 border-b"><DialogTitle className="text-sm font-semibold">Preview</DialogTitle></DialogHeader>
                     <div className="relative flex-1 overflow-hidden">
-                        <PreviewBuffer
-                            document={document}
-                            docType={docType}
-                            resumeData={resumeData}
-                            coverLetterData={coverLetterData}
-                            settings={settings}
-                        />
+                        <Suspense fallback={<Spinner size="lg" className="absolute inset-0 m-auto" />}>
+                            <LazyPreviewBuffer
+                                document={document}
+                                docType={docType}
+                                resumeData={resumeData}
+                                coverLetterData={coverLetterData}
+                                settings={settings}
+                            />
+                        </Suspense>
                     </div>
                 </DialogContent>
             </Dialog>
@@ -583,7 +625,7 @@ function EntryPanel({ title, meta, defaultOpen, children }: { title: string; met
 }    function Field({ label, help, children }: { label: string; help?: string; children: React.ReactNode }) {
     return (
         <div className="space-y-2 group">
-            <Label className="text-xs font-bold uppercase tracking-wider text-primary/60 group-focus-within:text-primary transition-colors">{label}</Label>
+            <Label className="text-xs font-bold tracking-wider text-primary/60 group-focus-within:text-primary transition-colors">{label}</Label>
             {help && <p className="text-label-sm leading-relaxed text-on-surface-variant/50 italic">{help}</p>}
             <div className="relative">
                 {children}
@@ -594,7 +636,7 @@ function EntryPanel({ title, meta, defaultOpen, children }: { title: string; met
     return (
         <div className="space-y-3">
             <div>
-                <Label className="text-xs font-bold uppercase tracking-wider text-primary/60">{label}</Label>
+                <Label className="text-xs font-bold tracking-wider text-primary/60">{label}</Label>
                 {description && <p className="mt-1 text-xs leading-relaxed text-on-surface-variant/70 italic">{description}</p>}
             </div>
             <div className="relative grid grid-cols-3 gap-1 rounded-2xl bg-surface-container-high/50 p-1.5">

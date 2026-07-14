@@ -8,8 +8,8 @@ export interface Resume {
     name: string;
     type: ResumeType;
     slug: string;
-    content: Record<string, any>;
-    settings: Record<string, any>;
+    content: Record<string, unknown>;
+    settings: Record<string, unknown>;
     isPublic: boolean;
     createdAt: string;
     updatedAt: string;
@@ -62,7 +62,7 @@ export function useCreateResume() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (data: { name: string; type?: ResumeType; content?: Record<string, any>; settings?: Record<string, any> }) => {
+        mutationFn: async (data: { name: string; type?: ResumeType; content?: Record<string, unknown>; settings?: Record<string, unknown> }) => {
             const response = await api.post("/resumes", data);
             return response.data as ResumeResponse;
         },
@@ -80,8 +80,8 @@ export function useUpdateResume() {
             id: string;
             name?: string;
             type?: ResumeType;
-            content?: Record<string, any>;
-            settings?: Record<string, any>;
+            content?: Record<string, unknown>;
+            settings?: Record<string, unknown>;
             isPublic?: boolean;
         }) => {
             const response = await api.patch(`/resumes/${data.id}`, data);

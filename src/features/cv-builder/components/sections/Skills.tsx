@@ -82,7 +82,7 @@ function SortableSkillItem({
                             <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
                             {useWatch({ control, name: `skills.${index}.name` }) || `Skill Group ${index + 1}`}
                         </span>
-                            <span className="text-[10px] text-on-surface-variant truncate">
+                            <span className="text-label-sm text-on-surface-variant truncate">
                             {useWatch({ control, name: `skills.${index}.level` }) || "Level not set"}
                         </span>
                     </div>
@@ -106,7 +106,7 @@ function SortableSkillItem({
                  <div className="px-6 pb-6 pt-2 border-t border-outline-variant/30 bg-surface-container-low">
                     <div className="grid gap-4 grid-cols-2">
                          <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                             <Label htmlFor={`skills-${index}-name`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Category Name</Label>
+                             <Label htmlFor={`skills-${index}-name`} className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Category Name</Label>
                              <Input
                                  id={`skills-${index}-name`}
                                  {...register(`skills.${index}.name`)}
@@ -115,7 +115,7 @@ function SortableSkillItem({
                              />
                         </div>
                          <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                             <Label htmlFor={`skills-${index}-level`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Level</Label>
+                             <Label htmlFor={`skills-${index}-level`} className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Level</Label>
                              <Input
                                  id={`skills-${index}-level`}
                                  {...register(`skills.${index}.level`)}
@@ -124,7 +124,7 @@ function SortableSkillItem({
                              />
                         </div>
                          <div className="col-span-2 space-y-1.5">
-                             <Label htmlFor={`skills-${index}-keywords`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Keywords (comma separated)</Label>
+                             <Label htmlFor={`skills-${index}-keywords`} className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Keywords (comma separated)</Label>
                              <Input
                                  id={`skills-${index}-keywords`}
                                  {...register(`skills.${index}.keywords`)}
@@ -170,7 +170,7 @@ export function Skills({ control, register }: SkillsProps) {
                      </div>
                      <div>
                          <h2 className="text-base font-bold text-on-surface">Skills</h2>
-                         <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Expertise & Tools</p>
+                         <p className="text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Expertise & Tools</p>
                      </div>
                  </div>
                  <Button

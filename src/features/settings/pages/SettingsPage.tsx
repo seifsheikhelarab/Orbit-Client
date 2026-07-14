@@ -65,13 +65,15 @@ export function SettingsPage() {
     useEffect(() => {
         if (user?.data) {
             const userData = user.data;
-            setFormData({
-                name: userData.name || "",
-                email: userData.email || "",
-                timezone: userData.timezone || "UTC",
-                emailReminders: userData.emailRemindersEnabled ?? true,
-                inAppNotifications: userData.inAppNotificationsEnabled ?? true,
-            });
+            setTimeout(() => {
+                setFormData({
+                    name: userData.name || "",
+                    email: userData.email || "",
+                    timezone: userData.timezone || "UTC",
+                    emailReminders: userData.emailRemindersEnabled ?? true,
+                    inAppNotifications: userData.inAppNotificationsEnabled ?? true,
+                });
+            }, 0);
         }
     }, [user]);
 
@@ -131,20 +133,20 @@ return (
 
                 <div className="space-y-8">
                     {/* Profile Card */}
-                    <Card className="rounded-xl border border-outline shadow-sm overflow-hidden">
+                    <Card className="border border-outline shadow-sm overflow-hidden">
                         <CardHeader className="bg-surface-container border-b border-outline-variant p-6 flex flex-row items-center gap-4">
                             <div className="p-2.5 bg-primary text-on-primary rounded-lg shrink-0">
                                 <User className="w-5 h-5" />
                             </div>
                             <div>
-                                <CardTitle className="text-lg font-bold text-on-surface">Profile</CardTitle>
+                                <CardTitle>Profile</CardTitle>
                                 <CardDescription className="text-xs font-medium text-on-surface-variant">Personal identity and account info</CardDescription>
                             </div>
                         </CardHeader>
                         <CardContent className="p-6 space-y-6">
                             <div className="grid gap-6 md:grid-cols-2">
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Full Name</Label>
+                                    <Label className="text-xs font-bold tracking-wider text-on-surface-variant">Full Name</Label>
                                     <Input 
                                         value={formData.name}
                                         onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
@@ -152,7 +154,7 @@ return (
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Email Address</Label>
+                                    <Label className="text-xs font-bold tracking-wider text-on-surface-variant">Email Address</Label>
                                     <Input 
                                         type="email"
                                         value={formData.email}
@@ -172,19 +174,19 @@ return (
                     </Card>
 
                     {/* Preferences Card */}
-                    <Card className="rounded-xl border border-outline shadow-sm overflow-hidden">
+                    <Card className="border border-outline shadow-sm overflow-hidden">
                         <CardHeader className="bg-surface-container border-b border-outline-variant p-6 flex flex-row items-center gap-4">
                             <div className="p-2.5 bg-primary text-on-primary rounded-lg shrink-0">
                                 <Bell className="w-5 h-5" />
                             </div>
                             <div>
-                                <CardTitle className="text-lg font-bold text-on-surface">Preferences</CardTitle>
+                                <CardTitle>Preferences</CardTitle>
                                 <CardDescription className="text-xs font-medium text-on-surface-variant">Regional and notification settings</CardDescription>
                             </div>
                         </CardHeader>
                         <CardContent className="p-6 space-y-8">
                             <div className="space-y-2 max-w-sm">
-                                <Label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Timezone</Label>
+                                <Label className="text-xs font-bold tracking-wider text-on-surface-variant">Timezone</Label>
                                 <Select 
                                     value={formData.timezone}
                                     onValueChange={(val) => setFormData(prev => ({ ...prev, timezone: val }))}
@@ -201,7 +203,7 @@ return (
                             </div>
 
                             <div className="space-y-4">
-                                <div className="flex items-center justify-between p-4 bg-surface-container border border-outline-variant rounded-lg">
+                                <div className="flex items-center justify-between p-4 bg-surface-container border border-outline-variant rounded-xl">
                                     <div>
                                         <p className="text-sm font-bold text-on-surface">Email Reminders</p>
                                         <p className="text-xs text-on-surface-variant">Get notified about upcoming interviews via email</p>
@@ -211,7 +213,7 @@ return (
                                         onCheckedChange={(val) => setFormData(prev => ({ ...prev, emailReminders: val }))}
                                     />
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-surface-container border border-outline-variant rounded-lg">
+                                <div className="flex items-center justify-between p-4 bg-surface-container border border-outline-variant rounded-xl">
                                     <div>
                                         <p className="text-sm font-bold text-on-surface">In-App Notifications</p>
                                         <p className="text-xs text-on-surface-variant">Real-time alerts while using Orbit</p>
@@ -232,13 +234,13 @@ return (
                     </Card>
 
                     {/* Security Card */}
-                    <Card className="rounded-xl border border-outline shadow-sm overflow-hidden">
+                    <Card className="border border-outline shadow-sm overflow-hidden">
                         <CardHeader className="bg-surface-container border-b border-outline-variant p-6 flex flex-row items-center gap-4">
                             <div className="p-2.5 bg-primary text-on-primary rounded-lg shrink-0">
                                 <Shield className="w-5 h-5" />
                             </div>
                             <div>
-                                <CardTitle className="text-lg font-bold text-on-surface">Security</CardTitle>
+                                <CardTitle>Security</CardTitle>
                                 <CardDescription className="text-xs font-medium text-on-surface-variant">Password and access management</CardDescription>
                             </div>
                         </CardHeader>
@@ -253,7 +255,7 @@ return (
                             ) : (
                                 <div className="space-y-4 max-w-md">
                                     <div className="space-y-2">
-                                        <Label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Current Password</Label>
+                                        <Label className="text-xs font-bold tracking-wider text-on-surface-variant">Current Password</Label>
                                         <Input 
                                             type="password" 
                                             value={passwords.current}
@@ -262,7 +264,7 @@ return (
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">New Password</Label>
+                                        <Label className="text-xs font-bold tracking-wider text-on-surface-variant">New Password</Label>
                                         <Input 
                                             type="password" 
                                             value={passwords.new}
@@ -271,7 +273,7 @@ return (
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Confirm New Password</Label>
+                                        <Label className="text-xs font-bold tracking-wider text-on-surface-variant">Confirm New Password</Label>
                                         <Input 
                                             type="password" 
                                             value={passwords.confirm}
@@ -299,13 +301,13 @@ return (
                     </Card>
 
                     {/* Danger Zone */}
-                    <Card className="rounded-xl border border-error/30 shadow-sm overflow-hidden">
+                    <Card className="border border-error/30 shadow-sm overflow-hidden">
                         <CardHeader className="bg-error-container border-b border-error/20 p-6 flex flex-row items-center gap-4">
                             <div className="p-2.5 bg-error text-on-error rounded-lg shrink-0">
                                 <AlertTriangle className="w-5 h-5" />
                             </div>
                             <div>
-                                <CardTitle className="text-lg font-bold text-error">Danger Zone</CardTitle>
+                                <CardTitle className="text-error">Danger Zone</CardTitle>
                                 <CardDescription className="text-xs font-medium text-error/80">Permanent account actions</CardDescription>
                             </div>
                         </CardHeader>
@@ -323,7 +325,7 @@ return (
                                         This action cannot be undone. All your applications, resumes, and documents will be permanently deleted.
                                     </p>
                                     <div className="space-y-2">
-                                        <Label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Type your email to confirm</Label>
+                                        <Label className="text-xs font-bold tracking-wider text-on-surface-variant">Type your email to confirm</Label>
                                         <Input 
                                             placeholder={user?.data?.email}
                                             value={deleteEmailConfirm}

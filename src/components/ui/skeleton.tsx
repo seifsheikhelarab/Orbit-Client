@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
  * Replaces react-loading-skeleton to reduce bundle size.
  * Uses the shimmer animation defined in index.css.
  */
-function Skeleton({ className, shimmer = true, style, ...props }: { className?: string; shimmer?: boolean; style?: React.CSSProperties; [key: string]: any }) {
+function Skeleton({ className, shimmer = true, style, ...props }: React.ComponentProps<"div"> & { shimmer?: boolean }) {
   return (
     <div
       className={cn(

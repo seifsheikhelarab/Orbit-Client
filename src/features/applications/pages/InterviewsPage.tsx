@@ -88,13 +88,13 @@ export function InterviewsPage() {
                             style={{ animationDelay: `${index * 100}ms` }}
                         >
                             <div className="md:w-48 bg-surface-container-low p-6 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-outline-variant group-hover:bg-accent-container/30 transition-colors">
-                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-1">
+                                <p className="text-label-sm font-bold tracking-[0.2em] text-on-surface-variant mb-1">
                                     {format(parseISO(interview.scheduledAt), "EEEE")}
                                 </p>
                                 <p className="text-4xl font-black tracking-tight text-on-surface">
                                     {format(parseISO(interview.scheduledAt), "dd")}
                                 </p>
-                                <p className="text-xs font-bold uppercase tracking-widest text-accent mt-1">
+                                <p className="text-xs font-bold tracking-widest text-accent mt-1">
                                     {format(parseISO(interview.scheduledAt), "MMM yyyy")}
                                 </p>
                             </div>
@@ -120,7 +120,7 @@ export function InterviewsPage() {
                                             <Clock className="w-4 h-4 text-accent" />
                                             {format(parseISO(interview.scheduledAt), "hh:mm a")}
                                         </div>
-                                        <Badge variant="accent" className="text-[10px] uppercase tracking-widest font-bold h-6 px-2">
+                                        <Badge variant="accent" className="text-label-sm uppercase tracking-widest font-bold h-6 px-2">
                                             {interview.roundType}
                                         </Badge>
                                     </div>

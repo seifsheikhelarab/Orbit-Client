@@ -196,7 +196,7 @@ function SortableWorkItem({
                             <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
                             {useWatch({ control, name: `work.${index}.position` }) || `Experience ${index + 1}`}
                         </span>
-                            <span className="text-[10px] text-on-surface-variant truncate">
+                            <span className="text-label-sm text-on-surface-variant truncate">
                             {useWatch({ control, name: `work.${index}.company` }) || "New Position"}
                         </span>
                     </div>
@@ -219,7 +219,7 @@ function SortableWorkItem({
                  <div className="px-6 pb-6 pt-2 border-t border-outline-variant/30 bg-surface-container-low">
                     <div className="grid gap-4 grid-cols-2">
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`work-${index}-company`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Company Name</Label>
+                            <Label htmlFor={`work-${index}-company`} className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Company Name</Label>
                             <Input
                                 id={`work-${index}-company`}
                                 {...register(`work.${index}.company`)}
@@ -228,7 +228,7 @@ function SortableWorkItem({
                             />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`work-${index}-position`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Role / Position</Label>
+                            <Label htmlFor={`work-${index}-position`} className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Role / Position</Label>
                             <Input
                                 id={`work-${index}-position`}
                                 {...register(`work.${index}.position`)}
@@ -237,7 +237,7 @@ function SortableWorkItem({
                             />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`work-${index}-startDate`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">
+                            <Label htmlFor={`work-${index}-startDate`} className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">
                                 Start Date
                             </Label>
                             <Input
@@ -248,7 +248,7 @@ function SortableWorkItem({
                             />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`work-${index}-endDate`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">
+                            <Label htmlFor={`work-${index}-endDate`} className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">
                                 End Date
                             </Label>
                             <Input
@@ -259,7 +259,7 @@ function SortableWorkItem({
                             />
                         </div>
                          <div className="col-span-2 space-y-1.5">
-                             <Label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">
+                             <Label className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">
                                  Key Achievements
                              </Label>
                              <div className="mt-1 bg-surface border border-outline rounded-lg px-4 py-3">
@@ -304,7 +304,7 @@ export function WorkExperience({ control, register }: WorkExperienceProps) {
                     </div>
                     <div>
                         <h2 className="text-base font-bold text-on-surface">Experience</h2>
-                        <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Professional History</p>
+                        <p className="text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Professional History</p>
                     </div>
                 </div>
                 <Button

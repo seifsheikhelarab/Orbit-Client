@@ -56,14 +56,14 @@ export function Basics({ register }: BasicsProps) {
                 </div>
                 <div>
                     <h2 className="text-base font-bold text-on-surface">Personal Info</h2>
-                    <p className="text-[10px] text-on-surface-variant/60 uppercase tracking-wider font-bold">The Basics</p>
+                    <p className="text-label-sm text-on-surface-variant/60 tracking-wider font-bold">The Basics</p>
                 </div>
             </div>
 
             <div className="p-6">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-5">
                     <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                        <Label htmlFor="basics-name" className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-tight">First & Last Name</Label>
+                        <Label htmlFor="basics-name" className="text-label-sm font-bold text-on-surface-variant/70 tracking-tight">First & Last Name</Label>
                         <Input
                             id="basics-name"
                             {...register("basics.name")}
@@ -72,7 +72,7 @@ export function Basics({ register }: BasicsProps) {
                         />
                     </div>
                     <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                        <Label htmlFor="basics-label" className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-tight">Professional Title</Label>
+                        <Label htmlFor="basics-label" className="text-label-sm font-bold text-on-surface-variant/70 tracking-tight">Professional Title</Label>
                         <Input
                             id="basics-label"
                             {...register("basics.label")}
@@ -81,7 +81,7 @@ export function Basics({ register }: BasicsProps) {
                         />
                     </div>
                     <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                        <Label htmlFor="basics-email" className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-tight">Email Address</Label>
+                        <Label htmlFor="basics-email" className="text-label-sm font-bold text-on-surface-variant/70 tracking-tight">Email Address</Label>
                         <Input
                             id="basics-email"
                             {...register("basics.email")}
@@ -91,7 +91,7 @@ export function Basics({ register }: BasicsProps) {
                         />
                     </div>
                     <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                        <Label htmlFor="basics-phone" className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-tight">Phone Number</Label>
+                        <Label htmlFor="basics-phone" className="text-label-sm font-bold text-on-surface-variant/70 tracking-tight">Phone Number</Label>
                         <Input
                             id="basics-phone"
                             {...register("basics.phone")}
@@ -100,7 +100,7 @@ export function Basics({ register }: BasicsProps) {
                         />
                     </div>
                     <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                        <Label htmlFor="basics-location" className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-tight">Location</Label>
+                        <Label htmlFor="basics-location" className="text-label-sm font-bold text-on-surface-variant/70 tracking-tight">Location</Label>
                         <Input
                             id="basics-location"
                             {...register("basics.location")}
@@ -109,7 +109,7 @@ export function Basics({ register }: BasicsProps) {
                         />
                     </div>
                     <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                        <Label htmlFor="basics-url" className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-tight">Personal Website / Portfolio</Label>
+                        <Label htmlFor="basics-url" className="text-label-sm font-bold text-on-surface-variant/70 tracking-tight">Personal Website / Portfolio</Label>
                         <Input
                             id="basics-url"
                             {...register("basics.url")}
@@ -118,7 +118,7 @@ export function Basics({ register }: BasicsProps) {
                         />
                     </div>
                     <div className="col-span-2 space-y-1.5">
-                        <Label htmlFor="basics-summary" className="text-[10px] font-bold text-on-surface-variant/70 uppercase tracking-tight">Professional Summary</Label>
+                        <Label htmlFor="basics-summary" className="text-label-sm font-bold text-on-surface-variant/70 tracking-tight">Professional Summary</Label>
                         <AutoResizeTextarea
                             register={register}
                             name="basics.summary"

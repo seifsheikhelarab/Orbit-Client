@@ -20,6 +20,13 @@ function getPasswordStrength(pw: string) {
   return { level: 4, label: 'Strong', color: 'text-accent', bg: 'bg-accent', width: '100%' };
 }
 
+async function handleGoogle() {
+    await signIn.social({
+        provider: 'google',
+        callbackURL: '/app/dashboard'
+    });
+}
+
 export function Register() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
@@ -53,25 +60,15 @@ export function Register() {
     }
   };
 
-  const handleGoogle = async () => {
-    await signIn.social({
-        provider: 'google',
-        callbackURL: '/app/dashboard'
-    });
-  };
-
   return (
     <main className="grow flex items-center justify-center px-4 py-12 min-h-screen relative overflow-hidden animate-page-enter">
-      {/* Decorative Background Elements - floating */}
-      <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl opacity-50 animate-[floatGentle_6s_ease-in-out_infinite]" />
-      <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-accent/20 rounded-full blur-3xl opacity-50 animate-[floatGentle_8s_ease-in-out_infinite_1s]" />
 
       <div className="relative w-full max-w-md">
         {/* Registration Card */}
         <div className="relative bg-surface border border-outline-variant/30 rounded-xl shadow-xl shadow-primary/5 p-8 md:p-10 backdrop-blur-sm">
           {/* Brand & Header */}
           <div className="text-center mb-10">
-            <img src="/icon.png" alt="Orbit" className="w-16 h-16 mx-auto mb-6 animate-float-gentle" />
+            <img src="/icon.png" alt="Orbit" className="w-16 h-16 mx-auto mb-6 " />
             <h1 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight mb-2">Create account</h1>
             <p className="text-on-surface-variant text-sm">Start your journey with Orbit today.</p>
           </div>
@@ -97,7 +94,7 @@ export function Register() {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-outline-variant/50"></div>
             </div>
-            <div className="relative flex justify-center text-xs uppercase tracking-widest">
+            <div className="relative flex justify-center text-xs tracking-widest">
               <span className="bg-surface px-4 text-on-surface-variant font-medium">or sign up with email</span>
             </div>
           </div>
@@ -213,7 +210,7 @@ export function Register() {
             <Button
               disabled={loading}
               type="submit"
-              className="w-full shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
+              className="w-full"
               size="lg"
             >
               {loading ? (

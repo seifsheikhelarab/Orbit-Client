@@ -27,6 +27,7 @@ const PIPELINE_NODES: PipelineSankeyNode[] = [
   { name: 'Closed' },
 ];
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function buildPipelineSankeyData(data?: PipelineSankeyData | null): PipelineSankeyData {
   const nodes = data?.nodes?.length ? data.nodes : PIPELINE_NODES;
   const linksByTransition = new Map<string, PipelineSankeyLink>();

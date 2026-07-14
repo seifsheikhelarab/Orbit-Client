@@ -26,7 +26,7 @@ Generic SaaS cream — the standard light-gray dashboard palette (HubSpot, Sales
 
 **Confidence without noise.** The navy/teal palette is assured but not flashy. Every element earns its place; nothing is decorative for the sake of filling space. Cards have presence through structure and typography, not through borders and shadows layered together.
 
-**Sharp clarity.** Clear hierarchy, crisp type (Manrope headlines, Inter body), generous whitespace. The Kanban view and table view coexist because they serve different mental models, not because more views is better. Labels and statuses are immediately scannable.
+**Sharp clarity.** Clear hierarchy, crisp type (Manrope headlines, DM Sans body), generous whitespace. The Kanban view and table view coexist because they serve different mental models, not because more views is better. Labels and statuses are immediately scannable.
 
 **Calm control.** Job search is anxious. Orbit counters that with a steady, predictable interface. Motion is intentional and exponential-eased, never bouncy. Navigation is consistent. The unsaved-changes detector and auto-save patterns reassure without demanding attention.
 

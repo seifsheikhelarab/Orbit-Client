@@ -5,36 +5,20 @@ import {
     DragEndEvent,
     DragOverlay,
     DragStartEvent,
+    KeyboardSensor,
     PointerSensor,
     useSensor,
     useSensors,
     closestCorners
 } from "@dnd-kit/core"
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { toast } from "sonner"
 
 import { KanbanColumn } from "./KanbanColumn"
 import { KanbanCard } from "./KanbanCard"
 import type { ApplicationStatus } from "@/lib/status"
 import { APPLICATION_STATUSES, APPLICATION_STATUS_CONFIG } from "@/lib/status"
-
-export interface Application {
-    id: string
-    company: string
-    jobTitle: string
-    applicationStatus: string
-    location?: string
-    jobURL?: string
-    salaryMin?: number
-    salaryMax?: number
-    appliedDate?: string
-    notes?: string
-    followUpDate?: string
-    followUpNote?: string
-    source?: string
-    createdAt: string
-    updatedAt: string
-}
+import type { Application } from "@/features/applications/api/useApplications"
 
 interface KanbanBoardProps {
     applications: Application[]
@@ -56,6 +40,9 @@ export function KanbanBoard({
             activationConstraint: {
                 distance: 8
             }
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates
         })
     )
 
@@ -141,7 +128,7 @@ export function KanbanBoard({
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
-            <div className="flex gap-4 overflow-x-auto pb-4 min-h-[calc(100vh-280px)] px-1 -mx-1">
+            <div className="flex gap-4 overflow-x-auto pb-4 min-h-[calc(100vh-280px)] px-4">
                 {APPLICATION_STATUSES.map((status, index) => (
                     <KanbanColumn
                         key={status}

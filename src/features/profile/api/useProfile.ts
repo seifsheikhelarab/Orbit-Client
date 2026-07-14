@@ -39,7 +39,7 @@ export function useAutoCV() {
         mutationFn: async (jobDescription: string) => {
             const response = await api.post("/profile/generate", { jobDescription });
             return response.data.data as {
-                jobData: any;
+                jobData: unknown;
                 tailoredContent: {
                     resumeContent: ResumeData;
                     coverLetter: CoverLetterContent;
@@ -66,7 +66,7 @@ export function useSaveAutoCV() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (data: { jobData: any; tailoredContent: any }) => {
+        mutationFn: async (data: { jobData: unknown; tailoredContent: { resumeContent: ResumeData; coverLetter: CoverLetterContent } }) => {
             const response = await api.post("/profile/save", data);
             return response.data.data;
         },

@@ -12,6 +12,23 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { PageContainer, PageHeader, Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui";
 import { Label } from "@/components/ui/label";
+import type { ResumeData, CoverLetterContent } from "../../cv-builder/types";
+
+interface AutoCVJobData {
+    jobTitle: string;
+    company: string;
+    location: string;
+    salaryMin?: number;
+    salaryMax?: number;
+}
+
+interface AutoCVResult {
+    jobData: AutoCVJobData;
+    tailoredContent: {
+        resumeContent: ResumeData;
+        coverLetter: CoverLetterContent;
+    };
+}
 
 export default function AutoCVPage() {
     const [jobDescription, setJobDescription] = useState("");
@@ -19,17 +36,17 @@ export default function AutoCVPage() {
     const save = useSaveAutoCV();
     const navigate = useNavigate();
 
-    const [result, setResult] = useState<any>(null);
+    const [result, setResult] = useState<AutoCVResult | null>(null);
     const [activeDoc, setActiveDoc] = useState<string>("resume");
 
     const handleGenerate = async () => {
         if (!jobDescription.trim()) return toast.error("Please provide a job description");
         try {
             const data = await generate.mutateAsync(jobDescription);
-            setResult(data);
+            setResult(data as AutoCVResult);
             toast.success("AI Synthesis complete!");
-        } catch (error) {
-            toast.error("Synthesis failed. Verify your professional dossier is complete.");
+        } catch {
+            toast.error("Synthesis failed. Verify your profile is complete.");
         }
     };
 
@@ -40,9 +57,9 @@ export default function AutoCVPage() {
                 jobData: result.jobData,
                 tailoredContent: result.tailoredContent
             });
-            toast.success("Dossier finalized and application created!");
+            toast.success("Profile finalized and application created!");
             navigate(`/app/applications/${saved.application.id}`);
-        } catch (error) {
+        } catch {
             toast.error("Failed to finalize application");
         }
     };
@@ -68,12 +85,12 @@ export default function AutoCVPage() {
                         <div className="lg:col-span-12 space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
                             <div className="p-8 rounded-2xl bg-surface-container-low border border-outline-variant/10">
                                 <div className="flex flex-col gap-1 mb-6">
-                                    <Label className="text-label-sm font-bold text-primary uppercase tracking-wider">Target Intel</Label>
-                                    <span className="text-label-sm text-on-surface-variant/50 font-bold uppercase tracking-widest">Paste the job description</span>
+                                    <Label className="text-label-sm font-bold text-primary tracking-wider">Target Intel</Label>
+                                    <span className="text-label-sm text-on-surface-variant/50 font-bold tracking-widest">Paste the job description</span>
                                 </div>
 
                                 <Textarea 
-                                    placeholder="Paste the full job description or requirements dossier here..."
+                                    placeholder="Paste the full job description or requirements here..."
                                     className="min-h-[400px] bg-surface/50 border-none rounded-2xl p-8 text-body-md leading-relaxed focus-visible:ring-2 ring-primary/5 resize-none transition-all"
                                     value={jobDescription}
                                     onChange={e => setJobDescription(e.target.value)}
@@ -91,7 +108,7 @@ export default function AutoCVPage() {
                                         ) : (
                                             <Wand2 className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
                                         )}
-                                        {generate.isPending ? "Synthesizing Dossier..." : "Begin AI Tailoring"}
+                                        {generate.isPending ? "Generating..." : "Begin AI Tailoring"}
                                     </Button>
                                 </div>
                             </div>
@@ -105,7 +122,7 @@ export default function AutoCVPage() {
                     <div className="lg:col-span-4 space-y-8">
                         <Card className="p-8" variant="elevated">
                             <div className="space-y-2">
-                                <span className="text-label-sm font-bold uppercase tracking-wider text-primary/60">Extracted Intel</span>
+                                <span className="text-label-sm font-bold tracking-wider text-primary/60">Extracted Intel</span>
                                 <h3 className="text-2xl font-black text-on-surface leading-tight font-headline">{result.jobData.jobTitle}</h3>
                                 <p className="text-on-surface-variant font-bold text-sm">{result.jobData.company}</p>
                             </div>
@@ -113,7 +130,7 @@ export default function AutoCVPage() {
                             <div className="space-y-6 pt-8 border-t border-outline-variant/20 relative z-10">
                                 <IntelItem icon={<MapPin />} label="Target Location" value={result.jobData.location} />
                                 <IntelItem icon={<Briefcase />} label="Record Type" value="Auto-Synthesized" />
-                                <IntelItem icon={<DollarSign />} label="Salary Range" value={result.jobData.salaryMin ? `$${result.jobData.salaryMin.toLocaleString()} - $${result.jobData.salaryMax.toLocaleString()}` : "Confidential"} />
+                                <IntelItem icon={<DollarSign />} label="Salary Range" value={result.jobData.salaryMin ? `$${result.jobData.salaryMin.toLocaleString()} - $${(result.jobData.salaryMax ?? 0).toLocaleString()}` : "Confidential"} />
                             </div>
 
                             <div className="pt-4 space-y-3 relative z-10">
@@ -148,7 +165,7 @@ export default function AutoCVPage() {
                                             Tailored Cover Letter
                                         </TabsTrigger>
                                     </TabsList>
-                                    <div className="hidden sm:flex items-center gap-2 text-label-sm font-bold text-dossier uppercase tracking-widest">
+                                    <div className="hidden sm:flex items-center gap-2 text-label-sm font-bold text-dossier tracking-widest">
                                         <Zap className="size-3" />
                                         Optimized for ATS
                                     </div>
@@ -160,7 +177,7 @@ export default function AutoCVPage() {
                                             <div className="size-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary">
                                                 <Wand2 className="size-4" />
                                             </div>
-                                            <h4 className="text-label-sm font-bold uppercase tracking-wider text-on-surface">Synthesis Insight</h4>
+                                            <h4 className="text-label-sm font-bold tracking-wider text-on-surface">Synthesis Insight</h4>
                                         </div>
                                         <p className="text-body-md text-on-surface-variant leading-relaxed italic">
                                             "The professional summary has been re-engineered to emphasize your expertise in <strong>{result.jobData.jobTitle}</strong>, directly aligning with <strong>{result.jobData.company}'s</strong> stated requirements for this role."
@@ -171,7 +188,7 @@ export default function AutoCVPage() {
                                             <div className="size-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary">
                                                 <Wand2 className="size-4" />
                                             </div>
-                                            <h4 className="text-label-sm font-bold uppercase tracking-wider text-on-surface">Synthesis Insight</h4>
+                                            <h4 className="text-label-sm font-bold tracking-wider text-on-surface">Synthesis Insight</h4>
                                         </div>
                                         <p className="text-body-md text-on-surface-variant leading-relaxed italic">
                                             "The cover letter has been crafted to demonstrate genuine enthusiasm for <strong>{result.jobData.company}</strong> while highlighting your most relevant qualifications for the <strong>{result.jobData.jobTitle}</strong> position."
@@ -182,7 +199,7 @@ export default function AutoCVPage() {
                                         <div className="p-8 rounded-2xl bg-surface border border-outline-variant/30 font-body leading-relaxed text-on-surface space-y-8">
                                             {result.tailoredContent.resumeContent.basics.summary && (
                                                 <div>
-                                                    <p className="text-xs font-bold uppercase tracking-widest text-dossier mb-4">Professional Summary</p>
+                                                    <p className="text-xs font-bold tracking-widest text-dossier mb-4">Professional Summary</p>
                                                     <p className="text-on-surface-variant leading-relaxed">
                                                         {result.tailoredContent.resumeContent.basics.summary}
                                                     </p>
@@ -193,10 +210,10 @@ export default function AutoCVPage() {
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-4">
                                                         <Briefcase className="size-3.5 text-dossier/60" />
-                                                        <p className="text-xs font-bold uppercase tracking-widest text-dossier">Experience</p>
+                                                        <p className="text-xs font-bold tracking-widest text-dossier">Experience</p>
                                                     </div>
                                                     <div className="space-y-4">
-                                                        {result.tailoredContent.resumeContent.work.map((exp: any, i: number) => (
+                                                        {result.tailoredContent.resumeContent.work.map((exp, i) => (
                                                             <div key={i} className="border-l-2 border-dossier/20 pl-4">
                                                                 <div className="flex items-center justify-between gap-2">
                                                                     <p className="font-bold text-sm text-on-surface">{exp.position}</p>
@@ -222,10 +239,10 @@ export default function AutoCVPage() {
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-4">
                                                         <Lightbulb className="size-3.5 text-dossier/60" />
-                                                        <p className="text-xs font-bold uppercase tracking-widest text-dossier">Skills</p>
+                                                        <p className="text-xs font-bold tracking-widest text-dossier">Skills</p>
                                                     </div>
                                                     <div className="flex flex-wrap gap-2">
-                                                        {result.tailoredContent.resumeContent.skills.map((skill: any, i: number) => (
+                                                        {result.tailoredContent.resumeContent.skills.map((skill, i) => (
                                                             <span key={i} className="px-3 py-1.5 rounded-full bg-dossier/5 border border-dossier/10 text-xs font-bold text-dossier">
                                                                 {skill.name}
                                                             </span>
@@ -238,10 +255,10 @@ export default function AutoCVPage() {
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-4">
                                                         <GraduationCap className="size-3.5 text-dossier/60" />
-                                                        <p className="text-xs font-bold uppercase tracking-widest text-dossier">Education</p>
+                                                        <p className="text-xs font-bold tracking-widest text-dossier">Education</p>
                                                     </div>
                                                     <div className="space-y-3">
-                                                        {result.tailoredContent.resumeContent.education.map((edu: any, i: number) => (
+                                                        {result.tailoredContent.resumeContent.education.map((edu, i) => (
                                                             <div key={i} className="flex items-center justify-between">
                                                                 <div>
                                                                     <p className="text-sm font-bold text-on-surface">{edu.institution}</p>
@@ -258,10 +275,10 @@ export default function AutoCVPage() {
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-4">
                                                         <Award className="size-3.5 text-dossier/60" />
-                                                        <p className="text-xs font-bold uppercase tracking-widest text-dossier">Projects</p>
+                                                        <p className="text-xs font-bold tracking-widest text-dossier">Projects</p>
                                                     </div>
                                                     <div className="space-y-4">
-                                                        {result.tailoredContent.resumeContent.projects.map((proj: any, i: number) => (
+                                                        {result.tailoredContent.resumeContent.projects.map((proj, i) => (
                                                             <div key={i} className="border-l-2 border-dossier/20 pl-4">
                                                                 <p className="font-bold text-sm text-on-surface">{proj.name}</p>
                                                                 {proj.description && <p className="text-xs text-on-surface-variant/60 mt-1">{proj.description}</p>}
@@ -282,10 +299,10 @@ export default function AutoCVPage() {
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-4">
                                                         <Heart className="size-3.5 text-dossier/60" />
-                                                        <p className="text-xs font-bold uppercase tracking-widest text-dossier">Volunteer</p>
+                                                        <p className="text-xs font-bold tracking-widest text-dossier">Volunteer</p>
                                                     </div>
                                                     <div className="space-y-3">
-                                                        {result.tailoredContent.resumeContent.volunteer.map((vol: any, i: number) => (
+                                                        {result.tailoredContent.resumeContent.volunteer.map((vol, i) => (
                                                             <div key={i} className="border-l-2 border-dossier/20 pl-4">
                                                                 <p className="text-sm font-bold text-on-surface">{vol.position}</p>
                                                                 {vol.organization && <p className="text-xs text-on-surface-variant/60">{vol.organization}</p>}
@@ -300,10 +317,10 @@ export default function AutoCVPage() {
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-4">
                                                         <Globe className="size-3.5 text-dossier/60" />
-                                                        <p className="text-xs font-bold uppercase tracking-widest text-dossier">Languages</p>
+                                                        <p className="text-xs font-bold tracking-widest text-dossier">Languages</p>
                                                     </div>
                                                     <div className="flex flex-wrap gap-3">
-                                                        {result.tailoredContent.resumeContent.languages.map((lang: any, i: number) => (
+                                                        {result.tailoredContent.resumeContent.languages.map((lang, i) => (
                                                             <span key={i} className="text-xs text-on-surface-variant/60">
                                                                 {lang.name}{lang.fluency ? ` (${lang.fluency})` : ''}
                                                             </span>
@@ -315,7 +332,7 @@ export default function AutoCVPage() {
                                     </TabsContent>
                                     <TabsContent value="coverLetter">
                                         <div className="p-8 rounded-2xl bg-surface border border-outline-variant/30 font-body leading-relaxed text-on-surface space-y-6">
-                                            <p className="text-xs font-bold uppercase tracking-widest text-accent mb-6">Tailored Cover Letter</p>
+                                            <p className="text-xs font-bold tracking-widest text-accent mb-6">Tailored Cover Letter</p>
 
                                             <p className="text-sm font-bold text-on-surface">
                                                 {result.tailoredContent.coverLetter.senderName}
@@ -371,7 +388,7 @@ function IntelItem({ icon, label, value }: { icon: React.ReactNode; label: strin
                 {icon}
             </div>
             <div>
-                <p className="text-label-sm font-bold uppercase tracking-wider text-on-surface-variant/50 leading-none mb-1.5">{label}</p>
+                <p className="text-label-sm font-bold tracking-wider text-on-surface-variant/50 leading-none mb-1.5">{label}</p>
                 <p className="text-sm font-bold text-on-surface truncate max-w-[200px]">{value || "Confidential"}</p>
             </div>
         </div>

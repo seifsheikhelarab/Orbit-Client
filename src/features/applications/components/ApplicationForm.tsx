@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input, Textarea, Label } from "@/components/ui"
 import { Card } from "@/components/ui/card"
 import { QuickStatusSelect } from "@/components/shared/QuickStatusSelect"
-import type { Application } from "@/components/kanban/KanbanBoard"
+import type { Application } from "@/features/applications/api/useApplications"
 
 const applicationSchema = z.object({
     company: z.string().trim().min(1, "Company name is required").max(200),
@@ -147,6 +147,7 @@ export function ApplicationForm({
                     <div className="space-y-2">
                         <Label htmlFor="applicationStatus" required>Status</Label>
                         <QuickStatusSelect
+                            // eslint-disable-next-line react-hooks/incompatible-library -- form.watch() required by React Hook Form, incompatible with React Compiler
                             value={form.watch("applicationStatus")}
                             onChange={(status) => form.setValue("applicationStatus", status, { shouldDirty: true, shouldValidate: true })}
                         />
@@ -261,6 +262,7 @@ export function ApplicationForm({
                                     {form.watch("followUpDate") && (
                                         <button
                                             type="button"
+                                            aria-label="Clear follow-up date"
                                             onClick={() => form.setValue("followUpDate", "", { shouldDirty: true, shouldValidate: true })}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface"
                                         >

@@ -8,7 +8,6 @@ interface SearchBarProps {
   value: string
   onChange: (value: string) => void
   placeholder?: string
-  debounceMs?: number
   className?: string
   showShortcutHint?: boolean
 }
@@ -17,16 +16,14 @@ function SearchBar({
   value,
   onChange,
   placeholder = "Search jobs, companies, or tags...",
-  debounceMs = 300,
   className,
   showShortcutHint = true,
 }: SearchBarProps) {
   const [localValue, setLocalValue] = React.useState(value)
-  const debounceRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   React.useEffect(() => {
-    setLocalValue(value)
+    setTimeout(() => { setLocalValue(value) }, 0)
   }, [value])
 
   React.useEffect(() => {
@@ -43,14 +40,7 @@ function SearchBar({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
     setLocalValue(newValue)
-
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current)
-    }
-
-    debounceRef.current = window.setTimeout(() => {
-      onChange(newValue)
-    }, debounceMs)
+    onChange(newValue)
   }
 
   const handleClear = () => {
@@ -74,12 +64,14 @@ function SearchBar({
       />
       <div className="absolute inset-y-0 right-0 pr-4 flex items-center gap-2">
         {showShortcutHint && !localValue && (
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold text-primary/40 bg-primary-container/30 rounded-lg border border-primary/10 group-focus-within:border-primary/20 transition-all">
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-label-sm font-bold text-primary/40 bg-primary-container/30 rounded-lg border border-primary/10 group-focus-within:border-primary/20 transition-all">
             <span className="text-xs">⌘</span>K
           </kbd>
         )}
         {localValue && (
           <button
+            type="button"
+            aria-label="Clear search"
             onClick={handleClear}
             className="p-2 rounded-xl text-on-surface-variant/40 hover:text-error hover:bg-error-container/30 transition-all duration-200"
           >

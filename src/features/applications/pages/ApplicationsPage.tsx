@@ -77,7 +77,8 @@ export default function ApplicationsPage() {
     const updateApplication = useUpdateApplication();
     
     // response is now already unwrapped by hook (res.data)
-    const applications = response?.data || [];
+    const applicationsFallback = useMemo(() => [], []);
+    const applications = response?.data ?? applicationsFallback;
     const applicationIds = applications.map((app: Application) => app.id) || [];
     const { data: documentCounts } = useApplicationsDocumentCounts(applicationIds);
 
@@ -216,11 +217,14 @@ export default function ApplicationsPage() {
 
     if (isError) {
         return (
-            <div className="min-h-screen pb-16 pt-20">
-                <div className="container mx-auto px-4 flex flex-col items-center justify-center py-16">
-                    <p className="text-error">Failed to load applications.</p>
+            <PageContainer maxWidth="xl">
+                <div className="flex flex-col items-center justify-center py-16 gap-4">
+                    <p className="text-on-surface">Failed to load applications. Check your connection and try again.</p>
+                    <Button onClick={() => window.location.reload()}>
+                        Try Again
+                    </Button>
                 </div>
-            </div>
+            </PageContainer>
         );
     }
 
@@ -233,17 +237,12 @@ export default function ApplicationsPage() {
 
 return (
     <PageContainer maxWidth="xl" className="relative overflow-hidden">
-      {/* Background Telemetry Decor */}
-      <div className="absolute top-0 right-0 w-1/2 h-full opacity-[0.03] pointer-events-none select-none">
-        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle, var(--color-primary) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
-      </div>
-
       <div className="relative z-10">
         <PageHeader
           icon={Briefcase}
           title="Applications"
           description="Manage and track your job search progress."
-          className="mb-12"
+          className="mb-8"
           actions={
             <div className="flex items-center gap-6">
               <ViewToggle value={viewMode} onChange={setViewMode} />
@@ -257,18 +256,14 @@ return (
           }
         />
 
-        <div className="grid grid-cols-12 gap-8 mb-16 items-end animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 fill-mode-both">
-          <div className="col-span-12 lg:col-span-8">
-            <SearchBar
-              value={filters.search}
-              onChange={setSearch}
-              placeholder="Search dossiers, companies, positions..."
-              className="w-full"
-            />
-          </div>
-          
-          <div className="col-span-12 lg:col-span-4 flex justify-end gap-3">
-            <Button
+        <div className="flex items-center gap-4 mb-8">
+          <SearchBar
+            value={filters.search}
+            onChange={setSearch}
+            placeholder="Search companies, positions..."
+            className="flex-1"
+          />
+          <Button
               variant="outline"
               size="lg"
               onClick={() => {
@@ -284,15 +279,14 @@ return (
               <Filter className="w-4 h-4 mr-2 opacity-70" />
               Filters
               {activeFilterCount > 0 && (
-                <span className="ml-2 size-5 flex items-center justify-center bg-primary text-on-primary text-[10px] font-bold rounded-full">
+                <span className="ml-2 size-5 flex items-center justify-center bg-primary text-on-primary text-label-sm font-bold rounded-full">
                   {activeFilterCount}
                 </span>
               )}
             </Button>
-          </div>
         </div>
 
-        <FilterChips className="mb-10 min-h-8 animate-in fade-in delay-300 fill-mode-both">
+        <FilterChips className="mb-6 min-h-8">
 
                     {filters.search && (
                         <FilterChip
@@ -334,6 +328,7 @@ return (
                     )}
                     {activeFilterCount > 0 && (
                         <button
+                            type="button"
                             onClick={handleClearAll}
                             className="text-xs text-on-surface-variant hover:text-primary underline"
                         >
@@ -357,7 +352,7 @@ return (
                 ) : (
                     <div className="relative min-h-[400px]">
                         {viewMode === "kanban" ? (
-                            <div key="kanban" className="animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-700 fill-mode-both">
+                            <div key="kanban">
                                 <KanbanBoard
                                     applications={applications as Application[]}
                                     documentCounts={documentCounts || {}}
@@ -365,7 +360,7 @@ return (
                                 />
                             </div>
                         ) : (
-                            <div key="table" className="animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
+                            <div key="table">
                                 <TableView
                                     applications={applications as Application[]}
                                     pagination={pagination}
@@ -402,6 +397,7 @@ return (
                             <div className="absolute bottom-full mb-2 left-0 flex flex-col gap-2 bg-card border-outline rounded-xl p-2 min-w-40 shadow-lg">
                                 {APPLICATION_STATUSES.map((status) => (
                                     <button
+                                        type="button"
                                         key={status}
                                         onClick={() => handleBulkStatusChange(status)}
                                         className="w-full px-3 py-2 text-left text-sm text-on-surface hover:bg-surface-container-low rounded-lg transition-colors"
@@ -431,31 +427,33 @@ return (
             )}
 
             {showDeleteConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-inverse-surface/50">
-                    <div className="bg-card border-outline rounded-xl p-6 max-w-sm mx-4 shadow-lg">
-                        <h3 className="text-lg font-semibold text-on-surface mb-2">
-                            Delete {selectedIds.size} applications?
-                        </h3>
-                        <p className="text-on-surface-variant text-sm mb-4">
-                            This action cannot be undone. All selected applications will be permanently deleted.
-                        </p>
-                        <div className="flex justify-end gap-2">
-                            <Button
-                                variant="outline"
-                                onClick={() => setShowDeleteConfirm(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                variant="destructive"
-                                onClick={handleBulkDelete}
-                                disabled={bulkDelete.isPending}
-                            >
-                                {bulkDelete.isPending ? "Deleting..." : "Delete"}
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+              <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+                <DialogContent className="max-w-sm">
+                  <DialogHeader>
+                    <DialogTitle>
+                      Delete {selectedIds.size} applications?
+                    </DialogTitle>
+                  </DialogHeader>
+                  <p className="text-on-surface-variant text-sm">
+                    This action cannot be undone. All selected applications will be permanently deleted.
+                  </p>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowDeleteConfirm(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      onClick={handleBulkDelete}
+                      disabled={bulkDelete.isPending}
+                    >
+                      {bulkDelete.isPending ? "Deleting..." : "Delete"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             )}
 
             <Dialog open={filterPanelOpen} onOpenChange={setFilterPanelOpen}>

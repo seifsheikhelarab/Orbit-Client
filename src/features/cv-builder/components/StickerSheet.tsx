@@ -46,8 +46,8 @@ interface CoverLetterContent {
 
 interface StickerSheetProps {
     type: "RESUME" | "COVER_LETTER";
-    content: Record<string, any>;
-    settings?: Record<string, any>;
+    content: Record<string, unknown>;
+    settings?: { color?: string };
     name?: string;
 }
 
@@ -267,7 +267,7 @@ function CoverLetterStickers({ content, name }: { content: CoverLetterContent; n
             {hasBody && (
                 <div className="flex-1 flex flex-col gap-1.5 min-h-0 relative">
                     {/* Decorative paperclip */}
-                    <div className="absolute -left-0.5 top-1 text-[10px] text-on-surface-variant/20 select-none">📎</div>
+                    <div className="absolute -left-0.5 top-1 text-label-sm text-on-surface-variant/20 select-none">📎</div>
 
                     {/* Opening snippet */}
                     {content.opening && (

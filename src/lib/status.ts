@@ -42,7 +42,7 @@ export const statusBadgeVariants = cva(
         destructive: "bg-error-container text-on-error-container",
       },
       size: {
-        sm: "px-2 h-5 text-[10px]",
+        sm: "px-2 h-5 text-label-sm",
         default: "px-2.5 h-6 text-xs",
         lg: "px-3 h-8 text-sm",
       },

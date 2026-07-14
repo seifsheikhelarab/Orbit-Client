@@ -82,7 +82,7 @@ function SortableLanguageItem({
                         <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
                             {useWatch({ control, name: `languages.${index}.name` }) || `Language ${index + 1}`}
                         </span>
-                        <span className="text-[10px] text-on-surface-variant truncate">
+                        <span className="text-label-sm text-on-surface-variant truncate">
                             {useWatch({ control, name: `languages.${index}.fluency` }) || "Fluency not set"}
                         </span>
                     </div>
@@ -106,7 +106,7 @@ function SortableLanguageItem({
                 <div className="px-6 pb-6 pt-2 border-t border-outline bg-surface-container-low">
                     <div className="grid gap-4 grid-cols-2">
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`languages-${index}-name`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Language</Label>
+                            <Label htmlFor={`languages-${index}-name`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">Language</Label>
                              <Input
                                  id={`languages-${index}-name`}
                                  {...register(`languages.${index}.name`)}
@@ -115,7 +115,7 @@ function SortableLanguageItem({
                              />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`languages-${index}-fluency`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Fluency / Level</Label>
+                            <Label htmlFor={`languages-${index}-fluency`} className="text-label-sm font-bold text-on-surface-variant tracking-tight">Fluency / Level</Label>
                              <Input
                                  id={`languages-${index}-fluency`}
                                  {...register(`languages.${index}.fluency`)}
@@ -161,7 +161,7 @@ export function Languages({ control, register }: LanguagesProps) {
                     </div>
                     <div>
                         <h2 className="text-base font-bold text-on-surface">Languages</h2>
-                        <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Linguistic Skills</p>
+                        <p className="text-label-sm text-on-surface-variant tracking-wider font-bold">Linguistic Skills</p>
                     </div>
                 </div>
                 <Button

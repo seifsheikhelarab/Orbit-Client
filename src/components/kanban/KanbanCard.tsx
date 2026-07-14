@@ -2,10 +2,10 @@ import { memo, useState, useRef, useEffect } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { MapPin, MoreHorizontal, ExternalLink, Pencil, Trash2, Clock, FileText } from "lucide-react"
-import { formatDistanceToNow } from "date-fns"
 import { useNavigate } from "react-router-dom"
 
 import { cn } from "@/lib/utils"
+import { formatSalary, formatRelativeDate } from "@/lib/format"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,45 +14,13 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 
-interface Application {
-    id: string
-    company: string
-    jobTitle: string
-    applicationStatus: string
-    location?: string
-    jobURL?: string
-    salaryMin?: number
-    salaryMax?: number
-    appliedDate?: string
-    notes?: string
-    followUpDate?: string
-    source?: string
-    createdAt: string
-    updatedAt: string
-}
+import type { Application } from "@/features/applications/api/useApplications"
 
 interface KanbanCardProps {
     application: Application
     isDragging?: boolean
     onClick: () => void
     documentCount?: number
-}
-
-const formatSalary = (min?: number, max?: number) => {
-    if (!min && !max) return null
-    const format = (n: number) => `$${(n / 1000).toFixed(0)}k`
-    if (min && max) return `${format(min)} - ${format(max)}`
-    if (min) return `${format(min)}+`
-    return `< ${format(max!)}`
-}
-
-const formatDate = (dateStr?: string) => {
-    if (!dateStr) return null
-    try {
-        return formatDistanceToNow(new Date(dateStr), { addSuffix: true })
-    } catch {
-        return null
-    }
 }
 
 export const KanbanCard = memo(function KanbanCard({
@@ -93,7 +61,7 @@ export const KanbanCard = memo(function KanbanCard({
     }, [menuOpen])
 
     const salary = formatSalary(application.salaryMin, application.salaryMax)
-    const appliedAgo = formatDate(application.appliedDate)
+    const appliedAgo = formatRelativeDate(application.appliedDate)
     const followUpDate = application.followUpDate ? new Date(application.followUpDate) : null
     const isOverdue = followUpDate && followUpDate < new Date(new Date().toDateString())
     const isUpcoming = followUpDate && followUpDate >= new Date(new Date().toDateString())
@@ -135,19 +103,9 @@ export const KanbanCard = memo(function KanbanCard({
                  e.currentTarget.classList.remove('scale-[0.98]')
              }}
          >
-            <div className="absolute top-0 right-0 w-12 h-12 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none overflow-hidden rounded-tr-2xl" aria-hidden="true">
-                 <div className="absolute top-2 right-2 w-1 h-1 bg-primary rounded-full" />
-                 <div className="absolute top-2 right-5 w-1 h-1 bg-primary rounded-full opacity-50" />
-                 <div className="absolute top-5 right-2 w-1 h-1 bg-primary rounded-full opacity-50" />
-             </div>
-
             <div className="space-y-4">
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                        <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-on-surface-variant/50 mb-1 flex items-center gap-1.5">
-                            <span className="size-1 rounded-full bg-primary/30" />
-                            Ref: {application.id.slice(-4)}
-                        </div>
                         <h4 className="font-headline font-bold text-headline-sm text-on-surface group-hover:text-primary transition-colors duration-300 truncate tracking-tight">
                             {application.company}
                         </h4>
@@ -158,6 +116,7 @@ export const KanbanCard = memo(function KanbanCard({
                         <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
                             <DropdownMenuTrigger asChild>
                         <button
+                                     type="button"
                                      className={cn(
                                          "p-2 rounded-xl",
                                          "opacity-0 group-hover:opacity-100 focus:opacity-100",
@@ -177,16 +136,16 @@ export const KanbanCard = memo(function KanbanCard({
                             <DropdownMenuContent align="end" className="w-44 p-1.5 rounded-xl shadow-2xl border-outline-variant">
                                 <DropdownMenuItem onClick={() => navigate(`/app/applications/${application.id}`)} className="rounded-lg gap-3">
                                     <ExternalLink className="h-4 w-4 opacity-70" />
-                                    View Dossier
+                                    View Application
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => navigate(`/app/applications/${application.id}/edit`)} className="rounded-lg gap-3">
                                     <Pencil className="h-4 w-4 opacity-70" />
-                                    Edit Entry
+                                    Edit
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator className="bg-outline-variant/50" />
                                 <DropdownMenuItem className="text-error focus:text-error rounded-lg gap-3">
                                     <Trash2 className="h-4 w-4 opacity-70" />
-                                    Purge Data
+                                    Delete
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

@@ -97,14 +97,14 @@ export function ThemeCustomizer({ register, control, setValue }: Props) {
                 </div>
                 <div>
                     <h2 className="text-base font-bold text-on-surface">Theme & Layout</h2>
-                    <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Visual Settings</p>
+                    <p className="text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Visual Settings</p>
                 </div>
             </div>
 
             <div className="p-6 space-y-8">
                 {/* Templates */}
                 <div className="space-y-3">
-                    <Label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Choose Template</Label>
+                    <Label className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Choose Template</Label>
                     <div className="grid grid-cols-3 gap-3">
                         {TEMPLATES.map(({ value, label }) => {
                             const isSelected = template === value;
@@ -137,7 +137,7 @@ export function ThemeCustomizer({ register, control, setValue }: Props) {
 
                 {/* Accent Color */}
                 <div className="space-y-3">
-                    <Label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Accent Color</Label>
+                    <Label className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Accent Color</Label>
                     <div className="flex flex-wrap items-center gap-3">
                         {["#4f46e5", "#0f766e", "#7c3aed", "#be185d", "#b45309", "#374151"].map((preset) => (
                             <button
@@ -178,14 +178,14 @@ export function ThemeCustomizer({ register, control, setValue }: Props) {
                 {/* Typography & Spacing */}
                 <div className="grid grid-cols-3 gap-6 pt-2 border-t border-outline-variant">
                     <div className="space-y-3">
-                        <Label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Size</Label>
+                        <Label className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Size</Label>
                         <div className="flex bg-surface-container rounded-lg p-1">
                             {FONT_SIZES.map(({ value, label }) => {
                                 const isSelected = fontSize === value;
                                 return (
                                     <label key={value} className="flex-1 cursor-pointer">
                                         <input type="radio" {...register("settings.fontSize")} value={value} className="sr-only" />
-                                        <div className={`py-1.5 text-center rounded-md text-[10px] font-bold transition-all ${
+                                        <div className={`py-1.5 text-center rounded-md text-label-sm font-bold transition-all ${
                                             isSelected ? "bg-surface text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"
                                         }`}>
                                             {label}
@@ -197,14 +197,14 @@ export function ThemeCustomizer({ register, control, setValue }: Props) {
                     </div>
 
                     <div className="space-y-3">
-                        <Label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Spacing</Label>
+                        <Label className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Spacing</Label>
                         <div className="flex bg-surface-container rounded-lg p-1">
                             {LINE_SPACINGS.map(({ value, label }) => {
                                 const isSelected = lineSpacing === value;
                                 return (
                                     <label key={value} className="flex-1 cursor-pointer">
                                         <input type="radio" {...register("settings.lineSpacing")} value={value} className="sr-only" />
-                                        <div className={`py-1.5 text-center rounded-md text-[10px] font-bold transition-all ${
+                                        <div className={`py-1.5 text-center rounded-md text-label-sm font-bold transition-all ${
                                             isSelected ? "bg-surface text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"
                                         }`}>
                                             {label}
@@ -216,14 +216,14 @@ export function ThemeCustomizer({ register, control, setValue }: Props) {
                     </div>
 
                     <div className="space-y-3">
-                        <Label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Margins</Label>
+                        <Label className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Margins</Label>
                         <div className="flex bg-surface-container rounded-lg p-1">
                             {MARGINS.map(({ value, label }) => {
                                 const isSelected = margin === value;
                                 return (
                                     <label key={value} className="flex-1 cursor-pointer">
                                         <input type="radio" {...register("settings.margin")} value={value} className="sr-only" />
-                                        <div className={`py-1.5 text-center rounded-md text-[10px] font-bold transition-all ${
+                                        <div className={`py-1.5 text-center rounded-md text-label-sm font-bold transition-all ${
                                             isSelected ? "bg-surface text-primary shadow-sm" : "text-on-surface-variant hover:text-on-surface"
                                         }`}>
                                             {label}

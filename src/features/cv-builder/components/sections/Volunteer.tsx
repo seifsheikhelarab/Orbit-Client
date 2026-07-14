@@ -82,7 +82,7 @@ function SortableVolunteerItem({
                         <span className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
                             {useWatch({ control, name: `volunteer.${index}.position` }) || `Volunteer ${index + 1}`}
                         </span>
-                        <span className="text-[10px] text-on-surface-variant truncate">
+                        <span className="text-label-sm text-on-surface-variant truncate">
                             {useWatch({ control, name: `volunteer.${index}.organization` }) || "New Organization"}
                         </span>
                     </div>
@@ -106,7 +106,7 @@ function SortableVolunteerItem({
                 <div className="px-6 pb-6 pt-2 border-t border-outline bg-surface-container-low">
                     <div className="grid gap-4 grid-cols-2">
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`volunteer-${index}-organization`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Organization</Label>
+                            <Label htmlFor={`volunteer-${index}-organization`} className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Organization</Label>
                              <Input
                                  id={`volunteer-${index}-organization`}
                                  {...register(`volunteer.${index}.organization`)}
@@ -115,7 +115,7 @@ function SortableVolunteerItem({
                              />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`volunteer-${index}-position`} className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tight">Role / Position</Label>
+                            <Label htmlFor={`volunteer-${index}-position`} className="text-label-sm font-bold text-on-surface-variant uppercase tracking-tight">Role / Position</Label>
                              <Input
                                  id={`volunteer-${index}-position`}
                                  {...register(`volunteer.${index}.position`)}
@@ -124,7 +124,7 @@ function SortableVolunteerItem({
                              />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`volunteer-${index}-startDate`} className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-tight">Start Date</Label>
+                            <Label htmlFor={`volunteer-${index}-startDate`} className="text-label-sm font-bold text-on-surface-variant/60 uppercase tracking-tight">Start Date</Label>
                              <Input
                                  id={`volunteer-${index}-startDate`}
                                  {...register(`volunteer.${index}.startDate`)}
@@ -133,7 +133,7 @@ function SortableVolunteerItem({
                              />
                         </div>
                         <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                            <Label htmlFor={`volunteer-${index}-endDate`} className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-tight">End Date</Label>
+                            <Label htmlFor={`volunteer-${index}-endDate`} className="text-label-sm font-bold text-on-surface-variant/60 uppercase tracking-tight">End Date</Label>
                              <Input
                                  id={`volunteer-${index}-endDate`}
                                  {...register(`volunteer.${index}.endDate`)}
@@ -179,7 +179,7 @@ export function Volunteer({ control, register }: VolunteerProps) {
                     </div>
                     <div>
                         <h2 className="text-base font-bold text-on-surface">Volunteer</h2>
-                        <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Community Service</p>
+                        <p className="text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Community Service</p>
                     </div>
                 </div>
                 <Button

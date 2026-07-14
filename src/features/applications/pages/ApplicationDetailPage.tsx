@@ -11,6 +11,7 @@ import {
     useApplicationResumes,
     useDetachResume
 } from "@/features/applications/api/useApplicationResumes";
+import type { ApplicationResume } from "@/features/applications/api/useApplicationResumes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/ui";
@@ -143,7 +144,7 @@ export default function ApplicationDetailPage() {
                                 </div>
                             ) : resumesResponse?.data && resumesResponse.data.length > 0 ? (
                                 <div className="grid gap-4">
-                                    {resumesResponse.data.map((r: any) => (
+                                    {resumesResponse.data.map((r: ApplicationResume) => (
                                         <div
                                             key={r.id}
                                             className="flex items-center justify-between p-4 rounded-xl bg-surface-container-low"

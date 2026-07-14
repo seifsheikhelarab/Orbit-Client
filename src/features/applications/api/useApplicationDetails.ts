@@ -37,7 +37,7 @@ export function useContacts(applicationId: string) {
     return useQuery({
         queryKey: ["contacts", applicationId],
         queryFn: async () => {
-            const res = await api.get<any>(`/applications/${applicationId}/contacts`);
+            const res = await api.get<{ data: Contact[] }>(`/applications/${applicationId}/contacts`);
             return (res.data?.data ?? res.data) ?? [];
         },
         enabled: !!applicationId
@@ -131,7 +131,7 @@ export function useInterviewRounds(applicationId: string) {
     return useQuery({
         queryKey: ["interviewRounds", applicationId],
         queryFn: async () => {
-            const res = await api.get<any>(`/applications/${applicationId}/interviews`);
+            const res = await api.get<{ data: InterviewRound[] }>(`/applications/${applicationId}/interviews`);
             return (res.data?.data ?? res.data) ?? [];
         },
         enabled: !!applicationId
@@ -225,7 +225,7 @@ export function useUpcomingInterviews() {
     return useQuery({
         queryKey: ["interviews", "upcoming"],
         queryFn: async () => {
-            const res = await api.get<any>("/applications/interviews/upcoming");
+            const res = await api.get<{ data: InterviewRound[] }>("/applications/interviews/upcoming");
             return (res.data?.data ?? res.data) ?? [];
         }
     });
@@ -235,7 +235,7 @@ export function useStatusHistory(applicationId: string) {
     return useQuery({
         queryKey: ["statusHistory", applicationId],
         queryFn: async () => {
-            const res = await api.get<any>(`/applications/${applicationId}/status-history`);
+            const res = await api.get<{ data: StatusHistoryItem[] }>(`/applications/${applicationId}/status-history`);
             return (res.data?.data ?? res.data) ?? [];
         },
         enabled: !!applicationId

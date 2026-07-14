@@ -17,7 +17,7 @@ export function useCurrentUser() {
     return useQuery({
         queryKey: ["currentUser"],
         queryFn: async () => {
-            const response = await api.get<any>("/users/me");
+            const response = await api.get<{ data: UserSettings }>("/users/me");
             return response.data;
         }
     });

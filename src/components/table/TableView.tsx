@@ -1,6 +1,6 @@
 import { useState, memo } from "react"
 import { useNavigate } from "react-router-dom"
-import { format, formatDistanceToNow } from "date-fns"
+import { formatSalary, formatDate, formatFollowUp } from "@/lib/format"
 import {
     ChevronLeft,
     ChevronRight,
@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { StatusBadge } from "@/components/shared/StatusBadge"
+import type { ApplicationStatus } from "@/lib/status"
 import { EmptyState } from "@/components/shared/EmptyState"
 import {
     DropdownMenu,
@@ -26,22 +27,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 
-interface Application {
-    id: string
-    company: string
-    jobTitle: string
-    applicationStatus: string
-    location?: string
-    jobURL?: string
-    salaryMin?: number
-    salaryMax?: number
-    appliedDate?: string
-    notes?: string
-    followUpDate?: string
-    source?: string
-    createdAt: string
-    updatedAt: string
-}
+import type { Application } from "@/features/applications/api/useApplications"
 
 interface TableViewProps {
     applications: Application[]
@@ -61,6 +47,17 @@ interface TableViewProps {
     totalFiltered: number
 }
 
+const columns = [
+    { key: "company", label: "Company", sortable: true },
+    { key: "jobTitle", label: "Job Title", sortable: true },
+    { key: "applicationStatus", label: "Status", sortable: true },
+    { key: "location", label: "Location", sortable: false },
+    { key: "appliedDate", label: "Applied", sortable: true },
+    { key: "salaryRange", label: "Salary", sortable: false },
+    { key: "notes", label: "Notes", sortable: false },
+    { key: "followUp", label: "Follow-up", sortable: false }
+]
+
 export const TableView = memo(function TableView({
     applications,
     pagination,
@@ -74,8 +71,8 @@ export const TableView = memo(function TableView({
     totalFiltered
 }: TableViewProps) {
     const navigate = useNavigate()
-    const [showSelectMenu, setShowSelectMenu] = useState(false)
-    const [visibleColumns, setVisibleColumns] = useState(() => ({
+    type ColumnVisibility = Record<string, boolean>
+    const defaultColumns: ColumnVisibility = {
         company: true,
         jobTitle: true,
         applicationStatus: true,
@@ -84,55 +81,22 @@ export const TableView = memo(function TableView({
         salaryRange: false,
         notes: false,
         followUp: false
-    }))
-
-    const columns = [
-        { key: "company", label: "Company", sortable: true },
-        { key: "jobTitle", label: "Job Title", sortable: true },
-        { key: "applicationStatus", label: "Status", sortable: true },
-        { key: "location", label: "Location", sortable: false },
-        { key: "appliedDate", label: "Applied", sortable: true },
-        { key: "salaryRange", label: "Salary", sortable: false },
-        { key: "notes", label: "Notes", sortable: false },
-        { key: "followUp", label: "Follow-up", sortable: false }
-    ]
+    }
+    const [showSelectMenu, setShowSelectMenu] = useState(false)
+    const [visibleColumns, setVisibleColumns] = useState<ColumnVisibility>(() => {
+        try {
+            const saved = localStorage.getItem("orbit-table-columns")
+            if (saved) return { ...defaultColumns, ...JSON.parse(saved) } as ColumnVisibility
+        } catch { /* ignore */ }
+        return defaultColumns
+    })
 
     const toggleColumn = (key: string) => {
-        setVisibleColumns((prev) => ({
-            ...prev,
-            [key]: !prev[key as keyof typeof prev]
-        }))
-    }
-
-    const formatSalary = (min?: number, max?: number) => {
-        if (!min && !max) return "-"
-        const format = (n: number) => `$${(n / 1000).toFixed(0)}k`
-        if (min && max) return `${format(min)} - ${format(max)}`
-        if (min) return `${format(min)}+`
-        return `< ${format(max!)}`
-    }
-
-    const formatDate = (dateStr?: string) => {
-        if (!dateStr) return "-"
-        try {
-            return format(new Date(dateStr), "MMM d, yyyy")
-        } catch {
-            return "-"
-        }
-    }
-
-    const formatFollowUp = (dateStr?: string): { text: string; className: string } | "-" => {
-        if (!dateStr) return "-"
-        try {
-            const date = new Date(dateStr)
-            const today = new Date(new Date().toDateString())
-            if (date < today) {
-                return { text: "Overdue", className: "text-error font-medium" }
-            }
-            return { text: formatDistanceToNow(date, { addSuffix: true }), className: "text-primary" }
-        } catch {
-            return { text: "-", className: "" }
-        }
+        setVisibleColumns((prev) => {
+            const next = { ...prev, [key]: !prev[key as keyof typeof prev] }
+            try { localStorage.setItem("orbit-table-columns", JSON.stringify(next)) } catch { /* ignore */ }
+            return next
+        })
     }
 
     const getVisibleColumns = () =>
@@ -184,6 +148,8 @@ export const TableView = memo(function TableView({
                             <th className="px-5 py-4 w-12">
                                 <div className="relative">
                                     <button
+                                        type="button"
+                                        aria-label="Select applications"
                                         onClick={() => setShowSelectMenu(!showSelectMenu)}
                                         className={cn(
                                             "p-1.5 rounded-lg transition-all duration-150",
@@ -199,6 +165,7 @@ export const TableView = memo(function TableView({
                                     {showSelectMenu && (
                                         <div className="absolute top-full mt-1 left-0 bg-surface border border-outline rounded-xl shadow-lg py-1 z-10 min-w-[200px]">
                                             <button
+                                                type="button"
                                                 onClick={() => { onSelectAll(true, false); setShowSelectMenu(false) }}
                                                 className="w-full px-3 py-2 text-left text-sm hover:bg-surface-container transition-colors flex items-center gap-2"
                                             >
@@ -206,6 +173,7 @@ export const TableView = memo(function TableView({
                                                 Select all on page ({applications.length})
                                             </button>
                                             <button
+                                                type="button"
                                                 onClick={() => { onSelectAll(true, true); setShowSelectMenu(false) }}
                                                 className="w-full px-3 py-2 text-left text-sm hover:bg-surface-container transition-colors flex items-center gap-2"
                                             >
@@ -214,6 +182,7 @@ export const TableView = memo(function TableView({
                                             </button>
                                             {selectedIds.size > 0 && (
                                                 <button
+                                                    type="button"
                                                     onClick={() => { onSelectAll(false, false); setShowSelectMenu(false) }}
                                                     className="w-full px-3 py-2 text-left text-sm hover:bg-surface-container transition-colors"
                                                 >
@@ -225,11 +194,12 @@ export const TableView = memo(function TableView({
                                 </div>
                             </th>
                             {getVisibleColumns().map((col) => (
-                                <th key={col.key} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-on-surface-variant">
+                                <th key={col.key} className="px-4 py-3 text-left text-xs font-semibold tracking-wider text-on-surface-variant">
                                     {col.sortable ? (
-                                        <button
-                                            onClick={() => onSort(col.key)}
-                                            className={cn(
+                                         <button
+                                             type="button"
+                                             onClick={() => onSort(col.key)}
+                                             className={cn(
                                                 "inline-flex items-center gap-1.5 hover:text-primary transition-colors",
                                                 sortField === col.key ? "text-primary" : ""
                                             )}
@@ -249,7 +219,7 @@ export const TableView = memo(function TableView({
                                 <th className="px-4 py-3 text-right w-12">
                                  <DropdownMenu>
                                      <DropdownMenuTrigger asChild>
-                                         <button className="p-1.5 rounded-lg hover:bg-surface-container transition-colors" title="Toggle columns" aria-label="Toggle columns">
+                                         <button type="button" className="p-1.5 rounded-lg hover:bg-surface-container transition-colors" title="Toggle columns" aria-label="Toggle columns">
                                              <Settings2 className="w-4 h-4 text-on-surface-variant" />
                                          </button>
                                      </DropdownMenuTrigger>
@@ -282,10 +252,10 @@ export const TableView = memo(function TableView({
                                          : "hover:bg-surface-container hover:shadow-sm"
                                  )}
                                  style={{ animationDelay: `${index * 30}ms` }}
-                                 role="row"
                              >
                                  <td className="px-5 py-4 w-12" onClick={(e) => e.stopPropagation()}>
                                      <button
+                                         type="button"
                                          onClick={() => onToggleSelect(app.id)}
                                          className={cn(
                                              "p-1.5 rounded-lg transition-all duration-150",
@@ -328,7 +298,7 @@ export const TableView = memo(function TableView({
                                  )}
                                 {visibleColumns.applicationStatus && (
                                     <td className="px-5 py-4" onClick={(e) => e.stopPropagation()}>
-                                        <StatusBadge status={app.applicationStatus as any} size="sm" />
+                                        <StatusBadge status={app.applicationStatus as ApplicationStatus} size="sm" />
                                     </td>
                                 )}
                                 {visibleColumns.location && (
@@ -445,6 +415,7 @@ export const TableView = memo(function TableView({
                             <span key={`ellipsis-${i}`} className="px-2 text-on-surface-variant">...</span>
                         ) : (
                             <button
+                                type="button"
                                 key={p}
                                 onClick={() => onPageChange(p)}
                                 className={cn(

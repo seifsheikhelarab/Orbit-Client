@@ -9,8 +9,8 @@ export interface ApplicationResume {
         id: string;
         name: string;
         type: "RESUME" | "COVER_LETTER";
-        content: Record<string, any>;
-        settings: Record<string, any>;
+        content: Record<string, unknown>;
+        settings: Record<string, unknown>;
     };
     createdAt: string;
 }

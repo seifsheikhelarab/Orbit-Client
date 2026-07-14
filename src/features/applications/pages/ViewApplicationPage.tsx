@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useApplication } from "@/features/applications/api/useApplications";
 import { useApplicationResumes } from "@/features/applications/api/useApplicationResumes";
+import type { ApplicationResume } from "@/features/applications/api/useApplicationResumes";
 import { useContacts, useCreateContact, useDeleteContact } from "@/features/applications/api/useApplicationDetails";
 import { useInterviewRounds, useCreateInterviewRound, useDeleteInterviewRound } from "@/features/applications/api/useApplicationDetails";
 import { useStatusHistory } from "@/features/applications/api/useApplicationDetails";
@@ -141,7 +142,7 @@ export default function ViewApplicationPage() {
                                             <MapPin className="w-5 h-5 text-on-surface-variant group-hover/item:text-primary transition-colors" />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Location</p>
+                                            <p className="text-label-sm font-bold tracking-widest text-on-surface-variant/60">Location</p>
                                             <p className="text-lg font-bold text-on-surface">{application.location}</p>
                                         </div>
                                     </div>
@@ -151,7 +152,7 @@ export default function ViewApplicationPage() {
                                         <DollarSign className="w-5 h-5 text-on-surface-variant group-hover/item:text-primary transition-colors" />
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Comp Package</p>
+                                        <p className="text-label-sm font-bold tracking-widest text-on-surface-variant/60">Comp Package</p>
                                         <p className="text-lg font-bold text-on-surface">
                                             {application.salaryMin || application.salaryMax
                                                 ? `${application.salaryMin ? `$${application.salaryMin.toLocaleString()}` : "?"} - ${application.salaryMax ? `$${application.salaryMax.toLocaleString()}` : "?"}`
@@ -165,7 +166,7 @@ export default function ViewApplicationPage() {
                                             <Calendar className="w-5 h-5 text-on-surface-variant group-hover/item:text-primary transition-colors" />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Engagement Date</p>
+                                            <p className="text-label-sm font-bold tracking-widest text-on-surface-variant/60">Engagement Date</p>
                                             <p className="text-lg font-bold text-on-surface">
                                                 {format(new Date(application.appliedDate), "MMMM d, yyyy")}
                                             </p>
@@ -178,7 +179,7 @@ export default function ViewApplicationPage() {
                                             <ExternalLink className="w-5 h-5 text-on-surface-variant group-hover/item:text-primary transition-colors" />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Intelligence Source</p>
+                                            <p className="text-label-sm font-bold tracking-widest text-on-surface-variant/60">Intelligence Source</p>
                                             <a
                                                 href={application.jobURL}
                                                 target="_blank"
@@ -269,13 +270,13 @@ export default function ViewApplicationPage() {
                                 <div className="p-2 rounded-xl bg-primary-container">
                                     <FileText className="w-5 h-5 text-primary" />
                                 </div>
-                                Dossier Files
+                                Attached Files
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             {resumesResponse?.data && resumesResponse.data.length > 0 ? (
                                 <div className="grid gap-4">
-                                    {resumesResponse.data.map((r: any) => (
+                                    {resumesResponse.data.map((r: ApplicationResume) => (
                                         <div key={r.id} className="group flex items-center justify-between p-4 rounded-2xl bg-surface-container-low hover:bg-primary-container/30 transition-all border border-transparent hover:border-primary/10">
                                             <div className="flex items-center gap-4 min-w-0">
                                                 <div className="shrink-0 w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center">
@@ -283,7 +284,7 @@ export default function ViewApplicationPage() {
                                                 </div>
                                                 <div className="min-w-0">
                                                     <p className="font-bold text-sm truncate">{r.resume.name}</p>
-                                                    <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">{r.resume?.type?.replace("_", " ")}</p>
+                                                    <p className="text-label-sm font-bold tracking-widest text-on-surface-variant/60">{r.resume?.type?.replace("_", " ")}</p>
                                                 </div>
                                             </div>
                                             <Button variant="ghost" size="icon-sm" asChild className="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -294,7 +295,7 @@ export default function ViewApplicationPage() {
                                 </div>
                             ) : (
                                 <div className="text-center py-6 border-2 border-dashed border-outline-variant rounded-2xl">
-                                    <p className="text-sm text-on-surface-variant mb-4">No dossier files attached</p>
+                                    <p className="text-sm text-on-surface-variant mb-4">No files attached</p>
                                     <Button variant="outline" size="sm" asChild className="rounded-full">
                                         <Link to={`/app/applications/${id}/attach`}>Attach Resume</Link>
                                     </Button>

@@ -42,7 +42,7 @@ export function StatusHistoryTimeline({ items, isLoading }: StatusHistoryTimelin
                 <div className="p-2 rounded-lg bg-primary/10">
                     <Clock className="w-4 h-4 text-primary" />
                 </div>
-                <h2 className="text-sm font-bold uppercase tracking-wider">Status History</h2>
+                <h2 className="text-sm font-bold tracking-wider">Status History</h2>
             </div>
 
             {items && items.length > 0 ? (
@@ -74,7 +74,7 @@ export function StatusHistoryTimeline({ items, isLoading }: StatusHistoryTimelin
                                                 {STATUS_LABELS[item.toStatus] || item.toStatus}
                                             </span>
                                         </div>
-                                        <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+                                        <div className="flex items-center gap-1 text-label-sm font-bold uppercase tracking-widest text-on-surface-variant">
                                             {format(new Date(item.changedAt), "MMM d, yyyy 'at' h:mm a")}
                                         </div>
                                     </div>

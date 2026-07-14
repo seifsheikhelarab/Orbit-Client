@@ -22,11 +22,14 @@ function SidebarOverlay() {
 export function AppLayout() {
   return (
     <div className="flex h-screen w-full flex-col bg-background overflow-hidden">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-surface focus:text-on-surface focus:rounded-lg focus:m-4 focus:outline-none focus:ring-2 focus:ring-ring">
+        Skip to content
+      </a>
       <TopBar />
       <div className="flex flex-1 overflow-hidden">
         <SidebarOverlay />
         <Sidebar />
-        <main className="flex-1 overflow-y-auto dossier-content-bg">
+        <main id="main-content" className="flex-1 overflow-y-auto">
           <div className="relative z-10">
             <PageTransition>
               <Outlet />
