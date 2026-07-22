@@ -33,32 +33,5 @@ function StatusBadge({ status, size = "default", className, ...props }: StatusBa
   )
 }
 
-interface LargeStatusBadgeProps extends React.ComponentProps<"div"> {
-  status: ApplicationStatus
-  icon?: React.ReactNode
-}
-
-function LargeStatusBadge({ status, icon, className, ...props }: LargeStatusBadgeProps) {
-  const isValidStatus = APPLICATION_STATUSES.includes(status)
-  const config = isValidStatus 
-    ? APPLICATION_STATUS_CONFIG[status] 
-    : APPLICATION_STATUS_CONFIG[UNKNOWN_STATUS]
-
-  return (
-    <div
-      data-slot="status-badge-large"
-      className={cn(
-        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold",
-        statusBadgeVariants({ variant: config.variant }),
-        className
-      )}
-      {...props}
-    >
-      {icon}
-      {config.label}
-    </div>
-  )
-}
-
 // eslint-disable-next-line react-refresh/only-export-components
-export { StatusBadge, LargeStatusBadge, statusBadgeVariants }
+export { StatusBadge, statusBadgeVariants }

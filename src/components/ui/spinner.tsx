@@ -44,14 +44,3 @@ export function Spinner({ size, color = "primary", className }: SpinnerProps) {
     </div>
   );
 }
-
-export function LoadingScreen({ message = "Loading..." }: { message?: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4 p-8">
-      <Spinner size="lg" />
-      <p className="text-sm text-muted-foreground animate-pulse">
-        {message}
-      </p>
-    </div>
-  );
-}

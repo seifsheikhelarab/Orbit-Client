@@ -1,4 +1,4 @@
-export { StatusBadge, LargeStatusBadge, statusBadgeVariants } from "./StatusBadge"
+export { StatusBadge, statusBadgeVariants } from "./StatusBadge"
 export { ViewToggle } from "./ViewToggle"
 export type { ViewMode } from "./ViewToggle"
 export { EmptyState } from "./EmptyState"
