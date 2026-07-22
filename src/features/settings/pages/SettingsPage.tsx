@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2, User, Bell, Shield, AlertTriangle, Settings, LogOut } from "lucide-react";
+import { GmailCard } from "../components/GmailCard";
 import { toast } from "sonner";
 
 const TIMEZONES = [
@@ -299,6 +300,9 @@ return (
                             )}
                         </CardContent>
                     </Card>
+
+                    {/* Gmail Integration */}
+                    <GmailCard />
 
                     {/* Danger Zone */}
                     <Card className="border border-error/30 shadow-sm overflow-hidden">
