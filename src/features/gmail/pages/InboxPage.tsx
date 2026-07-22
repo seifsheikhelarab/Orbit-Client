@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGmailStatus, useGmailConnect, useInboxEntries } from "../api/useGmail";
+import { InboxDetailPanel } from "../components/InboxDetailPanel";
 import { format } from "date-fns";
 
 type FilterTab = "all" | "matched" | "unmatched";
@@ -229,6 +230,8 @@ export default function InboxPage() {
                     )}
                 </>
             )}
+
+            <InboxDetailPanel entryId={selectedEntryId} onClose={() => setSelectedEntryId(null)} />
         </PageContainer>
     );
 }
