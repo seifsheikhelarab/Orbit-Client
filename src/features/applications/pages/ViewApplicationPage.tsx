@@ -191,6 +191,17 @@ export default function ViewApplicationPage() {
                                         </div>
                                     </div>
                                 )}
+                                {application.domain && (
+                                    <div className="flex items-center gap-4 group/item">
+                                        <div className="p-3 rounded-2xl bg-surface-container-high group-hover/item:bg-primary-container/50 transition-colors">
+                                            <ExternalLink className="w-5 h-5 text-on-surface-variant group-hover/item:text-primary transition-colors" />
+                                        </div>
+                                        <div>
+                                            <p className="text-label-sm font-bold tracking-widest text-on-surface-variant/60">Domain</p>
+                                            <p className="text-lg font-bold text-on-surface">{application.domain}</p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </CardContent>
                     </Card>

@@ -24,6 +24,7 @@ export interface Application {
     followUpDate?: string;
     followUpNote?: string;
     source?: string;
+    domain?: string;
     createdAt: string;
     updatedAt: string;
 }

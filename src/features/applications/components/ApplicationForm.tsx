@@ -22,7 +22,8 @@ const applicationSchema = z.object({
     notes: z.string().optional(),
     followUpDate: z.string().optional(),
     followUpNote: z.string().optional(),
-    source: z.string().optional()
+    source: z.string().optional(),
+    domain: z.string().optional()
 })
 
 export type ApplicationFormValues = z.infer<typeof applicationSchema>
@@ -65,7 +66,8 @@ export function ApplicationForm({
                 ? new Date(initialData.followUpDate).toISOString().split("T")[0]
                 : "",
             followUpNote: initialData?.followUpNote || "",
-            source: initialData?.source || ""
+            source: initialData?.source || "",
+            domain: initialData?.domain || ""
         }
     })
 
@@ -164,6 +166,31 @@ export function ApplicationForm({
                                     id="jobURL"
                                     type="url"
                                     placeholder="https://..."
+                                    onBlur={(e) => {
+                                        field.onBlur();
+                                        const url = e.target.value;
+                                        if (url && !form.getValues("domain")) {
+                                            try {
+                                                const hostname = new URL(url).hostname.replace(/^www\./, "");
+                                                form.setValue("domain", hostname, { shouldDirty: true });
+                                            } catch { /* invalid url, skip */ }
+                                        }
+                                    }}
+                                />
+                            )}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="domain">Domain</Label>
+                        <Controller
+                            name="domain"
+                            control={form.control}
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    id="domain"
+                                    placeholder="e.g. google.com, linkedin.com"
                                 />
                             )}
                         />
