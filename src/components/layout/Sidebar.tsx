@@ -1,4 +1,4 @@
-import { LayoutDashboard, Briefcase, Calendar, FileText, Settings, UserCircle, Sparkles, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, Briefcase, Calendar, FileText, Settings, UserCircle, Sparkles, HelpCircle, Mail } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/hooks/useUIStore';
@@ -6,6 +6,7 @@ import { useUIStore } from '@/hooks/useUIStore';
 const NAV_ITEMS = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '/app/dashboard' },
   { name: 'Applications', icon: Briefcase, path: '/app/applications' },
+  { name: 'Inbox', icon: Mail, path: '/app/inbox' },
   { name: 'Resumes', icon: FileText, path: '/app/resumes' },
   { name: 'Interviews', icon: Calendar, path: '/app/interviews' },
   { name: 'AutoCV', icon: Sparkles, path: '/app/autocv' },

@@ -24,6 +24,7 @@ const InterviewsPage = lazy(() => import('./features/applications/pages/Intervie
 const NotificationsPage = lazy(() => import('./features/notifications/pages/NotificationsPage').then(m => ({ default: m.NotificationsPage })));
 const ProfilePage = lazy(() => import('./features/profile/pages/ProfilePage'));
 const AutoCVPage = lazy(() => import('./features/profile/pages/AutoCVPage'));
+const InboxPage = lazy(() => import('./features/gmail/pages/InboxPage'));
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,7 @@ function App() {
               <Route path="applications/:id" element={<ViewApplicationPage />} />
               <Route path="applications/:id/edit" element={<ApplicationDetailPage />} />
               <Route path="applications/:id/attach" element={<AttachResumePage />} />
+              <Route path="inbox" element={<InboxPage />} />
               <Route path="resumes" element={<ResumesPage />} />
               <Route path="resumes/:id" element={<BuilderPage />} />
               <Route path="interviews" element={<InterviewsPage />} />
