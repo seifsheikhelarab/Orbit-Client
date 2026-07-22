@@ -5,7 +5,7 @@ import { MapPin, MoreHorizontal, ExternalLink, Pencil, Trash2, Clock, FileText }
 import { useNavigate } from "react-router-dom"
 
 import { cn } from "@/lib/utils"
-import { formatSalary, formatRelativeDate } from "@/lib/format"
+import { formatSalary, formatRelativeDate, formatLastContact } from "@/lib/format"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -65,6 +65,7 @@ export const KanbanCard = memo(function KanbanCard({
     const followUpDate = application.followUpDate ? new Date(application.followUpDate) : null
     const isOverdue = followUpDate && followUpDate < new Date(new Date().toDateString())
     const isUpcoming = followUpDate && followUpDate >= new Date(new Date().toDateString())
+    const lastContact = formatLastContact(application.lastContactAt)
 
     return (
         <div
@@ -180,6 +181,11 @@ export const KanbanCard = memo(function KanbanCard({
                                 {documentCount}
                             </span>
                         )}
+                        {lastContact && (
+                            <span className={cn("inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold", "bg-surface-container-high", lastContact.className)}>
+                                {lastContact.text}
+                            </span>
+                        )}
                     </div>
                     
                     {followUpDate && isUpcoming && (
@@ -187,6 +193,11 @@ export const KanbanCard = memo(function KanbanCard({
                             "size-2 rounded-full",
                             isOverdue ? "bg-error animate-pulse" : "bg-primary"
                         )} />
+                    )}
+                    {(application.pendingSuggestionCount ?? 0) > 0 && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/10 text-primary text-[11px] font-bold">
+                            ✦ {application.pendingSuggestionCount}
+                        </span>
                     )}
                 </div>
             </div>

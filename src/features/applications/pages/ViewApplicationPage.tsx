@@ -10,7 +10,8 @@ import {
     ExternalLink,
     Clock,
     Briefcase,
-    Edit
+    Edit,
+    Mail
 } from "lucide-react";
 import { useApplication } from "@/features/applications/api/useApplications";
 import { useApplicationResumes } from "@/features/applications/api/useApplicationResumes";
@@ -18,9 +19,12 @@ import type { ApplicationResume } from "@/features/applications/api/useApplicati
 import { useContacts, useCreateContact, useDeleteContact } from "@/features/applications/api/useApplicationDetails";
 import { useInterviewRounds, useCreateInterviewRound, useDeleteInterviewRound } from "@/features/applications/api/useApplicationDetails";
 import { useStatusHistory } from "@/features/applications/api/useApplicationDetails";
+import { useSuggestions } from "@/features/gmail/api/useGmail";
+import { formatLastContact } from "@/lib/format";
 import { ContactsList } from "@/features/applications/components/ContactsList";
 import { InterviewRoundsList } from "@/features/applications/components/InterviewRoundsList";
 import { StatusHistoryTimeline } from "@/features/applications/components/StatusHistoryTimeline";
+import { SuggestionItem } from "@/features/gmail/components/SuggestionItem";
 import { openInGoogleCalendar } from "@/lib/calendar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -54,6 +58,7 @@ export default function ViewApplicationPage() {
     const deleteContact = useDeleteContact(id!);
     const createRound = useCreateInterviewRound(id!);
     const deleteRound = useDeleteInterviewRound(id!);
+    const { data: suggestionsData } = useSuggestions({ applicationId: id!, status: "PENDING", page: 1, limit: 50 });
 
     if (isLoading) {
         return (
@@ -202,6 +207,20 @@ export default function ViewApplicationPage() {
                                         </div>
                                     </div>
                                 )}
+                                {(() => {
+                                    const lc = formatLastContact(application.lastContactAt)
+                                    return lc ? (
+                                        <div className="flex items-center gap-4 group/item">
+                                            <div className="p-3 rounded-2xl bg-surface-container-high group-hover/item:bg-primary-container/50 transition-colors">
+                                                <Mail className="w-5 h-5 text-on-surface-variant group-hover/item:text-primary transition-colors" />
+                                            </div>
+                                            <div>
+                                                <p className="text-label-sm font-bold tracking-widest text-on-surface-variant/60">Last Contact</p>
+                                                <p className={`text-lg font-bold ${lc.className}`}>{lc.text}</p>
+                                            </div>
+                                        </div>
+                                    ) : null
+                                })()}
                             </div>
                         </CardContent>
                     </Card>
@@ -235,6 +254,26 @@ export default function ViewApplicationPage() {
                             <StatusHistoryTimeline items={history || []} isLoading={isLoadingHistory} />
                         </CardContent>
                     </Card>
+
+                    {(suggestionsData?.data?.length ?? 0) > 0 && (
+                        <Card variant="elevated">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-3">
+                                    <div className="p-2 rounded-xl bg-primary-container">
+                                        <span className="text-primary text-base">✦</span>
+                                    </div>
+                                    AI Suggestions
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid gap-2">
+                                    {suggestionsData!.data.map((s) => (
+                                        <SuggestionItem key={s.id} suggestion={s} />
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
 
                 <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">

@@ -25,6 +25,8 @@ export interface Application {
     followUpNote?: string;
     source?: string;
     domain?: string;
+    lastContactAt?: string;
+    pendingSuggestionCount?: number;
     createdAt: string;
     updatedAt: string;
 }

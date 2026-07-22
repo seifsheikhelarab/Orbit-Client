@@ -1,6 +1,6 @@
 import { useState, memo } from "react"
 import { useNavigate } from "react-router-dom"
-import { formatSalary, formatDate, formatFollowUp } from "@/lib/format"
+import { formatSalary, formatDate, formatFollowUp, formatLastContact } from "@/lib/format"
 import {
     ChevronLeft,
     ChevronRight,
@@ -53,6 +53,7 @@ const columns = [
     { key: "applicationStatus", label: "Status", sortable: true },
     { key: "location", label: "Location", sortable: false },
     { key: "appliedDate", label: "Applied", sortable: true },
+    { key: "lastContact", label: "Last Contact", sortable: false },
     { key: "salaryRange", label: "Salary", sortable: false },
     { key: "notes", label: "Notes", sortable: false },
     { key: "followUp", label: "Follow-up", sortable: false }
@@ -78,6 +79,7 @@ export const TableView = memo(function TableView({
         applicationStatus: true,
         location: true,
         appliedDate: true,
+        lastContact: false,
         salaryRange: false,
         notes: false,
         followUp: false
@@ -317,7 +319,7 @@ export const TableView = memo(function TableView({
                                          {app.location || "-"}
                                      </td>
                                  )}
-                                {visibleColumns.appliedDate && (
+                                 {visibleColumns.appliedDate && (
                                      <td 
                                          className="px-5 py-4 text-on-surface-variant text-body-md hidden sm:table-cell cursor-pointer" 
                                          onClick={() => navigate(`/app/applications/${app.id}`)}
@@ -331,6 +333,25 @@ export const TableView = memo(function TableView({
                                          }}
                                      >
                                          {formatDate(app.appliedDate)}
+                                     </td>
+                                 )}
+                                {visibleColumns.lastContact && (
+                                     <td 
+                                         className="px-5 py-4 text-body-md hidden sm:table-cell cursor-pointer" 
+                                         onClick={() => navigate(`/app/applications/${app.id}`)}
+                                         role="button"
+                                         tabIndex={0}
+                                         onKeyDown={(e) => {
+                                             if (e.key === 'Enter' || e.key === ' ') {
+                                                 e.preventDefault()
+                                                 navigate(`/app/applications/${app.id}`)
+                                             }
+                                         }}
+                                     >
+                                         {(() => {
+                                             const lc = formatLastContact(app.lastContactAt)
+                                             return lc ? <span className={lc.className}>{lc.text}</span> : <span className="text-on-surface-variant/50">-</span>
+                                         })()}
                                      </td>
                                  )}
                                 {visibleColumns.salaryRange && (

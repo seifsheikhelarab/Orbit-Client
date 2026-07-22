@@ -1,4 +1,4 @@
-import { formatDistanceToNow, format } from "date-fns"
+import { formatDistanceToNow, format, differenceInDays } from "date-fns"
 
 export function formatSalary(min?: number, max?: number): string | null {
     if (!min && !max) return null
@@ -37,5 +37,17 @@ export function formatFollowUp(dateStr?: string): { text: string; className: str
         return { text: formatDistanceToNow(date, { addSuffix: true }), className: "text-primary" }
     } catch {
         return { text: "-", className: "" }
+    }
+}
+
+export function formatLastContact(dateStr?: string | null): { text: string; className: string } | null {
+    if (!dateStr) return null
+    try {
+        const days = differenceInDays(new Date(), new Date(dateStr))
+        if (days > 30) return { text: `${days}d ago`, className: "text-error font-medium" }
+        if (days > 14) return { text: `${days}d ago`, className: "text-warning font-medium" }
+        return { text: `${days}d ago`, className: "text-on-surface-variant" }
+    } catch {
+        return null
     }
 }
